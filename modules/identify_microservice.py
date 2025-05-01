@@ -39,7 +39,7 @@ def analyze_dataset():
 
             url = repo["URL"]
             name = url.split('/')[-2] + '.' + url.split('/')[-1]
-            workdir = str(project_root / "identify_microservice/temp/clones" / name)
+            workdir = str(project_root / "dest/temp/clones" / name)
             try:
                 git.Repo.clone_from(url, workdir, depth=1)  # GitPython: useful to work with repo
                 analyze_repo_by_linguist(workdir, name)

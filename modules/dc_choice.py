@@ -40,7 +40,7 @@ def analyze_repo(url: str) -> list[dict[str, int | list[str] | str]]:
     """
     name = url.split('/')[-2] + '.' + url.split('/')[-1]
     print_major_step(f'## Start repo analysis ({name}) [{url}]')
-    workdir = str(project_root / 'identify_microservice/temp/clones' / name)
+    workdir = str(project_root / 'dest/temp/clones' / name)
 
     results: list[dict[str, int | list[str] | str]] = []
 
