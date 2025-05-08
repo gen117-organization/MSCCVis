@@ -149,7 +149,7 @@ def save_results(url: str, chunks: list[dict[str, int | list[str] | str]], group
     """
     name = url.split("/")[-2] + "." + url.split("/")[-1]
 
-    results_file = project_root / f'dest/results/dc_choice/CLAIM/{name}.csv'
+    results_file = project_root / f'dest/dc_choice/{name}.csv'
 
     with open(results_file, 'w+', newline='') as results_output:
 

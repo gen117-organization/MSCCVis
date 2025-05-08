@@ -20,7 +20,7 @@ def check_project(url: str) -> tuple[bool, dict]:
     # URLからリポジトリ名を抽出
     name = url.split('/')[-2] + '.' + url.split('/')[-1]
     # マッピングファイルのパス
-    target_map_file = project_root / "dest/results/map/" / f"{name}.json"
+    target_map_file = project_root / "dest/map" / f"{name}.json"
     # GitHubのリポジトリが存在しない場合，mapファイルが存在しないのでFalseを返す
     if not target_map_file.exists():
         return False, {}
@@ -111,7 +111,7 @@ def main():
                 result["URL"] = url
                 output.append(result)
     # 結果をJSONファイルとして保存
-    with open(project_root / "dest/results/selected_projects.json", "w") as f:
+    with open(project_root / "dest/selected_projects.json", "w") as f:
         json.dump(output, f, indent=4)
 
 

@@ -1,26 +1,24 @@
 from pathlib import Path
 import csv
 import traceback
-import subprocess
 import json
 import git  # GitPython
 import sys
 from pathlib import Path
 
-import dc_choice
-import ms_detection
+import modules.CLAIM.dc_choice as dc_choice
+import modules.CLAIM.ms_detection as ms_detection
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 from lib.CLAIM.src.utils.print_utils import print_progress, print_major_step, print_info
 from lib.CLAIM.src.utils.repo import clear_repo
+from github_linguist import run_github_linguist
 
 
 def analyze_repo_by_linguist(workdir: str, name: str):
-    cmd = ["github-linguist", workdir, "--json", "--breakdown"]
-    output = str(subprocess.run(cmd, capture_output=True, text=True).stdout).replace("\\n", "")
-    output_json = json.loads(output)
+    output_json = run_github_linguist(workdir)
 
-    result_file = project_root / "dest/results/github_linguist" / f"{name}.json"
+    result_file = project_root / "dest/github_linguist" / f"{name}.json"
     with open(result_file, 'w') as result_output:
         result_output.write(json.dumps(output_json, indent=4))
 

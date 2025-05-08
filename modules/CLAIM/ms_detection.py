@@ -66,7 +66,7 @@ def analyze_repo(url: str) -> list[dict[str, int | list[str] | str]]:
             # take the correct docker compose
             docker_compose = None
 
-            with open(project_root / f'dest/results/dc_choice/CLAIM/{name}.csv') as dataset:
+            with open(project_root / f'dest/dc_choice/{name}.csv') as dataset:
                 chunks = csv.DictReader(dataset, delimiter=',')
 
                 for chunk in chunks:
@@ -211,7 +211,7 @@ def save_results(url: str, chunks: list[dict[str, int | list[str] | str]], group
     """
     name = url.split("/")[-2] + "." + url.split("/")[-1]
 
-    results_file = project_root / f'dest/results/ms_detection/CLAIM/{name}.csv'
+    results_file = project_root / f'dest/ms_detection/{name}.csv'
 
     with open(results_file, 'w+', newline='') as results_output:
         if not group:

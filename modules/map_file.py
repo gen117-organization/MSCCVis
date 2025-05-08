@@ -109,7 +109,7 @@ def map_files(url: str) -> dict:
     # URLからリポジトリ名を抽出
     name = url.split('/')[-2] + '.' + url.split('/')[-1]
     # マイクロサービス検出結果のファイルパス
-    target = project_root / "dest/results/ms_detection/CLAIM" / f"{name}.csv"
+    target = project_root / "dest/ms_detection" / f"{name}.csv"
 
     try:
         # マイクロサービスとコンテナの情報を読み込む
@@ -120,7 +120,7 @@ def map_files(url: str) -> dict:
             containers = parse_containers(row["CONTAINERS"])
 
         # GitHub Linguistの結果を読み込む
-        target = project_root / "dest/results/github_linguist" / f"{name}.json"
+        target = project_root / "dest/github_linguist" / f"{name}.json"
         with open(target, "r") as f:
             linguist_result = json.load(f)
 
@@ -189,7 +189,7 @@ def main():
                 # リポジトリ名を抽出
                 name = row["URL"].split('/')[-2] + '.' + row["URL"].split('/')[-1]
                 # 結果をJSONファイルとして保存
-                with open(project_root / "dest/results/map" / f"{name}.json", "w") as f:
+                with open(project_root / "dest/map" / f"{name}.json", "w") as f:
                     json.dump(result, f, indent=4)
             except FileNotFoundError:
                 # ファイルが見つからない場合はエラーメッセージを表示して続行
