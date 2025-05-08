@@ -1,0 +1,1086 @@
+[
+    {
+        "Python": {
+            "vote": [
+                "vote"
+            ],
+            "seed-data": [
+                "seed"
+            ]
+        },
+        "URL": "https://github.com/dockersamples/example-voting-app"
+    },
+    {
+        "Java": {
+            "aspsp-profile/aspsp-profile-server": [
+                "aspsp-profile"
+            ],
+            "consent-management/cms-standalone-service": [
+                "consent-management"
+            ],
+            "xs2a-standalone-starter": [
+                "xs2a-standalone-starter"
+            ]
+        },
+        "URL": "https://github.com/adorsys/xs2a"
+    },
+    {
+        "Python": {
+            "app-tasks": [
+                "batch"
+            ],
+            "app-hitl": [
+                "batch-hitl"
+            ]
+        },
+        "URL": "https://github.com/raster-foundry/raster-foundry"
+    },
+    {
+        "Python": {
+            "similarity": [
+                "similarity"
+            ],
+            "tagrecommendation": [
+                "tagrecommendation"
+            ]
+        },
+        "URL": "https://github.com/MTG/freesound"
+    },
+    {
+        "JavaScript": {
+            "cypresse2e": [
+                "cypress-e2e-tests",
+                "cypress-e2e-report"
+            ],
+            "client": [
+                "client"
+            ],
+            "mocha": [
+                "mocha-integration"
+            ],
+            "backend": [
+                "backend-service"
+            ]
+        },
+        "URL": "https://github.com/FightPandemics/FightPandemics"
+    },
+    {
+        "JavaScript": {
+            "src/backend": [
+                "apiv1",
+                "cli",
+                "lmtpd",
+                "mastodonworker",
+                "identitypoller",
+                "twitterworker",
+                "apiv2",
+                "imapworker",
+                "mqworker"
+            ],
+            "src/frontend/web_application": [
+                "frontend",
+                "frontend_dev"
+            ]
+        },
+        "URL": "https://github.com/CaliOpen/Caliopen"
+    },
+    {
+        "Go": {
+            "Beam/go/cmd/tracker": [
+                "beam_tracker"
+            ],
+            "Beam/go/cmd/segments": [
+                "beam_segments"
+            ]
+        },
+        "URL": "https://github.com/remp2020/remp"
+    },
+    {
+        "Python": {
+            "dockercoins/rng": [
+                "rng"
+            ],
+            "dockercoins/worker": [
+                "worker"
+            ]
+        },
+        "URL": "https://github.com/jpetazzo/container.training"
+    },
+    {
+        "TypeScript": {
+            "movies-service": [
+                "movies-service-cont"
+            ],
+            "search-service": [
+                "search-service-cont"
+            ],
+            "cinema-catalog-service": [
+                "cinema-catalog-service-cont"
+            ]
+        },
+        "JavaScript": {
+            "movies-service": [
+                "movies-service-cont"
+            ],
+            "search-service": [
+                "search-service-cont"
+            ],
+            "cinema-catalog-service": [
+                "cinema-catalog-service-cont"
+            ]
+        },
+        "URL": "https://github.com/DaisukeHirata/express-typescript-openapi3"
+    },
+    {
+        "Java": {
+            "zipkin-service": [
+                "zipkin-service"
+            ],
+            "discovery-service": [
+                "discovery-service"
+            ],
+            "customer-service": [
+                "customer-service"
+            ],
+            "account-service": [
+                "account-service"
+            ],
+            "gateway-service": [
+                "service-gateway"
+            ]
+        },
+        "URL": "https://github.com/piomin/sample-spring-microservices"
+    },
+    {
+        "JavaScript": {
+            "shopping-server": [
+                "shopping-server"
+            ],
+            "shopping-webclient": [
+                "shopping-webclient"
+            ],
+            "management-server": [
+                "management-server"
+            ],
+            "management-webclient": [
+                "management-webclient"
+            ]
+        },
+        "URL": "https://github.com/Viveckh/Veniqa"
+    },
+    {
+        "Python": {
+            "mqtt_logger": [
+                "twitchbot_mqtt_logger"
+            ],
+            "bot": [
+                "twitchbot_bot"
+            ],
+            "web": [
+                "twitchbot_webserver"
+            ]
+        },
+        "URL": "https://github.com/tisboyo/Twitch_Bot"
+    },
+    {
+        "JavaScript": {
+            "backend": [
+                "api"
+            ],
+            "frontend": [
+                "ui"
+            ]
+        },
+        "URL": "https://github.com/instedd/oasis"
+    },
+    {
+        "Java": {
+            "ts-food-service": [
+                "ts-food-service"
+            ],
+            "ts-user-service": [
+                "ts-user-service"
+            ],
+            "ts-consign-price-service": [
+                "ts-consign-price-service"
+            ],
+            "ts-travel-service": [
+                "ts-travel-service"
+            ],
+            "ts-admin-travel-service": [
+                "ts-admin-travel-service"
+            ],
+            "ts-consign-service": [
+                "ts-consign-service"
+            ],
+            "ts-preserve-other-service": [
+                "ts-preserve-other-service"
+            ],
+            "ts-assurance-service": [
+                "ts-assurance-service"
+            ],
+            "ts-cancel-service": [
+                "ts-cancel-service"
+            ],
+            "ts-seat-service": [
+                "ts-seat-service"
+            ],
+            "ts-admin-user-service": [
+                "ts-admin-user-service"
+            ],
+            "ts-train-service": [
+                "ts-train-service"
+            ],
+            "ts-execute-service": [
+                "ts-execute-service"
+            ],
+            "ts-route-plan-service": [
+                "ts-route-plan-service"
+            ],
+            "ts-contacts-service": [
+                "ts-contacts-service"
+            ],
+            "ts-price-service": [
+                "ts-price-service"
+            ],
+            "ts-admin-route-service": [
+                "ts-admin-route-service"
+            ],
+            "ts-travel-plan-service": [
+                "ts-travel-plan-service"
+            ],
+            "ts-config-service": [
+                "ts-config-service"
+            ],
+            "ts-travel2-service": [
+                "ts-travel2-service"
+            ],
+            "ts-preserve-service": [
+                "ts-preserve-service"
+            ],
+            "ts-route-service": [
+                "ts-route-service"
+            ],
+            "ts-payment-service": [
+                "ts-payment-service"
+            ],
+            "ts-verification-code-service": [
+                "ts-verification-code-service"
+            ],
+            "ts-notification-service": [
+                "ts-notification-service"
+            ],
+            "ts-rebook-service": [
+                "ts-rebook-service"
+            ],
+            "ts-admin-basic-info-service": [
+                "ts-admin-basic-info-service"
+            ],
+            "ts-order-other-service": [
+                "ts-order-other-service"
+            ],
+            "ts-admin-order-service": [
+                "ts-admin-order-service"
+            ],
+            "ts-basic-service": [
+                "ts-basic-service"
+            ],
+            "ts-security-service": [
+                "ts-security-service"
+            ],
+            "ts-inside-payment-service": [
+                "ts-inside-payment-service"
+            ],
+            "ts-station-service": [
+                "ts-station-service"
+            ],
+            "ts-auth-service": [
+                "ts-auth-service"
+            ],
+            "ts-order-service": [
+                "ts-order-service"
+            ]
+        },
+        "JavaScript": {
+            "ts-ui-dashboard": [
+                "ts-ui-dashboard"
+            ],
+            "ts-ticket-office-service": [
+                "ts-ticket-office-service"
+            ]
+        },
+        "URL": "https://github.com/FudanSELab/train-ticket"
+    },
+    {
+        "Python": {
+            "data-pipeline": [
+                "bcregmara"
+            ],
+            "bcreg-aca": [
+                "bcreg-controller",
+                "caddy"
+            ]
+        },
+        "URL": "https://github.com/bcgov/von-bc-registries"
+    },
+    {
+        "JavaScript": {
+            "streamer": [
+                "service"
+            ],
+            "streamer-ui": [
+                "ui"
+            ]
+        },
+        "TypeScript": {
+            "streamer": [
+                "service"
+            ],
+            "streamer-ui": [
+                "ui"
+            ]
+        },
+        "URL": "https://github.com/Donders-Institute/streamer"
+    },
+    {
+        "JavaScript": {
+            "grin": [
+                "grin",
+                "wallet",
+                "wallet_private"
+            ],
+            "grin-js/webui": [
+                "webui"
+            ],
+            "grin-js/api": [
+                "apiv2"
+            ]
+        },
+        "Python": {
+            "grin-py": [
+                "auditor",
+                "grinstats",
+                "workerstats",
+                "poolstats",
+                "shareaggr",
+                "paymentestimator",
+                "blockwatcher",
+                "payment_api",
+                "apiv1"
+            ],
+            "grin": [
+                "grin",
+                "wallet",
+                "wallet_private"
+            ],
+            "grin-js/api": [
+                "apiv2"
+            ],
+            "rmq": [
+                "rmq"
+            ]
+        },
+        "TypeScript": {
+            "grin": [
+                "grin",
+                "wallet",
+                "wallet_private"
+            ],
+            "grin-js/api": [
+                "apiv2"
+            ]
+        },
+        "URL": "https://github.com/grin-pool/grin-pool"
+    },
+    {
+        "Python": {
+            "main_node": [
+                "main-node"
+            ],
+            "worker": [
+                "worker"
+            ],
+            "worker_service": [
+                "worker-service"
+            ]
+        },
+        "URL": "https://github.com/dpukhkaiev/BRISE2"
+    },
+    {
+        "Java": {
+            "game-service": [
+                "game"
+            ],
+            "player-service": [
+                "player"
+            ],
+            "auth-service": [
+                "auth"
+            ]
+        },
+        "URL": "https://github.com/OpenLiberty/liberty-bikes"
+    },
+    {
+        "JavaScript": {
+            "nodejs-service": [
+                "week-menu-api"
+            ],
+            "react-webapp": [
+                "react-webapp"
+            ]
+        },
+        "URL": "https://github.com/rodrigorodrigues/microservices-design-patterns"
+    },
+    {
+        "Python": {
+            "src/yelp-classify": [
+                "yelp-classify"
+            ],
+            "src/twitter-service": [
+                "twitter-service"
+            ],
+            "src/yelp-service": [
+                "yelp-service"
+            ],
+            "src/flask-app": [
+                "flask-app"
+            ],
+            "src/twitter-classify": [
+                "twitter-classify"
+            ]
+        },
+        "URL": "https://github.com/teffland/FoodborneNYC"
+    },
+    {
+        "C#": {
+            "src/Microservices": [
+                "identity-api",
+                "notification-grpc",
+                "auditlog-grpc",
+                "product-api",
+                "configuration-api",
+                "notification-api",
+                "notification-background",
+                "identity-grpc",
+                "auditlog-api",
+                "storage-api",
+                "webapi"
+            ],
+            "src/IdentityServer/OpenIddict": [
+                "identity-authserver"
+            ]
+        },
+        "URL": "https://github.com/phongnguyend/Practical.CleanArchitecture"
+    },
+    {
+        "JavaScript": {
+            "src/topicextraction": [
+                "TopicExtractionService"
+            ],
+            "src/mwc": [
+                "MediaWikiConnector"
+            ]
+        },
+        "Python": {
+            "src/sharing": [
+                "SharingService"
+            ],
+            "src/topicextraction": [
+                "TopicExtractionService"
+            ]
+        },
+        "URL": "https://github.com/FUB-HCC/IKON-backend"
+    },
+    {
+        "Java": {
+            "provider-service": [
+                "provider"
+            ],
+            "discovery-service": [
+                "discovery"
+            ],
+            "gateway-service": [
+                "gateway"
+            ],
+            "patient-service": [
+                "patient"
+            ],
+            "config-server": [
+                "config"
+            ]
+        },
+        "URL": "https://github.com/MuizMahdi/EHR-Route"
+    },
+    {
+        "Java": {
+            "ftgo-api-gateway": [
+                "ftgo-api-gateway"
+            ],
+            "ftgo-restaurant-service": [
+                "ftgo-restaurant-service"
+            ],
+            "ftgo-delivery-service": [
+                "ftgo-delivery-service"
+            ],
+            "ftgo-consumer-service": [
+                "ftgo-consumer-service"
+            ],
+            "ftgo-kitchen-service": [
+                "ftgo-kitchen-service"
+            ],
+            "ftgo-order-history-service": [
+                "ftgo-order-history-service"
+            ],
+            "ftgo-order-service": [
+                "ftgo-order-service"
+            ],
+            "ftgo-accounting-service": [
+                "ftgo-accounting-service"
+            ]
+        },
+        "URL": "https://github.com/microservices-patterns/ftgo-application"
+    },
+    {
+        "JavaScript": {
+            "exec-ui": [
+                "exec-ui"
+            ],
+            "exec-db": [
+                "exec-db-setup"
+            ]
+        },
+        "Java": {
+            "exec-api": [
+                "exec-api"
+            ],
+            "exec-analysis": [
+                "exec-analysis"
+            ]
+        },
+        "URL": "https://github.com/Hygieia/ExecDashboard"
+    },
+    {
+        "JavaScript": {
+            "tagger": [
+                "tagger_backend",
+                "tagger_client"
+            ],
+            "rcm": [
+                "rcm"
+            ],
+            "faceted_search": [
+                "faceted_search"
+            ]
+        },
+        "URL": "https://github.com/dgutman/webix_image_organizer"
+    },
+    {
+        "Python": {
+            "tools/integration": [
+                "integration-test",
+                "config-generator"
+            ],
+            "python/opentelemetry/auto_instrumentation": [
+                "py-opentelemetry-auto-otlp-client",
+                "py-opentelemetry-auto-otlp-server",
+                "py-opentelemetry-auto-collector-client",
+                "py-opentelemetry-auto-collector-server"
+            ],
+            "demo-client/otlp": [
+                "demo-client-otlp"
+            ],
+            "python/opentracing": [
+                "py-opentracing-server",
+                "py-opentracing-client"
+            ],
+            "python/opentelemetry/manual_instrumentation": [
+                "py-opentelemetry-manual-otlp-server",
+                "py-opentelemetry-manual-otlp-client"
+            ]
+        },
+        "Java": {
+            "java/otlp": [
+                "java-otlp-server",
+                "java-otlp-client"
+            ],
+            "java/client": [
+                "java-specialagent-client"
+            ],
+            "java/server": [
+                "java-specialagent-server"
+            ],
+            "java/microdonuts": [
+                "java-opentracing-server"
+            ]
+        },
+        "Go": {
+            "go/opentelemetry/collector/client": [
+                "go-opentelemetry-collector-client"
+            ],
+            "go/opentracing/server": [
+                "go-opentracing-server"
+            ],
+            "go/opentelemetry/otlp/client": [
+                "go-opentelemetry-otlp-client"
+            ],
+            "go/opentelemetry/otlp/server": [
+                "go-opentelemetry-otlp-server"
+            ],
+            "go/opentelemetry/collector/server": [
+                "go-opentelemetry-collector-server"
+            ],
+            "go/opentracing/client": [
+                "go-opentracing-client"
+            ]
+        },
+        "URL": "https://github.com/lightstep/opentelemetry-examples"
+    },
+    {
+        "Python": {
+            "django-notifier": [
+                "web_socket"
+            ],
+            "django-rest-swagger": [
+                "web_rest"
+            ]
+        },
+        "URL": "https://github.com/MathieuB1/KOREK"
+    },
+    {
+        "Python": {
+            "harvester": [
+                "harvester-worker",
+                "harvester-beat",
+                "harvester-monitor",
+                "harvester-api"
+            ],
+            "explorer-api": [
+                "explorer-api"
+            ]
+        },
+        "URL": "https://github.com/mvs-org/explorer"
+    },
+    {
+        "JavaScript": {
+            "rssreader": [
+                "rssreader"
+            ],
+            "coordinator": [
+                "coordinator"
+            ],
+            "frontend": [
+                "frontend"
+            ],
+            "tweets": [
+                "tweets"
+            ]
+        },
+        "URL": "https://github.com/cod1ng-earth/coding-earth"
+    },
+    {
+        "Java": {
+            "backend": [
+                "backend"
+            ],
+            "gateway": [
+                "gateway"
+            ],
+            "registry": [
+                "registry"
+            ],
+            "authserver": [
+                "auth"
+            ]
+        },
+        "URL": "https://github.com/flowant/website"
+    },
+    {
+        "Java": {
+            "config-server": [
+                "config-service"
+            ],
+            "search-service": [
+                "search-service"
+            ],
+            "zuul-api": [
+                "zuul-api"
+            ],
+            "donor-profile-service": [
+                "donor-profile-service"
+            ],
+            "login-service": [
+                "login-service"
+            ],
+            "recepient-profile-service": [
+                "recepient-profile-service"
+            ],
+            "eureka-server": [
+                "eureka-server"
+            ],
+            "reportservice": [
+                "report-service"
+            ],
+            "chat-service": [
+                "chat-service"
+            ]
+        },
+        "URL": "https://github.com/stackroute/ibm-wave7-lifeline"
+    },
+    {
+        "JavaScript": {
+            "verification_code": [
+                "verification_code"
+            ],
+            "user": [
+                "user"
+            ],
+            "api": [
+                "api"
+            ],
+            "admin": [
+                "admin"
+            ]
+        },
+        "TypeScript": {
+            "verification_code": [
+                "verification_code"
+            ],
+            "user": [
+                "user"
+            ],
+            "api": [
+                "api"
+            ],
+            "email": [
+                "email"
+            ]
+        },
+        "URL": "https://github.com/icebob/catalyst"
+    },
+    {
+        "Python": {
+            "celery-queue": [
+                "monitor",
+                "worker"
+            ],
+            "api": [
+                "web"
+            ]
+        },
+        "URL": "https://github.com/mattkohl/docker-flask-celery-redis"
+    },
+    {
+        "JavaScript": {
+            "interface": [
+                "yaba_interface"
+            ],
+            "visualization": [
+                "yaba_visualization"
+            ]
+        },
+        "Python": {
+            "app": [
+                "yaba_api"
+            ],
+            "client": [
+                "yaba_client"
+            ]
+        },
+        "URL": "https://github.com/PecanProject/BETYdb-YABA"
+    },
+    {
+        "JavaScript": {
+            "services/core": [
+                "core"
+            ],
+            "services/facade": [
+                "facade"
+            ],
+            "services/transaction": [
+                "transaction"
+            ],
+            "services/im": [
+                "im"
+            ],
+            "services/auth": [
+                "auth"
+            ]
+        },
+        "URL": "https://github.com/TibebeJS/masterlance"
+    },
+    {
+        "Python": {
+            "issuer_pipeline": [
+                "myorg-pipeline"
+            ],
+            "issuer_controller": [
+                "myorg-controller",
+                "caddyx"
+            ]
+        },
+        "URL": "https://github.com/bcgov/aries-vcr-issuer-controller"
+    },
+    {
+        "JavaScript": {
+            "comments-service": [
+                "app-comments"
+            ],
+            "notifications-service-node": [
+                "ws-notifications-service"
+            ],
+            "ui-redis-front-end/redis-front": [
+                "app-frontend"
+            ]
+        },
+        "Java": {
+            "sql-rest-api": [
+                "app-sql-rest-api"
+            ],
+            "caching-service": [
+                "app-caching"
+            ],
+            "streams-to-redisearch-service": [
+                "app-streams-to-redis-hashes"
+            ],
+            "streams-to-redisgraph-service": [
+                "app-streams-to-redisgraph"
+            ],
+            "db-to-streams-service": [
+                "app-db-to-streams"
+            ]
+        },
+        "URL": "https://github.com/tgrall/redis-microservices-demo"
+    },
+    {
+        "JavaScript": {
+            "services/notification": [
+                "notification"
+            ],
+            "services/events-management": [
+                "events-management"
+            ],
+            "services/user-management": [
+                "user-management"
+            ],
+            "services/authentication": [
+                "authentication"
+            ],
+            "services/articles-management": [
+                "articles-management"
+            ]
+        },
+        "URL": "https://github.com/rithinch/Event-Driven-Microservices-Sample"
+    },
+    {
+        "JavaScript": {
+            "test_suite": [
+                "test-service"
+            ],
+            "web_server": [
+                "resolver-web-server"
+            ],
+            "data_entry_server": [
+                "data-entry-server"
+            ]
+        },
+        "Python": {
+            "test_suite": [
+                "test-service"
+            ],
+            "web_server": [
+                "resolver-web-server"
+            ],
+            "data_entry_server": [
+                "data-entry-server"
+            ]
+        },
+        "URL": "https://github.com/gs1/GS1_DigitalLink_Resolver_CE"
+    },
+    {
+        "Java": {
+            "policy-management-backend": [
+                "policy-management-backend"
+            ],
+            "spring-boot-admin": [
+                "spring-boot-admin"
+            ],
+            "customer-management-backend": [
+                "customer-management-backend"
+            ],
+            "customer-self-service-backend": [
+                "customer-self-service-backend"
+            ],
+            "customer-core": [
+                "customer-core"
+            ]
+        },
+        "JavaScript": {
+            "customer-self-service-frontend": [
+                "customer-self-service-frontend"
+            ],
+            "customer-management-frontend": [
+                "customer-management-frontend"
+            ],
+            "policy-management-frontend": [
+                "policy-management-frontend"
+            ],
+            "risk-management-server": [
+                "risk-management-server"
+            ]
+        },
+        "URL": "https://github.com/Microservice-API-Patterns/LakesideMutual"
+    },
+    {
+        "Java": {
+            "product-service": [
+                "mn-product-service"
+            ],
+            "documents-service": [
+                "mn-documents-service"
+            ],
+            "agent-portal-gateway": [
+                "mn-agent-portal-gateway"
+            ],
+            "dashboard-service": [
+                "mn-dashboard-service"
+            ],
+            "payment-service": [
+                "mn-payment-service"
+            ],
+            "auth-service": [
+                "mn-auth-service"
+            ],
+            "pricing-service": [
+                "mn-pricing-service"
+            ],
+            "chat-service": [
+                "mn-chat-service"
+            ],
+            "policy-search-service": [
+                "mn-policy-search-service"
+            ],
+            "policy-service": [
+                "mn-policy-service"
+            ]
+        },
+        "URL": "https://github.com/asc-lab/micronaut-microservices-poc"
+    },
+    {
+        "Java": {
+            "src/cartservice": [
+                "cartservice"
+            ],
+            "src/productservice": [
+                "productservice"
+            ],
+            "src/frontend": [
+                "frontend"
+            ],
+            "src/checkoutservice": [
+                "checkoutservice"
+            ]
+        },
+        "URL": "https://github.com/aliyun/alibabacloud-microservice-demo"
+    },
+    {
+        "C#": {
+            "src/InvoiceService": [
+                "invoiceservice"
+            ],
+            "src/WebApp": [
+                "webapp"
+            ],
+            "src/VehicleManagementAPI": [
+                "vehiclemanagementapi"
+            ],
+            "src/CustomerManagementAPI": [
+                "customermanagementapi"
+            ],
+            "src/AuditlogService": [
+                "auditlogservice"
+            ],
+            "src/WorkshopManagementEventHandler": [
+                "workshopmanagementeventhandler"
+            ],
+            "src/NotificationService": [
+                "notificationservice"
+            ],
+            "src/WorkshopManagementAPI": [
+                "workshopmanagementapi"
+            ],
+            "src/TimeService": [
+                "timeservice"
+            ]
+        },
+        "URL": "https://github.com/EdwinVW/pitstop"
+    },
+    {
+        "Java": {
+            "services/mod": [
+                "mod"
+            ],
+            "services/parser": [
+                "parser"
+            ]
+        },
+        "JavaScript": {
+            "services/add": [
+                "add"
+            ],
+            "services/pow": [
+                "pow"
+            ]
+        },
+        "URL": "https://github.com/nquocnghia/microcalc"
+    },
+    {
+        "JavaScript": {
+            "frontend": [
+                "nextjs"
+            ],
+            "api-node": [
+                "api-node"
+            ]
+        },
+        "URL": "https://github.com/javieroc/docker-microservices"
+    },
+    {
+        "TypeScript": {
+            "media-service": [
+                "media-service"
+            ],
+            "api": [
+                "api"
+            ],
+            "user-management-service": [
+                "user-management-service"
+            ]
+        },
+        "URL": "https://github.com/dms98br/nest-microservices"
+    },
+    {
+        "Ruby": {
+            "parsers/package-tracking": [
+                "parser_package_tracking"
+            ],
+            "viewers/package-tracking": [
+                "viewer_package_tracking"
+            ]
+        },
+        "URL": "https://github.com/Phyks/medonay"
+    },
+    {
+        "JavaScript": {
+            "backend/api": [
+                "api"
+            ],
+            "frontend/landing": [
+                "landing"
+            ],
+            "frontend/app/web": [
+                "web"
+            ]
+        },
+        "URL": "https://github.com/atulmy/fullstack-javascript-architecture"
+    }
+]
