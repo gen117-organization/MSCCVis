@@ -14,6 +14,7 @@ from config import ANTLR_LANGUAGE, SEARCH_DEPTH, TARGET_PROGRAMING_LANGUAGES
 
 
 CCFINDERSW_JAR = project_root / "lib/CCFinderSW-1.0/lib/CCFinderSW-1.0.jar"
+CCFINDERSWPARSER = project_root / "lib/ccfindersw-parser/target/release/ccfindersw-parser"
 
 
 def get_exts(workdir: Path) -> dict:
@@ -50,7 +51,12 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
             cmd = ["java", "-jar", "-Xss128m", str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-antlr", "|".join(exts), "-w", "2", "-ccfsw", "set"]
         else:
             cmd = ["java", "-jar" ,str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-w", "2", "-ccfsw", "set"]
-        print(cmd)
+        subprocess.run(cmd, check=True)
+        
+        json_dest_dir = project_root / "dest/codeclones" / name / commit_hash
+        json_dest_dir.mkdir(parents=True, exist_ok=True)
+        json_dest_file = json_dest_dir / f"{language}.json"
+        cmd = [str(CCFINDERSWPARSER), "-i", str(f"{dest_file}_ccfsw.txt"), "-o", str(json_dest_file)]
         subprocess.run(cmd, check=True)
     except Exception as e:
         print("CCFinderの実行に失敗しました．")
@@ -157,7 +163,6 @@ def analyze_all_commit(url: str, languages: list[str], codebases: set[str]):
             count += 1
             for parent in commit.parents:
                 queue.append(parent.hexsha)
-                print(parent.hexsha)
     except Exception as e:
         print(traceback.format_exc())
         print(e)
