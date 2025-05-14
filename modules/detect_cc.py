@@ -10,11 +10,7 @@ import traceback
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 from modules.github_linguist import run_github_linguist
-from config import ANTLR_LANGUAGE, SEARCH_DEPTH, TARGET_PROGRAMING_LANGUAGES
-
-
-CCFINDERSW_JAR = project_root / "lib/CCFinderSW-1.0/lib/CCFinderSW-1.0.jar"
-CCFINDERSWPARSER = project_root / "lib/ccfindersw-parser/target/release/ccfindersw-parser"
+from config import ANTLR_LANGUAGE, SEARCH_DEPTH, TARGET_PROGRAMING_LANGUAGES, CCFINDERSW_JAR, CCFINDERSWPARSER
 
 
 def get_exts(workdir: Path) -> dict:

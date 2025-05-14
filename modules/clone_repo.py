@@ -3,9 +3,10 @@ from pathlib import Path
 import os
 import json
 import git
+import shutil
 
 # プロジェクトのルートディレクトリを取得
-project_dir = Path(__file__).parent.parent
+project_root = Path(__file__).parent.parent
 
 
 def clone_repo(url: str):
@@ -19,9 +20,10 @@ def clone_repo(url: str):
     name = url.split('/')[-2] + '.' + url.split('/')[-1]
     print(f"Cloning {url}...")
     # クローン先のディレクトリを作成
-    os.makedirs(project_dir / "dest/projects", exist_ok=True)
+    os.makedirs(project_root / "dest/projects", exist_ok=True)
     # リポジトリをクローン
-    git.Repo.clone_from(url, project_dir / "dest/projects" / name)
+    shutil.rmtree(project_root / "dest/projects" / name, ignore_errors=True)
+    git.Repo.clone_from(url, project_root / "dest/projects" / name)
 
 
 def main():
@@ -29,7 +31,7 @@ def main():
     メイン関数：選択されたプロジェクトのリストを読み込み、それぞれをクローン
     """
     # 選択されたプロジェクトの情報をJSONファイルから読み込み
-    datset_dir = project_dir / "dest/results/selected_projects.json"
+    datset_dir = project_root / "dest/selected_projects.json"
     with open(datset_dir, "r") as f:
         selected_projects = json.load(f)
 

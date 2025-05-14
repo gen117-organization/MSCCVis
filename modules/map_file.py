@@ -6,7 +6,7 @@ import sys
 # プロジェクトのルートディレクトリを設定
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-from config import TARGET_PROGRAMING_LANGUAGES
+from config import TARGET_PROGRAMING_LANGUAGES, BASED_DATASET
 
 def parse_uSs(uSs: str) -> list[dict]:
     """
@@ -178,7 +178,7 @@ def main():
     各リポジトリに対してファイルマッピングを作成し、結果をJSONファイルとして保存します。
     """
     # データセットファイルを開く
-    dataset_file = project_root / "Filtered.csv"
+    dataset_file = BASED_DATASET
     with open(dataset_file, "r") as f:
         reader = csv.DictReader(f, delimiter=';')
         # 各行（リポジトリ）を処理

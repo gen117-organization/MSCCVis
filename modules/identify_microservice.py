@@ -12,19 +12,22 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 from lib.CLAIM.src.utils.print_utils import print_progress, print_major_step, print_info
 from lib.CLAIM.src.utils.repo import clear_repo
-from github_linguist import run_github_linguist
+from modules.github_linguist import run_github_linguist
+from config import BASED_DATASET
 
 
 def analyze_repo_by_linguist(workdir: str, name: str):
     output_json = run_github_linguist(workdir)
 
-    result_file = project_root / "dest/github_linguist" / f"{name}.json"
+    result_dir = project_root / "dest/github_linguist"
+    result_dir.mkdir(parents=True, exist_ok=True)
+    result_file = result_dir / f"{name}.json"
     with open(result_file, 'w') as result_output:
         result_output.write(json.dumps(output_json, indent=4))
 
 
 def analyze_dataset():
-    dataset_file = project_root / "Filtered.csv"
+    dataset_file = BASED_DATASET
 
     total_repos = -1
     for _ in open(dataset_file):
