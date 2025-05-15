@@ -108,7 +108,7 @@ def analyze_repo(project: dict):
         count += 1
     for language in languages:
         result = []
-        codeclone_dir = project_dir / "dest/codeclones" / name
+        codeclone_dir = project_root / "dest/codeclones" / name
         with open(codeclone_dir/hcommit.hexsha/f"{language}.json") as f:
             hcommit_cc = json.load(f)
         temp_dir = project_root / "dest/temp" / name
@@ -129,6 +129,7 @@ def analyze_repo(project: dict):
 if __name__ == "__main__":
     project = \
     """
+    {
         "Java": {
             "ts-food-service": [
                 "ts-food-service"
