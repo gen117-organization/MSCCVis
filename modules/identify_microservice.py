@@ -6,10 +6,11 @@ import git  # GitPython
 import sys
 from pathlib import Path
 
-import modules.CLAIM.dc_choice as dc_choice
-import modules.CLAIM.ms_detection as ms_detection
+
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
+import modules.CLAIM.dc_choice as dc_choice
+import modules.CLAIM.ms_detection as ms_detection
 from lib.CLAIM.src.utils.print_utils import print_progress, print_major_step, print_info
 from lib.CLAIM.src.utils.repo import clear_repo
 from modules.github_linguist import run_github_linguist
@@ -26,6 +27,26 @@ def analyze_repo_by_linguist(workdir: str, name: str):
         result_output.write(json.dumps(output_json, indent=4))
 
 
+def analyze_repo_by_clim(url: str, name: str, workdir: str):
+    try:
+        res = dc_choice.analyze_repo(name, workdir)
+        dc_choice.print_results(url, res)
+        dc_choice.save_results(url, res)
+        res = ms_detection.analyze_repo(name, workdir)
+        ms_detection.print_results(url, res)
+        ms_detection.save_results(url, res)
+    except Exception as e:
+        raise e
+
+
+def analyze_repo(url: str, name: str, workdir: str):
+    try:
+        analyze_repo_by_linguist(workdir, name)
+        analyze_repo_by_clim(url, name, workdir)
+    except Exception as e:
+        raise e
+
+
 def analyze_dataset():
     dataset_file = BASED_DATASET
 
@@ -37,19 +58,12 @@ def analyze_dataset():
         repos = csv.DictReader(dataset, delimiter=';')
         for index, repo in enumerate(repos):
             print_progress(f"Processing {index + 1}/{total_repos}")
-
             url = repo["URL"]
             name = url.split('/')[-2] + '.' + url.split('/')[-1]
             workdir = str(project_root / "dest/temp/clones" / name)
             try:
-                git.Repo.clone_from(url, workdir, depth=1)  # GitPython: useful to work with repo
-                analyze_repo_by_linguist(workdir, name)
-                res = dc_choice.analyze_repo(url)
-                dc_choice.print_results(url, res)
-                dc_choice.save_results(url, res)
-                res = ms_detection.analyze_repo(url)
-                ms_detection.print_results(url, res)
-                ms_detection.save_results(url, res)
+                git.Repo.clone_from(url, workdir, depth=1)
+                analyze_repo(url, name, workdir)
             except Exception as e:
                 print(traceback.format_exc())
                 continue

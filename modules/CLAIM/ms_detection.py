@@ -20,7 +20,7 @@ import dateutil
 import git  # GitPython
 from pydriller import Repository  # PyDriller
 
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 from lib.CLAIM.src.claim import (dc_collect_services, process_services, _locate_dockerfiles, _container_to_microservice,
                        Microservice, _groups_dockerfiles)
@@ -30,18 +30,16 @@ from lib.CLAIM.src.utils.print_utils import printable_time, print_major_step
 KEYS = ["CHUNKS_N", "CHUNKS_H", "uSs", "CONTAINERS", "DFs"]
 
 
-def analyze_repo(url: str) -> list[dict[str, int | list[str] | str]]:
+def analyze_repo(name: str, workdir: str) -> list[dict[str, int | list[str] | str]]:
     """
     Run the analysis of a single repo
 
-    :param url: url of the repository
+    :param name: name of the repository
+    :param workdir: path to the working directory of the repository
     :return: list of chunks of consecutive commits with same detected microservices and unmatched containers and
     dockerfiles
     """
-    name = url.split('/')[-2] + '.' + url.split('/')[-1]
-    print_major_step(f'## Start repo analysis ({name}) [{url}]')
-    workdir = str(project_root / 'dest/temp/clones' / name)
-
+    print_major_step(f'## Start repo analysis ({name})')
     results: list[dict[str, int | list[str] | str]] = []
 
     try:
@@ -211,7 +209,9 @@ def save_results(url: str, chunks: list[dict[str, int | list[str] | str]], group
     """
     name = url.split("/")[-2] + "." + url.split("/")[-1]
 
-    results_file = project_root / f'dest/ms_detection/{name}.csv'
+    result_dir = project_root / "dest/ms_detection"
+    result_dir.mkdir(parents=True, exist_ok=True)
+    results_file = result_dir / f"{name}.csv"
 
     with open(results_file, 'w+', newline='') as results_output:
         if not group:

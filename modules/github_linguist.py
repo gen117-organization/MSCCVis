@@ -1,5 +1,12 @@
 import subprocess
 import json
+import os
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+from config import TARGET_PROGRAMING_LANGUAGES
 
 
 def run_github_linguist(target: str) -> dict:
@@ -16,3 +23,18 @@ def run_github_linguist(target: str) -> dict:
     cmd = ["github-linguist", target, "--json", "--breakdown"]
     output = str(subprocess.run(cmd, capture_output=True, text=True).stdout).replace("\\n", "")
     return json.loads(output)
+
+
+def get_exts(workdir: Path) -> dict:
+    result = {}
+    github_linguist_result = run_github_linguist(str(workdir))
+    for language in github_linguist_result.keys():
+        if language not in TARGET_PROGRAMING_LANGUAGES:
+            continue
+        exts = set()
+        for file in github_linguist_result[language]["files"]:
+            ext = os.path.splitext(file)[1].replace(".", "")
+            if ext != "":
+                exts.add(ext)
+        result[language] = tuple(exts)
+    return result

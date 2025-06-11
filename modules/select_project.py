@@ -1,9 +1,13 @@
 import csv
 import json
 from pathlib import Path
+import sys
 
 # プロジェクトのルートディレクトリを設定
 project_root = Path(__file__).parent.parent
+sys.path.append(str(project_root))
+
+from config import BASED_DATASET
 
 
 def check_project(url: str) -> tuple[bool, dict]:
@@ -61,9 +65,9 @@ def check_project(url: str) -> tuple[bool, dict]:
         if len(target_languages) == 0:
             return False, {}
         # 結果の構造を作成
-        result = {}
+        result = {"languages": {}}
         for language in target_languages:
-            result[language] = {}
+            result["languages"][language] = {}
             # 各マイクロサービスを処理
             for name in map_data.keys():
                 service = map_data[name]
@@ -82,9 +86,9 @@ def check_project(url: str) -> tuple[bool, dict]:
                 for l in service["files"].keys():
                     # 対象言語の場合のみ処理
                     if l == language:
-                        if context not in result[language]:
-                            result[language][context] = []
-                        result[language][context].append(name)
+                        if context not in result["languages"][language]:
+                            result["languages"][language][context] = []
+                        result["languages"][language][context].append(name)
         return True, result
                     
 
@@ -95,7 +99,7 @@ def main():
     条件を満たすプロジェクトを選択し、結果をJSONファイルとして保存します。
     """
     # データセットファイルを開く
-    dataset_file = project_root / "Filtered.csv"
+    dataset_file = BASED_DATASET
     count = 0
     output = []
     # 各行（リポジトリ）を処理

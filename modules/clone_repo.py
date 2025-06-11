@@ -1,7 +1,6 @@
 # 必要なライブラリをインポート
 from pathlib import Path
 import os
-import json
 import git
 import shutil
 
@@ -24,22 +23,3 @@ def clone_repo(url: str):
     # リポジトリをクローン
     shutil.rmtree(project_root / "dest/projects" / name, ignore_errors=True)
     git.Repo.clone_from(url, project_root / "dest/projects" / name)
-
-
-def main():
-    """
-    メイン関数：選択されたプロジェクトのリストを読み込み、それぞれをクローン
-    """
-    # 選択されたプロジェクトの情報をJSONファイルから読み込み
-    datset_dir = project_root / "dest/selected_projects.json"
-    with open(datset_dir, "r") as f:
-        selected_projects = json.load(f)
-
-    # 各プロジェクトをクローン
-    for project in selected_projects:
-        url = project["URL"]
-        clone_repo(url)
-
-
-if __name__ == "__main__":
-    main()

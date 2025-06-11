@@ -21,7 +21,7 @@ import dateutil
 import git  # GitPython
 from pydriller import Repository  # PyDriller
 
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent.parent.parent
 sys.path.append(str(project_root))
 from lib.CLAIM.src.claim import locate_files, choose_dc, DOCKER_COMPOSE_NAMES
 from lib.CLAIM.src.config import COMMIT_DEADLINE
@@ -31,21 +31,18 @@ from lib.CLAIM.src.utils.print_utils import print_major_step, print_info, printa
 KEYS = ["CHUNKS_N", "CHUNKS_H", "DCFs", "DC"]
 
 
-def analyze_repo(url: str) -> list[dict[str, int | list[str] | str]]:
+def analyze_repo(name: str, workdir: str) -> list[dict[str, int | list[str] | str]]:
     """
     Run the analysis of a single repo
 
-    :param url: url of the repository
+    :param name: name of the repository
+    :param workdir: path to the working directory of the repository
     :return: list of chunks of consecutive commits with same docker-compose files
     """
-    name = url.split('/')[-2] + '.' + url.split('/')[-1]
-    print_major_step(f'## Start repo analysis ({name}) [{url}]')
-    workdir = str(project_root / 'dest/temp/clones' / name)
-
+    print_major_step(f'## Start repo analysis ({name})')
     results: list[dict[str, int | list[str] | str]] = []
 
     try:
-        print_info('   Cloning repo')
         repository = Repository(workdir)  # Pydriller: useful to traverse commits history
         git_repo = git.Repo(workdir)  # GitPython: useful to work with repo
 
@@ -149,7 +146,9 @@ def save_results(url: str, chunks: list[dict[str, int | list[str] | str]], group
     """
     name = url.split("/")[-2] + "." + url.split("/")[-1]
 
-    results_file = project_root / f'dest/dc_choice/{name}.csv'
+    result_dir = project_root / "dest/dc_choice"
+    result_dir.mkdir(parents=True, exist_ok=True)
+    results_file = result_dir / f"{name}.csv"
 
     with open(results_file, 'w+', newline='') as results_output:
 
