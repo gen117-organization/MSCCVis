@@ -51,9 +51,12 @@ def find_moving_lines(commit: git.Commit) -> tuple[list[str], list[str]]:
                         new_line_count += 1
                 inserted_lines = []
                 removed_lines = []
+                modified_lines = []
                 for added_line in added_lines:
                     if added_line not in deleted_lines:
                         inserted_lines.append(added_line)
+                    else:
+                        modified_lines.append(added_line)
                 for deleted_line in deleted_lines:
                     if deleted_line not in added_lines:
                         removed_lines.append(deleted_line)
@@ -61,7 +64,8 @@ def find_moving_lines(commit: git.Commit) -> tuple[list[str], list[str]]:
                     "child_path": child_path,
                     "parent_path": parent_path,
                     "inserted_lines": inserted_lines,
-                    "removed_lines": removed_lines
+                    "removed_lines": removed_lines,
+                    "modified_lines": modified_lines
                 })
         if len(output_result) > 0:
             dest_dir = project_root / "dest/moving_lines"
