@@ -1,3 +1,8 @@
 /.venv/
 /dest/
 /sketch/
+/__pycache__/
+/modules/__pycache__/
+/modules/CLAIM/__pycache__/
+/lib/CLAIM/src/__pycache__/
+/lib/CLAIM/src/utils/__pycache__/

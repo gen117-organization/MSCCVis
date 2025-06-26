@@ -6,7 +6,8 @@ sys.path.append(str(project_root))
 
 import modules.clone_repo
 import modules.collect_datas
-
+import modules.analyze_cc
+import modules.identify_microservice
 
 ts_repo_dict = {
     "languages": {
@@ -131,5 +132,10 @@ ts_repo_dict = {
 
 
 if __name__ == "__main__":
-    modules.clone_repo.clone_repo(ts_repo_dict["URL"])
+    url = ts_repo_dict["URL"]
+    name = url.split("/")[-2] + "." + url.split("/")[-1]
+    workdir = project_root / "dest/projects" / name
+    modules.clone_repo.clone_repo(url)
+    modules.identify_microservice.analyze_repo(url, name, str(workdir))
     modules.collect_datas.collect_datas_of_repo(ts_repo_dict)
+    #modules.analyze_cc.analyze_repo(ts_repo_dict)

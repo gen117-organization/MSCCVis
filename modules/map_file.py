@@ -2,6 +2,7 @@ from pathlib import Path
 import csv
 import json
 import sys
+import os
 # プロジェクトのルートディレクトリを設定
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
@@ -37,11 +38,14 @@ def map_files(url: str) -> dict:
             row = next(reader)
             uSs = claim_parser.parse_uSs(row["uSs"])
             containers = claim_parser.parse_containers(row["CONTAINERS"])
+        os.remove(target)
+        os.remove(project_root / "dest/dc_choice" / "f{name}.csv")
 
         # GitHub Linguistの結果を読み込む
         target = project_root / "dest/github_linguist" / f"{name}.json"
         with open(target, "r") as f:
             linguist_result = json.load(f)
+        os.remove(target)
 
         result = {}
         # マイクロサービスの情報を処理

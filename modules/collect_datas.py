@@ -8,7 +8,7 @@ import json
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 from modules.github_linguist import get_exts
-from config import ANTLR_LANGUAGE, SEARCH_DEPTH, CCFINDERSW_JAR, CCFINDERSWPARSER
+from config import ANTLR_LANGUAGE, CCFINDERSW_JAR, CCFINDERSWPARSER
 
 
 def parse_diff_str(diff: str):
@@ -25,7 +25,7 @@ def parse_diff_str(diff: str):
     return hunk, old_line_count, new_line_count
 
 
-def find_moving_lines(commit: git.Commit) -> tuple[list[str], list[str]]:
+def find_moving_lines(commit: git.Commit, name: str) -> tuple[list[str], list[str]]:
     for parent in commit.parents:
         diffs = parent.diff(commit, create_patch=True)
         output_result = []
@@ -37,38 +37,38 @@ def find_moving_lines(commit: git.Commit) -> tuple[list[str], list[str]]:
                 if result is None:
                     continue
                 hunk, old_line_count, new_line_count = result
-                added_lines = []
-                deleted_lines = []
+                temp_added_lines = []
+                temp_deleted_lines = []
                 for line in hunk:
                     if line.startswith("+"):
-                        added_lines.append(new_line_count)
+                        temp_added_lines.append(new_line_count)
                         new_line_count += 1
                     elif line.startswith("-"):
-                        deleted_lines.append(old_line_count)
+                        temp_deleted_lines.append(old_line_count)
                         old_line_count += 1
                     else:
                         old_line_count += 1
                         new_line_count += 1
                 inserted_lines = []
-                removed_lines = []
+                deleted_lines = []
                 modified_lines = []
-                for added_line in added_lines:
+                for added_line in temp_added_lines:
                     if added_line not in deleted_lines:
                         inserted_lines.append(added_line)
                     else:
                         modified_lines.append(added_line)
-                for deleted_line in deleted_lines:
-                    if deleted_line not in added_lines:
-                        removed_lines.append(deleted_line)
+                for deleted_line in temp_deleted_lines:
+                    if deleted_line not in temp_added_lines:
+                        deleted_lines.append(deleted_line)
                 output_result.append({
                     "child_path": child_path,
                     "parent_path": parent_path,
                     "inserted_lines": inserted_lines,
-                    "removed_lines": removed_lines,
+                    "deleted_lines": deleted_lines,
                     "modified_lines": modified_lines
                 })
         if len(output_result) > 0:
-            dest_dir = project_root / "dest/moving_lines"
+            dest_dir = project_root / "dest/moving_lines" / name
             dest_dir.mkdir(parents=True, exist_ok=True)
             dest_file = dest_dir / f"{parent.hexsha}-{commit.hexsha}.json"
             with open(dest_file, "w") as f:
@@ -123,9 +123,8 @@ def collect_datas_of_repo(project: dict):
     try:
         finished_commits = []
         queue = [hcommit.hexsha]
-        count = 0
         # コミットを幅優先探索
-        while (count <= SEARCH_DEPTH):
+        while (len(queue) > 0):
             commit_hash = queue.pop(0)
             commit = git_repo.commit(commit_hash)
             if commit_hash in finished_commits:
@@ -133,13 +132,14 @@ def collect_datas_of_repo(project: dict):
             print(f"checkout to {commit_hash}...")
             git_repo.git.checkout(commit_hash)
             # 修正を保存
-            find_moving_lines(commit)
+            find_moving_lines(commit, name)
             # コードクローン検出
             for language in languages:
                 detect_cc(project_dir, name, language, commit_hash, exts[language])
             finished_commits.append(commit_hash)
-            count += 1
             for parent in commit.parents:
+                if parent.hexsha in finished_commits:
+                    continue
                 queue.append(parent.hexsha)
     except Exception as e:
         print(traceback.format_exc())
