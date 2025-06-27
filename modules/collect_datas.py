@@ -33,8 +33,13 @@ def find_moving_lines(commit: git.Commit, name: str) -> tuple[list[str], list[st
             if diff.diff:
                 child_path = diff.b_path
                 parent_path = diff.a_path
-                result = parse_diff_str(diff.diff.decode("utf-8"))
-                if result is None:
+                try:
+                    result = parse_diff_str(diff.diff.decode("utf-8"))
+                    if result is None:
+                        continue
+                except UnicodeDecodeError:
+                    print(f"diff.diff.decode('utf-8')のデコードに失敗しました．")
+                    print(diff.diff)
                     continue
                 hunk, old_line_count, new_line_count = result
                 temp_added_lines = []
