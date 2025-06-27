@@ -121,11 +121,11 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
         has_moved_lines = False
         child_clone_id = child_clone_set["clone_id"]
         for index, child_fragment in enumerate(child_clone_set["fragments"]):
+            child_fragment_path = child_filemap.get_file_path(child_fragment["file_id"])
             # 行の移動が発生していないフラグメントは対応する必要がないのでスルー
-            if not corresponded_lines.is_file_having_moved_lines(child_fragment["file_path"]):
+            if not corresponded_lines.is_file_having_moved_lines(child_fragment_path):
                 continue
             has_moved_lines = True
-            child_fragment_path = child_filemap.get_file_path(child_fragment["file_id"])
             child_start_line = child_fragment["start_line"]
             child_end_line = child_fragment["end_line"]
             # 親コミットのクローンの開始行と終了行を予測
