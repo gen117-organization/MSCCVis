@@ -135,7 +135,7 @@ if __name__ == "__main__":
     url = ts_repo_dict["URL"]
     name = url.split("/")[-2] + "." + url.split("/")[-1]
     workdir = project_root / "dest/projects" / name
-    modules.clone_repo.clone_repo(url)
-    modules.identify_microservice.analyze_repo(url, name, str(workdir))
-    modules.collect_datas.collect_datas_of_repo(ts_repo_dict)
-    #modules.analyze_cc.analyze_repo(ts_repo_dict)
+    # modules.clone_repo.clone_repo(url)
+    # modules.identify_microservice.analyze_repo(url, name, str(workdir))
+    # modules.collect_datas.collect_datas_of_repo(ts_repo_dict)
+    modules.analyze_cc.analyze_repo(ts_repo_dict)
