@@ -134,6 +134,12 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
             # 親コミットのクローンの開始行と終了行を予測
             predict_parent_start_line = corresponded_lines.get_parent_line(child_fragment_path, child_start_line)
             predict_parent_end_line = corresponded_lines.get_parent_line(child_fragment_path, child_end_line)
+            # 無いときは確実に新規追加フラグメントなのでNoneにする．
+            if child_fragment_path not in parent_clone_map.keys():
+                if child_clone_id not in corresponded_fragments.keys():
+                    corresponded_fragments[child_clone_id] = {}
+                corresponded_fragments[child_clone_id][index] = None
+                continue
             for parent_file_fragment in parent_clone_map[child_fragment_path]:
                 # 親コミットのクローンの開始行と終了行が予測と一致しているものは確定
                 if (parent_file_fragment["start_line"] == predict_parent_start_line) and (parent_file_fragment["end_line"] == predict_parent_end_line):
@@ -218,7 +224,7 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                     if (predict_child_start_line == child_start_line) and (predict_child_end_line == child_end_line):
                         if child_clone_id not in corresponded_fragments.keys():
                             corresponded_fragments[child_clone_id] = {}
-                        corresponded_fragments[child_clone_id][index] = (parent_fragment_path, parent_file_fragment["index"])
+                        corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
                         break
     return corresponded_fragments
 
