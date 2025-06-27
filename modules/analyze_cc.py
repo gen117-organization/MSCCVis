@@ -96,6 +96,7 @@ class CorrespondedLines:
                 result[child_path] = {
                     "lines": lines
                 }
+        return result
 
 
 def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clonesets: list[dict], parent_clonesets: list[dict], child_filemap: FileMapper, parent_filemap: FileMapper):
