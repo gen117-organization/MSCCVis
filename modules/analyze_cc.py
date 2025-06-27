@@ -123,6 +123,8 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
         child_clone_id = child_clone_set["clone_id"]
         for index, child_fragment in enumerate(child_clone_set["fragments"]):
             child_fragment_path = child_filemap.get_file_path(child_fragment["file_id"])
+            # ファイル名一致のパターンしか対応しないため，pathは一緒であるが一応明示しておく．
+            parent_fragment_path = child_fragment_path
             # 行の移動が発生していないフラグメントは対応する必要がないのでスルー
             if not corresponded_lines.is_file_having_moved_lines(child_fragment_path):
                 continue
@@ -197,7 +199,7 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                 if (parent_file_fragment["end_line"] - parent_file_fragment["start_line"] + 1) > (child_end_line - child_start_line + 1):
                     predict_child_start_line = -1
                     for l in range(parent_file_fragment["start_line"], parent_file_fragment["end_line"]+1):
-                        if corresponded_lines.is_line_deleted(parent_file_fragment["path"], l):
+                        if corresponded_lines.is_line_deleted(parent_fragment_path, l):
                             continue
                         else:
                             predict_child_start_line = l
@@ -206,7 +208,7 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                         continue
                     predict_child_end_line = -1
                     for l in reversed(range(parent_file_fragment["start_line"], parent_file_fragment["end_line"]+1)):
-                        if corresponded_lines.is_line_deleted(parent_file_fragment["path"], l):
+                        if corresponded_lines.is_line_deleted(parent_fragment_path, l):
                             continue
                         else:
                             predict_child_end_line = l
@@ -216,7 +218,7 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                     if (predict_child_start_line == child_start_line) and (predict_child_end_line == child_end_line):
                         if child_clone_id not in corresponded_fragments.keys():
                             corresponded_fragments[child_clone_id] = {}
-                        corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
+                        corresponded_fragments[child_clone_id][index] = (parent_fragment_path, parent_file_fragment["index"])
                         break
     return corresponded_fragments
 
