@@ -1,5 +1,4 @@
 import sys
-import csv
 from pathlib import Path
 import json
 
@@ -7,7 +6,6 @@ import git
 
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-import modules.claim_parser as claim_parser
 from modules.util import FileMapper
 
 
@@ -87,10 +85,10 @@ class CorrespondedLines:
                         else:
                             lines[l] = parent_line
                             parent_line += 1
-                elif len(diff["removed_lines"]) > 0:
+                elif len(diff["deleted_lines"]) > 0:
                     child_line = 1
                     for l in range(1, parent_file_loc+1):
-                        if l not in diff["removed_lines"]:
+                        if l not in diff["deleted_lines"]:
                             lines[child_line] = l
                             child_line += 1
                 else:
