@@ -270,6 +270,7 @@ def analyze_repo(project: dict):
             commit = queue.pop(0)
             if commit.hexsha in finished_commits:
                 continue
+            analyze_commit(name, language, commit)
             for parent in commit.parents:
                 if parent.hexsha in finished_commits:
                     continue
