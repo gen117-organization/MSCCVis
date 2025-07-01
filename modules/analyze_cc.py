@@ -36,6 +36,22 @@ class CorrespondedLines:
                 return True
         return False
     
+    def is_line_added(self, child_path: str, child_line: int):
+        for diff in self.line_diffs:
+            if diff["child_path"] != child_path:
+                continue
+            if child_line in diff["inserted_lines"]:
+                return True
+        return False
+    
+    def is_line_modified(self, path: str, line: int):
+        for diff in self.line_diffs:
+            if diff["child_path"] != path:
+                continue
+            if line in diff["modified_lines"]:
+                return True
+        return False
+    
     def get_fragment_loc_of_parent(self, child_path: str, child_start_line: int, child_end_line: int):
         if child_path not in self.corresponded_lines.keys():
             return child_end_line - child_start_line + 1
@@ -74,7 +90,17 @@ class CorrespondedLines:
                         if result[child_path]["lines"][child_line] in diff["deleted_lines"]:
                             for l in range(child_line, child_file_loc):
                                 result[child_path]["lines"][l] = result[child_path]["lines"][l+1]
-                            result[child_path]["lines"][child_file_loc] = parent_file_loc
+                            if child_file_loc+1 in result[child_path]["lines"].keys():
+                                result[child_path]["lines"][child_file_loc] = result[child_path]["lines"][child_file_loc+1]
+                                l = child_file_loc+1
+                                while True:
+                                    if l in result[child_path]["lines"].keys():
+                                        result[child_path]["lines"].pop(l)
+                                        l += 1
+                                    else:
+                                        break
+                            else:
+                                result[child_path]["lines"][child_file_loc] = child_file_loc
             else:   
                 lines = {}
                 if len(diff["inserted_lines"]) > 0:
@@ -91,6 +117,10 @@ class CorrespondedLines:
                         if l not in diff["deleted_lines"]:
                             lines[child_line] = l
                             child_line += 1
+                elif len(diff["modified_lines"]) > 0:
+                    child_line = 1
+                    for l in range(1, parent_file_loc+1):
+                        lines[child_line] = parent_line
                 else:
                     continue
                 result[child_path] = {
@@ -98,28 +128,31 @@ class CorrespondedLines:
                 }
         return result
 
+def get_clone_map(clonesets: list[dict], filemap: FileMapper):
+    clone_map = {}
+    for clone_set in clonesets:
+        for index, fragment in enumerate(clone_set["fragments"]):
+            fragment_path = filemap.get_file_path(fragment["file_id"])
+            if fragment_path not in clone_map.keys():
+                clone_map[fragment_path] = []
+            clone_map[fragment_path].append({
+                "clone_id": clone_set["clone_id"],
+                "index": index,
+                "file_id": fragment["file_id"],
+                "start_line": fragment["start_line"],
+                "end_line": fragment["end_line"],
+            })
+    return clone_map
+
 
 def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clonesets: list[dict], parent_clonesets: list[dict], child_filemap: FileMapper, parent_filemap: FileMapper):
     corresponded_fragments = {}
     
     # コード片をファイルごとに整理する．
-    parent_clone_map = {}
-    for parent_clone_set in parent_clonesets:
-        for index, parent_fragment in enumerate(parent_clone_set["fragments"]):
-            parent_fragment_path = parent_filemap.get_file_path(parent_fragment["file_id"])
-            if parent_fragment_path not in parent_clone_map.keys():
-                parent_clone_map[parent_fragment_path] = []
-            parent_clone_map[parent_fragment_path].append({
-                "clone_id": parent_clone_set["clone_id"],
-                "index": index,
-                "file_id": parent_fragment["file_id"],
-                "start_line": parent_fragment["start_line"],
-                "end_line": parent_fragment["end_line"],
-            })
+    parent_clone_map = get_clone_map(parent_clonesets, parent_filemap)
     
     # 子コミットのコードの移動があるクローンセットのコード片を親コミットのコード片と対応させる．
     for child_clone_set in child_clonesets:
-        has_moved_lines = False
         child_clone_id = child_clone_set["clone_id"]
         for index, child_fragment in enumerate(child_clone_set["fragments"]):
             child_fragment_path = child_filemap.get_file_path(child_fragment["file_id"])
@@ -128,7 +161,6 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
             # 行の移動が発生していないフラグメントは対応する必要がないのでスルー
             if not corresponded_lines.is_file_having_moved_lines(child_fragment_path):
                 continue
-            has_moved_lines = True
             child_start_line = child_fragment["start_line"]
             child_end_line = child_fragment["end_line"]
             # 親コミットのクローンの開始行と終了行を予測
@@ -229,6 +261,57 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
     return corresponded_fragments
 
 
+def identify_modified_clones(corresponded_fragments: dict, corresponded_lines: CorrespondedLines, child_clonesets: list[dict], parent_clonesets: list[dict], child_filemap: FileMapper, parent_filemap: FileMapper):
+    modified_clones = []
+    for child_clone_set in child_clonesets:
+        child_clone_id = child_clone_set["clone_id"]
+        if child_clone_id not in corresponded_fragments.keys():
+            continue
+        modified_clone = {
+            "clone_id": child_clone_id,
+            "fragments": []
+        }
+        for index, child_fragment in enumerate(child_clone_set["fragments"]):
+            if index not in corresponded_fragments[child_clone_id].keys():
+                modified_clone["fragments"].append({
+                    "type": "stable",
+                    "parent": child_fragment,
+                    "child": child_fragment
+                })
+                continue
+            parent_clone_id, parent_fragment_index = corresponded_fragments[child_clone_id][index]
+            parent_fragment = parent_clonesets[parent_clone_id-1]["fragments"][parent_fragment_index]
+            parent_modification = False
+            for l in range(parent_fragment["start_line"], parent_fragment["end_line"]+1):
+                if corresponded_lines.is_line_modified(parent_filemap.get_file_path(parent_fragment["file_id"]), l):
+                    parent_modification = True
+                    break
+                if corresponded_lines.is_line_deleted(parent_filemap.get_file_path(parent_fragment["file_id"]), l):
+                    parent_modification = True
+                    break
+            for l in range(child_fragment["start_line"], child_fragment["end_line"]+1):
+                if corresponded_lines.is_line_modified(child_filemap.get_file_path(child_fragment["file_id"]), l):
+                    child_modification = True
+                    break
+                if corresponded_lines.is_line_added(child_filemap.get_file_path(child_fragment["file_id"]), l):
+                    child_modification = True
+                    break
+            if parent_modification and child_modification:
+                modified_clone["fragments"].append({
+                    "type": "modified",
+                        "parent": parent_fragment,
+                        "child": child_fragment
+                    })
+            else:
+                modified_clone["fragments"].append({
+                    "type": "stable",
+                    "parent": parent_fragment,
+                    "child": child_fragment
+                })
+        modified_clones.append(modified_clone)
+    return modified_clones
+
+
 def analyze_commit(name: str, language: str, commit: git.Commit):
     workdir = project_root / "dest/projects" / name
     # childのCCFinderSWファイルの読み込み
@@ -246,6 +329,8 @@ def analyze_commit(name: str, language: str, commit: git.Commit):
         parent_filemap = FileMapper(parent_ccfsw["file_data"], str(workdir))
         # コミット間のLineDiffファイルの読み込み
         line_diff_file = project_root / "dest/moving_lines" / name / f"{parent.hexsha}-{commit.hexsha}.json"
+        if not line_diff_file.exists():
+            continue
         with open(line_diff_file, "r") as f:
             line_diffs = json.load(f)
         # 修正がなければこのコミットの処理は終了
@@ -260,8 +345,16 @@ def analyze_commit(name: str, language: str, commit: git.Commit):
         # 親コミットのファイルと子コミットのファイルの行を対応付ける．
         corresponded_lines = CorrespondedLines(line_diffs, child_filemap, parent_filemap)
         corresponded_fragments = correspond_code_fragments(corresponded_lines, child_ccfsw["clone_sets"], parent_ccfsw["clone_sets"], child_filemap, parent_filemap)
-        print(corresponded_fragments)
 
+        # 修正を特定
+        modified_clones = identify_modified_clones(corresponded_fragments, child_ccfsw["clone_sets"], parent_ccfsw["clone_sets"], child_filemap, parent_filemap)
+
+        # 保存
+        dest_dir = project_root / "dest/modified_clones" / name / f"{parent.hexsha}-{commit.hexsha}"
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        with open(dest_dir / f"{language}.json", "w") as f:
+            json.dump(modified_clones, f, indent=4)
+        
 
 def analyze_repo(project: dict):
     url = project["URL"]
