@@ -347,7 +347,7 @@ def analyze_commit(name: str, language: str, commit: git.Commit):
         corresponded_fragments = correspond_code_fragments(corresponded_lines, child_ccfsw["clone_sets"], parent_ccfsw["clone_sets"], child_filemap, parent_filemap)
 
         # 修正を特定
-        modified_clones = identify_modified_clones(corresponded_fragments, child_ccfsw["clone_sets"], parent_ccfsw["clone_sets"], child_filemap, parent_filemap)
+        modified_clones = identify_modified_clones(corresponded_lines, corresponded_fragments, child_ccfsw["clone_sets"], parent_ccfsw["clone_sets"], child_filemap, parent_filemap)
 
         # 保存
         dest_dir = project_root / "dest/modified_clones" / name / f"{parent.hexsha}-{commit.hexsha}"
