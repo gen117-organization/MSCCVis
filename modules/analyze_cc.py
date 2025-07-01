@@ -279,6 +279,13 @@ def identify_modified_clones(corresponded_fragments: dict, corresponded_lines: C
                     "child": child_fragment
                 })
                 continue
+            if corresponded_fragments[child_clone_id][index] is None:
+                modified_clone["fragments"].append({
+                    "type": "added",
+                    "parent": None,
+                    "child": child_fragment
+                })
+                continue
             parent_clone_id, parent_fragment_index = corresponded_fragments[child_clone_id][index]
             parent_fragment = parent_clonesets[parent_clone_id-1]["fragments"][parent_fragment_index]
             parent_modification = False
