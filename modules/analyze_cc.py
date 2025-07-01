@@ -296,6 +296,7 @@ def identify_modified_clones(corresponded_fragments: dict, corresponded_lines: C
                 if corresponded_lines.is_line_deleted(parent_filemap.get_file_path(parent_fragment["file_id"]), l):
                     parent_modification = True
                     break
+            child_modification = False
             for l in range(child_fragment["start_line"], child_fragment["end_line"]+1):
                 if corresponded_lines.is_line_modified(child_filemap.get_file_path(child_fragment["file_id"]), l):
                     child_modification = True
