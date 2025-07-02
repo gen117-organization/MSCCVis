@@ -209,7 +209,7 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                                     corresponded_fragments[child_clone_id] = {}
                                 corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
                                 break
-                    elif (predict_parent_start_line is not None) and (predict_parent_end_line is not None):
+                    elif (predict_parent_start_line is None) and (predict_parent_end_line is None):
                         parent_start_line = -1
                         for l in range(child_start_line, child_end_line+1):
                             if corresponded_lines.get_parent_line(child_fragment_path, l) is None:
@@ -258,6 +258,9 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                             corresponded_fragments[child_clone_id] = {}
                         corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
                         break
+            if child_clone_id not in corresponded_fragments.keys():
+                corresponded_fragments[child_clone_id] = {}
+            corresponded_fragments[child_clone_id][index] = None
     return corresponded_fragments
 
 
