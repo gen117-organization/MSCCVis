@@ -159,15 +159,17 @@ def collect_datas_of_repo(project: dict):
                 if language not in detectable_languages:
                     continue
                 # 既に修正が含まれているとわかっているコミットのコードクローンを検出
-                if commit_hash in detected_commits[language]:
-                    continue
-                if commit_hash in need_to_detect_commits[language]:
-                    detect_cc(project_dir, name, language, commit_hash, exts[language])
-                    if language not in detected_commits.keys():
-                        detected_commits[language] = []
-                    detected_commits[language].append(commit_hash)
-                    need_to_detect_commits[language].remove(commit_hash)
-                    continue
+                if language in detected_commits.keys():
+                    if commit_hash in detected_commits[language]:
+                        continue
+                if language in need_to_detect_commits.keys():
+                    if commit_hash in need_to_detect_commits[language]:
+                        detect_cc(project_dir, name, language, commit_hash, exts[language])
+                        if language not in detected_commits.keys():
+                            detected_commits[language] = []
+                        detected_commits[language].append(commit_hash)
+                        need_to_detect_commits[language].remove(commit_hash)
+                        continue
                 # この言語のファイルの修正が含まれているか判定する
                 is_modified = False
                 for parent_hash in moving_lines.keys():
