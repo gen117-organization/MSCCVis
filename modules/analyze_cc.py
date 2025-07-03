@@ -330,6 +330,8 @@ def analyze_commit(name: str, language: str, commit: git.Commit):
     workdir = project_root / "dest/projects" / name
     # childのCCFinderSWファイルの読み込み
     child_ccfsw_file = project_root / "dest/clones_json" / name / commit.hexsha / f"{language}.json"
+    if not child_ccfsw_file.exists():
+        return
     with open(child_ccfsw_file, "r") as f:
         child_ccfsw = json.load(f)
     child_filemap = FileMapper(child_ccfsw["file_data"], str(workdir))
@@ -338,6 +340,8 @@ def analyze_commit(name: str, language: str, commit: git.Commit):
         print(f"{commit.hexsha}-{parent.hexsha}")
         # parentのCCFinderSWファイルの読み込み
         parent_ccfsw_file = project_root / "dest/clones_json" / name / parent.hexsha / f"{language}.json"
+        if not parent_ccfsw_file.exists():
+            continue
         with open(parent_ccfsw_file, "r") as f:
             parent_ccfsw = json.load(f)
         parent_filemap = FileMapper(parent_ccfsw["file_data"], str(workdir))
