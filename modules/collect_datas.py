@@ -158,18 +158,19 @@ def collect_datas_of_repo(project: dict):
             for language in languages:
                 if language not in detectable_languages:
                     continue
-                # 既に修正が含まれているとわかっているコミットのコードクローンを検出
-                if language in detected_commits.keys():
-                    if commit_hash in detected_commits[language]:
-                        continue
-                if language in need_to_detect_commits.keys():
-                    if commit_hash in need_to_detect_commits[language]:
-                        detect_cc(project_dir, name, language, commit_hash, exts[language])
-                        if language not in detected_commits.keys():
-                            detected_commits[language] = []
-                        detected_commits[language].append(commit_hash)
-                        need_to_detect_commits[language].remove(commit_hash)
-                        continue
+                if language not in detected_commits.keys():
+                    detected_commits[language] = []
+                if language not in need_to_detect_commits.keys():
+                    need_to_detect_commits[language] = set()
+                # 既に検出していれば次に行く
+                if commit_hash in detected_commits[language]:
+                    continue
+                # まだCCFinderSWを実行していないコミットで必要な場合は実行する
+                if commit_hash in need_to_detect_commits[language]:
+                    detect_cc(project_dir, name, language, commit_hash, exts[language])
+                    detected_commits[language].append(commit_hash)
+                    need_to_detect_commits[language].remove(commit_hash)
+                    continue
                 # この言語のファイルの修正が含まれているか判定する
                 is_modified = False
                 for parent_hash in moving_lines.keys():
@@ -182,10 +183,8 @@ def collect_datas_of_repo(project: dict):
                         if language not in need_to_detect_commits.keys():
                             need_to_detect_commits[language] = set()
                         need_to_detect_commits[language].add(parent_hash)
-                if is_modified and (commit_hash not in detected_commits[language]):
+                if is_modified:
                     detect_cc(project_dir, name, language, commit_hash, exts[language])
-                    if language not in detected_commits.keys():
-                        detected_commits[language] = []
                     detected_commits[language].append(commit_hash)
             finished_commits.append(commit_hash)
             for parent in commit.parents:
