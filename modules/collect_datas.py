@@ -153,8 +153,11 @@ def collect_datas_of_repo(project: dict):
             github_linguist_dest_file = github_linguist_dest_dir / f"{commit_hash}.json"
             with open(github_linguist_dest_file, "w") as f:
                 json.dump(github_linguist_result, f)
+            detectable_languages = project["languages"].keys()
             # コードクローン検出
             for language in languages:
+                if language not in detectable_languages:
+                    continue
                 # 既に修正が含まれているとわかっているコミットのコードクローンを検出
                 if commit_hash in detected_commits[language]:
                     continue
