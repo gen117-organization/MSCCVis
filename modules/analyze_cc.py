@@ -258,9 +258,12 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                             corresponded_fragments[child_clone_id] = {}
                         corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
                         break
-            if child_clone_id not in corresponded_fragments.keys():
-                corresponded_fragments[child_clone_id] = {}
-            corresponded_fragments[child_clone_id][index] = None
+                if child_clone_id not in corresponded_fragments.keys():
+                    corresponded_fragments[child_clone_id] = {}
+                    corresponded_fragments[child_clone_id][index] = None
+                else: 
+                    if index not in corresponded_fragments[child_clone_id].keys():
+                        corresponded_fragments[child_clone_id][index] = None
     return corresponded_fragments
 
 

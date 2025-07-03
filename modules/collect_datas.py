@@ -7,7 +7,7 @@ import json
 
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-from modules.github_linguist import get_exts
+from modules.github_linguist import get_exts, run_github_linguist
 from config import ANTLR_LANGUAGE, CCFINDERSW_JAR, CCFINDERSWPARSER
 
 
@@ -25,7 +25,8 @@ def parse_diff_str(diff: str):
     return hunk, old_line_count, new_line_count
 
 
-def find_moving_lines(commit: git.Commit, name: str) -> tuple[list[str], list[str]]:
+def find_moving_lines(commit: git.Commit, name: str) -> dict:
+    return_result = {}
     for parent in commit.parents:
         diffs = parent.diff(commit, create_patch=True)
         output_result = []
@@ -78,6 +79,8 @@ def find_moving_lines(commit: git.Commit, name: str) -> tuple[list[str], list[st
             dest_file = dest_dir / f"{parent.hexsha}-{commit.hexsha}.json"
             with open(dest_file, "w") as f:
                 json.dump(output_result, f)
+            return_result[parent.hexsha] = output_result
+    return return_result
                 
 
 def convert_language_for_ccfindersw(language: str):
@@ -127,6 +130,8 @@ def collect_datas_of_repo(project: dict):
     hcommit = git_repo.head.commit
     try:
         finished_commits = []
+        detected_commits = {}
+        need_to_detect_commits = {}
         queue = [hcommit.hexsha]
         # コミットを幅優先探索
         while (len(queue) > 0):
@@ -137,10 +142,46 @@ def collect_datas_of_repo(project: dict):
             print(f"checkout to {commit_hash}...")
             git_repo.git.checkout(commit_hash)
             # 修正を保存
-            find_moving_lines(commit, name)
+            moving_lines = find_moving_lines(commit, name)
+            if len(moving_lines) == 0:
+                continue
+            # github-linguistの適用
+            github_linguist_result = run_github_linguist(str(project_dir))
+            languages = github_linguist_result.keys()
+            github_linguist_dest_dir = project_root / "dest/github_linguist" / name
+            github_linguist_dest_dir.mkdir(parents=True, exist_ok=True)
+            github_linguist_dest_file = github_linguist_dest_dir / f"{commit_hash}.json"
+            with open(github_linguist_dest_file, "w") as f:
+                json.dump(github_linguist_result, f)
             # コードクローン検出
             for language in languages:
-                detect_cc(project_dir, name, language, commit_hash, exts[language])
+                # 既に修正が含まれているとわかっているコミットのコードクローンを検出
+                if commit_hash in detected_commits[language]:
+                    continue
+                if commit_hash in need_to_detect_commits[language]:
+                    detect_cc(project_dir, name, language, commit_hash, exts[language])
+                    if language not in detected_commits.keys():
+                        detected_commits[language] = []
+                    detected_commits[language].append(commit_hash)
+                    need_to_detect_commits[language].remove(commit_hash)
+                    continue
+                # この言語のファイルの修正が含まれているか判定する
+                is_modified = False
+                for parent_hash in moving_lines.keys():
+                    moving_lines_of_parent = moving_lines[parent_hash]
+                    for moving_line in moving_lines_of_parent:
+                        if moving_line["child_path"] in github_linguist_result[language]["files"]:
+                            is_modified = True
+                            break
+                    if is_modified:
+                        if language not in need_to_detect_commits.keys():
+                            need_to_detect_commits[language] = set()
+                        need_to_detect_commits[language].add(parent_hash)
+                if is_modified and (commit_hash not in detected_commits[language]):
+                    detect_cc(project_dir, name, language, commit_hash, exts[language])
+                    if language not in detected_commits.keys():
+                        detected_commits[language] = []
+                    detected_commits[language].append(commit_hash)
             finished_commits.append(commit_hash)
             for parent in commit.parents:
                 if parent.hexsha in finished_commits:
