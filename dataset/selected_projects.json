@@ -192,22 +192,6 @@
     },
     {
         "languages": {
-            "Python": {
-                "mqtt_logger": [
-                    "twitchbot_mqtt_logger"
-                ],
-                "bot": [
-                    "twitchbot_bot"
-                ],
-                "web": [
-                    "twitchbot_webserver"
-                ]
-            }
-        },
-        "URL": "https://github.com/tisboyo/Twitch_Bot"
-    },
-    {
-        "languages": {
             "JavaScript": {
                 "frontend": [
                     "ui"

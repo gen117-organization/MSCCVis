@@ -258,12 +258,12 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                             corresponded_fragments[child_clone_id] = {}
                         corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
                         break
-                if child_clone_id not in corresponded_fragments.keys():
-                    corresponded_fragments[child_clone_id] = {}
+            if child_clone_id not in corresponded_fragments.keys():
+                corresponded_fragments[child_clone_id] = {}
+                corresponded_fragments[child_clone_id][index] = None
+            else: 
+                if index not in corresponded_fragments[child_clone_id].keys():
                     corresponded_fragments[child_clone_id][index] = None
-                else: 
-                    if index not in corresponded_fragments[child_clone_id].keys():
-                        corresponded_fragments[child_clone_id][index] = None
     return corresponded_fragments
 
 
@@ -295,22 +295,24 @@ def identify_modified_clones(corresponded_fragments: dict, corresponded_lines: C
             parent_clone_id, parent_fragment_index = corresponded_fragments[child_clone_id][index]
             parent_fragment = parent_clonesets[parent_clone_id-1]["fragments"][parent_fragment_index]
             parent_modification = False
+            parent_deleted = False
             for l in range(parent_fragment["start_line"], parent_fragment["end_line"]+1):
                 if corresponded_lines.is_line_modified(parent_filemap.get_file_path(parent_fragment["file_id"]), l):
                     parent_modification = True
                     break
                 if corresponded_lines.is_line_deleted(parent_filemap.get_file_path(parent_fragment["file_id"]), l):
-                    parent_modification = True
+                    parent_deleted = True
                     break
             child_modification = False
+            child_added = False
             for l in range(child_fragment["start_line"], child_fragment["end_line"]+1):
                 if corresponded_lines.is_line_modified(child_filemap.get_file_path(child_fragment["file_id"]), l):
                     child_modification = True
                     break
                 if corresponded_lines.is_line_added(child_filemap.get_file_path(child_fragment["file_id"]), l):
-                    child_modification = True
+                    child_added = True
                     break
-            if parent_modification and child_modification:
+            if (parent_modification and child_modification) or (parent_deleted) or (child_added):
                 modified_clone["fragments"].append({
                     "type": "modified",
                         "parent": parent_fragment,
