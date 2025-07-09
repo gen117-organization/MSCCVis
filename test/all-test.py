@@ -27,5 +27,5 @@ if __name__ == "__main__":
         result = modules.analyze_modification.analyze_repo(project)
         outputs.append(result)
 
-    with open(project_root / "dest/outputs/all-test.json", "w") as f:
+    with open(project_root / "dest/all-test.json", "w") as f:
         json.dump(outputs, f, indent=4)
