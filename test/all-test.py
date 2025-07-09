@@ -9,6 +9,7 @@ import modules.clone_repo
 import modules.identify_microservice
 import modules.collect_datas
 import modules.analyze_cc
+import modules.analyze_modification
 
 if __name__ == "__main__":
     dataset_file = project_root / "dataset/selected_projects.json"
