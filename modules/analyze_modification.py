@@ -10,13 +10,13 @@ sys.path.append(str(project_root))
 from modules.util import FileMapper
 import modules.claim_parser as claim_parser
 
-
 class CodeCloneAnalyzer:
     def __init__(self, name: str, hcommit: git.Commit, language: str, workdir: Path):
         self.name = name
         self.language = language
         self.workdir = workdir
         self.hcommit = hcommit
+
         self.finished_commits = []
         self.commit_history = [[hcommit.hexsha]]
         

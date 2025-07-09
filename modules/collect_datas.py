@@ -128,6 +128,7 @@ def collect_datas_of_repo(project: dict):
     # GitPythonのインスタンスの作成(分析に便利!)
     git_repo = git.Repo(str(project_dir))
     hcommit = git_repo.head.commit
+    detect_cc(project_dir, name, "Java", hcommit.hexsha, exts["Java"])
     try:
         finished_commits = []
         detected_commits = {}
