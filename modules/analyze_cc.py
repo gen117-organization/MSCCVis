@@ -158,9 +158,6 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
             child_fragment_path = child_filemap.get_file_path(child_fragment["file_id"])
             # ファイル名一致のパターンしか対応しないため，pathは一緒であるが一応明示しておく．
             parent_fragment_path = child_fragment_path
-            # 行の移動が発生していないフラグメントは対応する必要がないのでスルー
-            if not corresponded_lines.is_file_having_moved_lines(child_fragment_path):
-                continue
             child_start_line = child_fragment["start_line"]
             child_end_line = child_fragment["end_line"]
             # 親コミットのクローンの開始行と終了行を予測
@@ -191,48 +188,29 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                     continue
                 # 子コミットの方が行数が多いパターンは子コミットのコード片の先頭または末尾に挿入されているので，親コミットの行番号を探す．
                 if (parent_file_fragment["end_line"] - parent_file_fragment["start_line"] + 1) < (child_end_line - child_start_line + 1):
-                    if (predict_parent_start_line is None) and (predict_parent_end_line is not None):
-                        for l in range(child_start_line, child_end_line+1):
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) is None:
-                                continue
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) == parent_file_fragment["start_line"]:
-                                if child_clone_id not in corresponded_fragments.keys():
-                                    corresponded_fragments[child_clone_id] = {}
-                                corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
-                                break
-                    elif (predict_parent_start_line is not None) and (predict_parent_end_line is None):
-                        for l in reversed(range(child_start_line, child_end_line+1)):
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) is None:
-                                continue
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) == parent_file_fragment["end_line"]:
-                                if child_clone_id not in corresponded_fragments.keys():
-                                    corresponded_fragments[child_clone_id] = {}
-                                corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
-                                break
-                    elif (predict_parent_start_line is None) and (predict_parent_end_line is None):
-                        parent_start_line = -1
-                        for l in range(child_start_line, child_end_line+1):
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) is None:
-                                continue
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) == parent_file_fragment["start_line"]:
-                                parent_start_line = parent_file_fragment["start_line"]
-                                break
-                        if parent_start_line == -1:
+                    parent_start_line = -1
+                    for l in range(child_start_line, child_end_line+1):
+                        if corresponded_lines.get_parent_line(child_fragment_path, l) is None:
                             continue
-                        parent_end_line = -1
-                        for l in reversed(range(child_start_line, child_end_line+1)):
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) is None:
-                                continue
-                            if corresponded_lines.get_parent_line(child_fragment_path, l) == parent_file_fragment["end_line"]:
-                                parent_end_line = parent_file_fragment["end_line"]
-                                break
-                        if parent_end_line == -1:
-                            continue
-                        if (parent_start_line == parent_file_fragment["start_line"]) and (parent_end_line == parent_file_fragment["end_line"]):
-                            if child_clone_id not in corresponded_fragments.keys():
-                                corresponded_fragments[child_clone_id] = {}
-                            corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
+                        if corresponded_lines.get_parent_line(child_fragment_path, l) == parent_file_fragment["start_line"]:
+                            parent_start_line = parent_file_fragment["start_line"]
                             break
+                    if parent_start_line == -1:
+                        continue
+                    parent_end_line = -1
+                    for l in reversed(range(child_start_line, child_end_line+1)):
+                        if corresponded_lines.get_parent_line(child_fragment_path, l) is None:
+                            continue
+                        if corresponded_lines.get_parent_line(child_fragment_path, l) == parent_file_fragment["end_line"]:
+                            parent_end_line = parent_file_fragment["end_line"]
+                            break
+                    if parent_end_line == -1:
+                        continue
+                    if (parent_start_line == parent_file_fragment["start_line"]) and (parent_end_line == parent_file_fragment["end_line"]):
+                        if child_clone_id not in corresponded_fragments.keys():
+                            corresponded_fragments[child_clone_id] = {}
+                        corresponded_fragments[child_clone_id][index] = (parent_file_fragment["clone_id"], parent_file_fragment["index"])
+                        break
                 # 親コミットの方が行数が多いパターンは親コミットのコード片の先頭または末尾から行が削除されているので，子コミットの行番号を探す．
                 if (parent_file_fragment["end_line"] - parent_file_fragment["start_line"] + 1) > (child_end_line - child_start_line + 1):
                     predict_child_start_line = -1
@@ -278,18 +256,18 @@ def identify_modified_clones(corresponded_fragments: dict, corresponded_lines: C
             "fragments": []
         }
         for index, child_fragment in enumerate(child_clone_set["fragments"]):
-            if index not in corresponded_fragments[child_clone_id].keys():
-                modified_clone["fragments"].append({
-                    "type": "stable",
-                    "parent": child_fragment,
-                    "child": child_fragment
-                })
-                continue
             if corresponded_fragments[child_clone_id][index] is None:
                 modified_clone["fragments"].append({
                     "type": "added",
                     "parent": None,
-                    "child": child_fragment
+                    "child": {
+                        "clone_id": child_clone_id,
+                        "index": index,
+                        "file_id": child_fragment["file_id"],
+                        "file_path": child_filemap.get_file_path(child_fragment["file_id"]),
+                        "start_line": child_fragment["start_line"],
+                        "end_line": child_fragment["end_line"]
+                    }
                 })
                 continue
             parent_clone_id, parent_fragment_index = corresponded_fragments[child_clone_id][index]
@@ -315,14 +293,42 @@ def identify_modified_clones(corresponded_fragments: dict, corresponded_lines: C
             if (parent_modification and child_modification) or (parent_deleted) or (child_added):
                 modified_clone["fragments"].append({
                     "type": "modified",
-                        "parent": parent_fragment,
-                        "child": child_fragment
-                    })
+                    "parent": {
+                        "clone_id": parent_clone_id,
+                        "index": parent_fragment_index,
+                        "file_id": parent_fragment["file_id"],
+                        "file_path": parent_filemap.get_file_path(parent_fragment["file_id"]),
+                        "start_line": parent_fragment["start_line"],
+                        "end_line": parent_fragment["end_line"]
+                    },
+                    "child": {
+                        "clone_id": child_clone_id,
+                        "index": index,
+                        "file_id": child_fragment["file_id"],
+                        "file_path": child_filemap.get_file_path(child_fragment["file_id"]),
+                        "start_line": child_fragment["start_line"],
+                        "end_line": child_fragment["end_line"]
+                    }
+                })
             else:
                 modified_clone["fragments"].append({
                     "type": "stable",
-                    "parent": parent_fragment,
-                    "child": child_fragment
+                    "parent": {
+                        "clone_id": parent_clone_id,
+                        "index": parent_fragment_index,
+                        "file_id": parent_fragment["file_id"],
+                        "file_path": parent_filemap.get_file_path(parent_fragment["file_id"]),
+                        "start_line": parent_fragment["start_line"],
+                        "end_line": parent_fragment["end_line"]
+                    },
+                    "child": {
+                        "clone_id": child_clone_id,
+                        "index": index,
+                        "file_id": child_fragment["file_id"],
+                        "file_path": child_filemap.get_file_path(child_fragment["file_id"]),
+                        "start_line": child_fragment["start_line"],
+                        "end_line": child_fragment["end_line"]
+                    }
                 })
         modified_clones.append(modified_clone)
     return modified_clones

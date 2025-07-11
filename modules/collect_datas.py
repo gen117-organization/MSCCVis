@@ -167,6 +167,10 @@ def collect_datas_of_repo(project: dict):
                 # 既に検出していれば次に行く
                 if commit_hash in detected_commits[language]:
                     continue
+                if commit_hash == hcommit.hexsha:
+                    detect_cc(project_dir, name, language, commit_hash, exts[language])
+                    detected_commits[language].append(commit_hash)
+                    continue
                 # まだCCFinderSWを実行していないコミットで必要な場合は実行する
                 if commit_hash in need_to_detect_commits[language]:
                     detect_cc(project_dir, name, language, commit_hash, exts[language])
