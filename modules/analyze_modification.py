@@ -14,7 +14,9 @@ def analyze_repo(project):
     name = url.split("/")[-2] + "." + url.split("/")[-1]
     workdir = project_root / "dest/projects" / name
     git_repo = git.Repo(workdir)
+    print("name:", name)
     for language in project["languages"]:
+        print("language:", language)
         head_commit = git_repo.head.commit
         hcommit_ccfsw_file = project_root / "dest/clones_json" / name / head_commit.hexsha / f"{language}.json"
         with open(hcommit_ccfsw_file, "r") as f:
