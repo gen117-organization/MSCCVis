@@ -30,8 +30,11 @@ def analyze_repo(project):
                 history[head_commit.hexsha][clone_id][index] = []
         finished_commits = []
         queue = [head_commit]
+        modified_commit_count = 0
         while len(queue) > 0:
             commit = queue.pop(0)
+            if modified_commit_count > 100:
+                break
             if commit.hexsha in finished_commits:
                 continue
             for parent in commit.parents:
@@ -46,6 +49,7 @@ def analyze_repo(project):
                     continue
                 with open(modified_clones_file, "r") as f:
                     modified_clones = json.load(f)
+                modified_commit_count += 1
                 for modified_clone in modified_clones:
                     for fragment in modified_clone["fragments"]:
                         if fragment["type"] == "added":
