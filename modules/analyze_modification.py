@@ -38,15 +38,17 @@ def analyze_repo(project):
                     for clone_id in history[commit.hexsha]:
                         for index in history[commit.hexsha][clone_id]:
                             history[parent.hexsha] = {clone_id: {index: []}}
-                            history[commit.hexsha][clone_id][index].append((parent.hexsha, clone_id, index))
+                            if (history[commit.hexsha][clone_id][index][1] is not None) and (history[commit.hexsha][clone_id][index][2] is not None):
+                                history[commit.hexsha][clone_id][index].append((parent.hexsha, clone_id, index))
                     continue
                 with open(modified_clones_file, "r") as f:
                     modified_clones = json.load(f)
                 for modified_clone in modified_clones:
                     for fragment in modified_clone["fragments"]:
-                        history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])].append((parent.hexsha, int(fragment["parent"]["clone_id"]), int(fragment["parent"]["index"])))
-                        history[parent.hexsha] = {int(fragment["parent"]["clone_id"]): {int(fragment["parent"]["index"]): []}}
+                        if fragment["type"] == "added":
+                            history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["parent"]["index"])].append((parent.hexsha, None, None))
+                        else:
+                            history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])].append((parent.hexsha, int(fragment["parent"]["clone_id"]), int(fragment["parent"]["index"])))
+                            history[parent.hexsha] = {int(fragment["parent"]["clone_id"]): {int(fragment["parent"]["index"]): []}}
                 queue.append(parent)
             finished_commits.append(commit.hexsha)
-
-        
