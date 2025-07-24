@@ -47,7 +47,7 @@ def analyze_repo(project):
                 for modified_clone in modified_clones:
                     for fragment in modified_clone["fragments"]:
                         if fragment["type"] == "added":
-                            history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["parent"]["index"])].append((parent.hexsha, None, None))
+                            history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])].append((parent.hexsha, None, None))
                         else:
                             history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])].append((parent.hexsha, int(fragment["parent"]["clone_id"]), int(fragment["parent"]["index"])))
                             history[parent.hexsha] = {int(fragment["parent"]["clone_id"]): {int(fragment["parent"]["index"]): []}}
