@@ -16,7 +16,7 @@ def analyze_repo(project):
     git_repo = git.Repo(workdir)
     for language in project["languages"]:
         head_commit = git_repo.head.commit
-        hcommit_ccfsw_file = project_root / "dest/clones_json" / name / head_commit / f"{language}.json"
+        hcommit_ccfsw_file = project_root / "dest/clones_json" / name / head_commit.hexsha / f"{language}.json"
         with open(hcommit_ccfsw_file, "r") as f:
             hcommit_ccfsw = json.load(f)
         latest_file_map = FileMapper(hcommit_ccfsw["file_data"], str(workdir))
