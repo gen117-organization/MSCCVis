@@ -38,8 +38,9 @@ def analyze_repo(project):
                     for clone_id in history[commit.hexsha]:
                         for index in history[commit.hexsha][clone_id]:
                             history[parent.hexsha] = {clone_id: {index: []}}
-                            if (history[commit.hexsha][clone_id][index][1] is not None) and (history[commit.hexsha][clone_id][index][2] is not None):
-                                history[commit.hexsha][clone_id][index].append((parent.hexsha, clone_id, index))
+                            for t in history[commit.hexsha][clone_id][index]:
+                                if (t[1] is not None) and (t[2] is not None):
+                                    history[commit.hexsha][clone_id][index].append((parent.hexsha, t[1], t[2]))
                     continue
                 with open(modified_clones_file, "r") as f:
                     modified_clones = json.load(f)
