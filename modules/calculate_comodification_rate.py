@@ -26,9 +26,10 @@ def analyze_repo(project):
                 modifications = {}
                 for row in rows:
                     for m in row["modification"]:
-                        if m["commit"] not in modifications:
-                            modifications[m["commit"]] = []
-                        modifications[m["commit"]].append(m["type"])
+                        m_dict = json.loads(m)
+                        if m_dict["commit"] not in modifications:
+                            modifications[m_dict["commit"]] = []
+                        modifications[m_dict["commit"]].append(m_dict["type"])
                 comodification = False
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
