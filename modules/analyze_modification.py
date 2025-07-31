@@ -42,6 +42,7 @@ def analyze_repo(project):
         queue = [head_commit]
         while len(queue) > 0:
             commit = queue.pop(0)
+            print("commit:", commit.hexsha)
             if commit.hexsha in finished_commits:
                 continue
             for parent in commit.parents:
