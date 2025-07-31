@@ -70,8 +70,9 @@ def analyze_repo(project):
                 queue.append(parent)
             finished_commits.append(commit.hexsha)
             prev.pop(commit.hexsha)
-        dest_dir = project_root / "dest/csv" / name / f"{language}.csv"
-        with open(dest_dir, "w") as f:
+        dest_dir = project_root / "dest/csv" / name
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        with open(dest_dir / f"{language}.csv", "w") as f:
             f.write("clone_id,index,file_path,start_line,end_line,start_column,end_column,modification\n")
             for clone_id in latest_codeclones:
                 for index in latest_codeclones[clone_id]:
