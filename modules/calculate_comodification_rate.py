@@ -25,6 +25,7 @@ def analyze_repo(project):
             for clone_id, rows in clonesets.items():
                 modifications = {}
                 for row in rows:
+                    print(row["modification"])
                     m_list = json.loads(row["modification"])
                     for m in m_list:
                         if m["commit"] not in modifications:
