@@ -8,13 +8,13 @@ sys.path.append(str(project_root))
 
 
 def analyze_repo(project):
-    project_root = Path(project)
-    name = project_root.name
-    language = project_root.parent.name
-    dest_dir = project_root / "dest/csv" / name
-    dest_dir.mkdir(parents=True, exist_ok=True)
-    with open(dest_dir / f"{language}.csv", "r") as f:
-        reader = csv.DictReader(f)
+    url = project["URL"]
+    name = url.split("/")[-2] + "." + url.split("/")[-1]
+    workdir = project_root / "dest/projects" / name
+    languages = project["languages"]
+    for language in languages:
+        with open(workdir / f"{language}.csv", "r") as f:
+            reader = csv.DictReader(f)
         clonesets = {}
         for row in reader:
             clone_id = row["clone_id"]
