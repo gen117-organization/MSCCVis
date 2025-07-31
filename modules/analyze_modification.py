@@ -33,8 +33,8 @@ def analyze_repo(project):
                     "file_path": latest_file_map.get_file_path(fragment["file_id"]),
                     "start_line": fragment["start_line"],
                     "end_line": fragment["end_line"],
-                    "start_column": fragment["start_column"],
-                    "end_column": fragment["end_column"],
+                    "start_col": fragment["start_col"],
+                    "end_col": fragment["end_col"],
                     "modification": []
                 }
                 prev[head_commit.hexsha][clone_id][index] = (clone_id, index)
