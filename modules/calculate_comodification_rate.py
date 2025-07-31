@@ -36,7 +36,10 @@ def analyze_repo(project):
                 if comodification:
                     comodification_count += 1
                 count += 1
-            print(f"{name} {language} {comodification_count} / {count} = {comodification_count / count}")
+            if count > 0:
+                print(f"{name} {language} {comodification_count} / {count} = {comodification_count / count}")
+            else:
+                print(f"{name} {language} 0 / 0 = 0")
 
 if __name__ == "__main__":
     dataset_file = project_root / "dataset/selected_projects.json"
