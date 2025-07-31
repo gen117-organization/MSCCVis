@@ -44,7 +44,7 @@ def analyze_repo(project):
                 if len(testing_sets) == 1:
                     if len(testing_fragments) >= 2:
                         clonesets["within-testing"][clone_id] = testing_fragments
-                else:
+                elif len(testing_sets) >= 2:
                     if len(testing_fragments) >= 2:
                         clonesets["across-testing"][clone_id] = testing_fragments
                 production_sets = set()
@@ -55,7 +55,7 @@ def analyze_repo(project):
                 if len(production_sets) == 1:
                     if len(production_fragments) >= 2:
                         clonesets["within-production"][clone_id] = production_fragments
-                if len(production_sets) >= 2:
+                elif len(production_sets) >= 2:
                     if len(production_fragments) >= 2:
                         clonesets["across-production"][clone_id] = production_fragments
             result = {
