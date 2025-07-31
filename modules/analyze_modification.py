@@ -45,6 +45,7 @@ def analyze_repo(project):
             if commit.hexsha in finished_commits:
                 continue
             for parent in commit.parents:
+                queue.append(parent)
                 modified_clones_file = project_root / "dest/modified_clones" / name / f"{parent.hexsha}-{commit.hexsha}" / f"{language}.json"
                 if not modified_clones_file.exists():
                     prev[parent.hexsha] = prev[commit.hexsha]
@@ -67,7 +68,6 @@ def analyze_repo(project):
                             if latest_clone_id is not None and latest_index is not None:
                                 latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "added", "commit": commit.hexsha})
                             prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = (None, None)
-                queue.append(parent)
             finished_commits.append(commit.hexsha)
             prev.pop(commit.hexsha)
         dest_dir = project_root / "dest/csv" / name
