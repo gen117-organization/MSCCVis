@@ -124,10 +124,26 @@ def analyze_repo(project):
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
                         result["across-production"]["comodification_count"] += 1
-            print(f"{name} {language} {result['within-testing']['comodification_count']} / {result['within-testing']['count']} = {result['within-testing']['comodification_count'] / result['within-testing']['count']}")
-            print(f"{name} {language} {result['within-production']['comodification_count']} / {result['within-production']['count']} = {result['within-production']['comodification_count'] / result['within-production']['count']}")
-            print(f"{name} {language} {result['across-testing']['comodification_count']} / {result['across-testing']['count']} = {result['across-testing']['comodification_count'] / result['across-testing']['count']}")
-            print(f"{name} {language} {result['across-production']['comodification_count']} / {result['across-production']['count']} = {result['across-production']['comodification_count'] / result['across-production']['count']}")
+            print("[within-testing]")
+            if result['within-testing']['count'] > 0:
+                print(f"{name} {language} {result['within-testing']['comodification_count']} / {result['within-testing']['count']} = {result['within-testing']['comodification_count'] / result['within-testing']['count']}")
+            else:
+                print(f"{name} {language} 0 / 0 = 0")
+            print("[within-production]")
+            if result['within-production']['count'] > 0:
+                print(f"{name} {language} {result['within-production']['comodification_count']} / {result['within-production']['count']} = {result['within-production']['comodification_count'] / result['within-production']['count']}")
+            else:
+                print(f"{name} {language} 0 / 0 = 0")
+            print("[across-testing]")
+            if result['across-testing']['count'] > 0:
+                print(f"{name} {language} {result['across-testing']['comodification_count']} / {result['across-testing']['count']} = {result['across-testing']['comodification_count'] / result['across-testing']['count']}")
+            else:
+                print(f"{name} {language} 0 / 0 = 0")
+            print("[across-production]")
+            if result['across-production']['count'] > 0:
+                print(f"{name} {language} {result['across-production']['comodification_count']} / {result['across-production']['count']} = {result['across-production']['comodification_count'] / result['across-production']['count']}")
+            else:
+                print(f"{name} {language} 0 / 0 = 0")
 
 if __name__ == "__main__":
     dataset_file = project_root / "dataset/selected_projects.json"
