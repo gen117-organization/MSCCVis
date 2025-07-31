@@ -59,8 +59,9 @@ def analyze_repo(project):
                             if int(fragment["parent"]["clone_id"]) not in prev[parent.hexsha]:
                                 prev[parent.hexsha][int(fragment["parent"]["clone_id"])] = {}
                             if (int(fragment["child"]["clone_id"]) not in prev[commit.hexsha]) or (int(fragment["child"]["index"]) not in prev[commit.hexsha][int(fragment["child"]["clone_id"])]):
-                                continue
-                            prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
+                                prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = (None, None)
+                            else:
+                                prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
                         if fragment["type"] == "modified":
                             latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
                             if latest_clone_id is not None and latest_index is not None:
