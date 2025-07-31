@@ -57,7 +57,8 @@ def analyze_repo(project):
                     for fragment in modified_clone["fragments"]:
                         if int(fragment["parent"]["clone_id"]) not in prev[parent.hexsha]:
                             prev[parent.hexsha][int(fragment["parent"]["clone_id"])] = {}
-                        prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
+                        if fragment["type"] != "added":
+                            prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
                         if fragment["type"] == "modified":
                             latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
                             if latest_clone_id is not None and latest_index is not None:
@@ -66,7 +67,6 @@ def analyze_repo(project):
                             latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
                             if latest_clone_id is not None and latest_index is not None:
                                 latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "added", "commit": commit.hexsha})
-                            prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = (None, None)
             finished_commits.append(commit.hexsha)
             prev.pop(commit.hexsha)
         dest_dir = project_root / "dest/csv" / name
