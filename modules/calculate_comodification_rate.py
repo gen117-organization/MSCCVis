@@ -43,9 +43,5 @@ if __name__ == "__main__":
     dataset_file = project_root / "dataset/selected_projects.json"
     with open(dataset_file, "r") as f:
         dataset = json.load(f)
-    outputs = []
     for project in dataset:
-        url = project["URL"]
-        name = url.split("/")[-2] + "." + url.split("/")[-1]
-        workdir = project_root / "dest/projects" / name
-        analyze_repo(workdir)
+        analyze_repo(project)
