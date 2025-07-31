@@ -52,6 +52,7 @@ def analyze_repo(project):
                     continue
                 with open(modified_clones_file, "r") as f:
                     modified_clones = json.load(f)
+                prev[parent.hexsha] = {}
                 for modified_clone in modified_clones:
                     for fragment in modified_clone["fragments"]:
                         if int(fragment["parent"]["clone_id"]) not in prev[parent.hexsha]:
