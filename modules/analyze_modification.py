@@ -77,4 +77,4 @@ def analyze_repo(project):
             for clone_id in latest_codeclones:
                 for index in latest_codeclones[clone_id]:
                     modification_str = json.dumps(latest_codeclones[clone_id][index]["modification"])
-                    f.write(f"{clone_id},{index},{latest_codeclones[clone_id][index]["file_path"]},{latest_codeclones[clone_id][index]["start_line"]},{latest_codeclones[clone_id][index]["end_line"]},{latest_codeclones[clone_id][index]["start_column"]},{latest_codeclones[clone_id][index]["end_column"]},{modification_str}\n")
+                    f.write(f"{clone_id},{index},{latest_codeclones[clone_id][index]["file_path"]},{latest_codeclones[clone_id][index]["start_line"]},{latest_codeclones[clone_id][index]["end_line"]},{latest_codeclones[clone_id][index]["start_col"]},{latest_codeclones[clone_id][index]["end_col"]},{modification_str}\n")
