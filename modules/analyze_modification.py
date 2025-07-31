@@ -55,9 +55,9 @@ def analyze_repo(project):
                 prev[parent.hexsha] = {}
                 for modified_clone in modified_clones:
                     for fragment in modified_clone["fragments"]:
-                        if int(fragment["parent"]["clone_id"]) not in prev[parent.hexsha]:
-                            prev[parent.hexsha][int(fragment["parent"]["clone_id"])] = {}
                         if fragment["type"] != "added":
+                            if int(fragment["parent"]["clone_id"]) not in prev[parent.hexsha]:
+                                prev[parent.hexsha][int(fragment["parent"]["clone_id"])] = {}
                             prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
                         if fragment["type"] == "modified":
                             latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
