@@ -13,7 +13,7 @@ def analyze_repo(project):
     languages = project["languages"]
     for language in languages:
         with open(project_root / "dest/csv" / name / f"{language}.csv", "r") as f:
-            reader = csv.DictReader(f)
+            reader = csv.DictReader(f, delimiter=";")
             clonesets = {}
             for row in reader:
                 clone_id = row["clone_id"]
@@ -25,7 +25,6 @@ def analyze_repo(project):
             for clone_id, rows in clonesets.items():
                 modifications = {}
                 for row in rows:
-                    print(row["modification"])
                     m_list = json.loads(row["modification"])
                     for m in m_list:
                         if m["commit"] not in modifications:

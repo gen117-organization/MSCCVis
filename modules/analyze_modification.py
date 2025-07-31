@@ -78,8 +78,8 @@ def analyze_repo(project):
         dest_dir = project_root / "dest/csv" / name
         dest_dir.mkdir(parents=True, exist_ok=True)
         with open(dest_dir / f"{language}.csv", "w") as f:
-            f.write("clone_id,index,file_path,start_line,end_line,start_column,end_column,modification\n")
+            f.write("clone_id;index;file_path;start_line;end_line;start_column;end_column;modification\n")
             for clone_id in latest_codeclones:
                 for index in latest_codeclones[clone_id]:
                     modification_str = json.dumps(latest_codeclones[clone_id][index]["modification"])
-                    f.write(f"{clone_id},{index},{latest_codeclones[clone_id][index]["file_path"]},{latest_codeclones[clone_id][index]["start_line"]},{latest_codeclones[clone_id][index]["end_line"]},{latest_codeclones[clone_id][index]["start_col"]},{latest_codeclones[clone_id][index]["end_col"]},{modification_str}\n")
+                    f.write(f"{clone_id};{index};{latest_codeclones[clone_id][index]["file_path"]};{latest_codeclones[clone_id][index]["start_line"]};{latest_codeclones[clone_id][index]["end_line"]};{latest_codeclones[clone_id][index]["start_col"]};{latest_codeclones[clone_id][index]["end_col"]};{modification_str}\n")
