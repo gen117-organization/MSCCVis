@@ -49,8 +49,6 @@ def analyze_repo(project):
                 modified_clones_file = project_root / "dest/modified_clones" / name / f"{parent.hexsha}-{commit.hexsha}" / f"{language}.json"
                 if not modified_clones_file.exists():
                     prev[parent.hexsha] = prev[commit.hexsha]
-                    if len(commit.parents) == 1:
-                        prev.pop(commit.hexsha)
                     continue
                 with open(modified_clones_file, "r") as f:
                     modified_clones = json.load(f)
