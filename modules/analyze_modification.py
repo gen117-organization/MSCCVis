@@ -22,40 +22,58 @@ def analyze_repo(project):
         with open(hcommit_ccfsw_file, "r") as f:
             hcommit_ccfsw = json.load(f)
         latest_file_map = FileMapper(hcommit_ccfsw["file_data"], str(workdir))
-        history = {head_commit.hexsha: {}}
+        latest_codeclones = {}
+        prev = {head_commit.hexsha: {}}
         for clone_set in hcommit_ccfsw["clone_sets"]:
             clone_id = clone_set["clone_id"]
-            history[head_commit.hexsha][clone_id] = {}
+            latest_codeclones[clone_id] = {}
+            prev[head_commit.hexsha][clone_id] = {}
             for index, fragment in enumerate(clone_set["fragments"]):
-                history[head_commit.hexsha][clone_id][index] = []
+                latest_codeclones[clone_id][index] = {
+                    "file_path": latest_file_map.get_file_path(fragment["file_id"]),
+                    "start_line": fragment["start_line"],
+                    "end_line": fragment["end_line"],
+                    "start_column": fragment["start_column"],
+                    "end_column": fragment["end_column"],
+                    "modification": []
+                }
+                prev[head_commit.hexsha][clone_id][index] = (clone_id, index)
         finished_commits = []
         queue = [head_commit]
-        modified_commit_count = 0
         while len(queue) > 0:
             commit = queue.pop(0)
-            if modified_commit_count > 100:
-                break
             if commit.hexsha in finished_commits:
                 continue
             for parent in commit.parents:
                 modified_clones_file = project_root / "dest/modified_clones" / name / f"{parent.hexsha}-{commit.hexsha}" / f"{language}.json"
                 if not modified_clones_file.exists():
-                    for clone_id in history[commit.hexsha]:
-                        for index in history[commit.hexsha][clone_id]:
-                            history[parent.hexsha] = {clone_id: {index: []}}
-                            for t in history[commit.hexsha][clone_id][index]:
-                                if (t[1] is not None) and (t[2] is not None):
-                                    history[commit.hexsha][clone_id][index].append((parent.hexsha, t[1], t[2]))
+                    prev[parent.hexsha] = prev[commit.hexsha]
+                    if len(commit.parents) == 1:
+                        prev.pop(commit.hexsha)
                     continue
                 with open(modified_clones_file, "r") as f:
                     modified_clones = json.load(f)
-                modified_commit_count += 1
                 for modified_clone in modified_clones:
                     for fragment in modified_clone["fragments"]:
-                        if fragment["type"] == "added":
-                            history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])].append((parent.hexsha, None, None))
-                        else:
-                            history[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])].append((parent.hexsha, int(fragment["parent"]["clone_id"]), int(fragment["parent"]["index"])))
-                            history[parent.hexsha] = {int(fragment["parent"]["clone_id"]): {int(fragment["parent"]["index"]): []}}
+                        if int(fragment["parent"]["clone_id"]) not in prev[parent.hexsha]:
+                            prev[parent.hexsha][int(fragment["parent"]["clone_id"])] = {}
+                        prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
+                        if fragment["type"] == "modified":
+                            latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
+                            if latest_clone_id is not None and latest_index is not None:
+                                latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "modified", "commit": commit.hexsha})
+                        elif fragment["type"] == "added":
+                            latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
+                            if latest_clone_id is not None and latest_index is not None:
+                                latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "added", "commit": commit.hexsha})
+                            prev[parent.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = (None, None)
                 queue.append(parent)
             finished_commits.append(commit.hexsha)
+            prev.pop(commit.hexsha)
+        dest_dir = project_root / "dest/csv" / name / f"{language}.csv"
+        with open(dest_dir, "w") as f:
+            f.write("clone_id,index,file_path,start_line,end_line,start_column,end_column,modification\n")
+            for clone_id in latest_codeclones:
+                for index in latest_codeclones[clone_id]:
+                    modification_str = json.dumps(latest_codeclones[clone_id][index]["modification"])
+                    f.write(f"{clone_id},{index},{latest_codeclones[clone_id][index]["file_path"]},{latest_codeclones[clone_id][index]["start_line"]},{latest_codeclones[clone_id][index]["end_line"]},{latest_codeclones[clone_id][index]["start_column"]},{latest_codeclones[clone_id][index]["end_column"]},{modification_str}\n")
