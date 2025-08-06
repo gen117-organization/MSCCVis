@@ -68,36 +68,37 @@ def create_clone_ratio_chart_for_project_language(project_data, language, output
     non_comodified_clone = clone_ratio_values - comodified_clone
     
     # グラフの作成
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(10, 6))
     
-    # X軸の位置
-    x_pos = np.arange(len(modes))
+    # Y軸の位置
+    y_pos = np.arange(len(modes))
     
-    # 積み上げ棒グラフ（縦向き）
-    bars1 = ax.bar(x_pos, non_comodified_clone, color='lightblue', 
-                   label='Non-comodified clone', alpha=0.8)
-    bars2 = ax.bar(x_pos, comodified_clone, bottom=non_comodified_clone,
-                   color='orange', label='Comodified clone', alpha=0.8)
+    # 積み上げ棒グラフ（横向き）- 棒を細くするためheightを調整
+    bar_height = 0.6  # 棒の太さを調整（デフォルトは0.8）
+    bars1 = ax.barh(y_pos, non_comodified_clone, height=bar_height, color='lightblue', 
+                    label='Non-comodified clone', alpha=0.8)
+    bars2 = ax.barh(y_pos, comodified_clone, left=non_comodified_clone, height=bar_height,
+                    color='orange', label='Comodified clone', alpha=0.8)
     
     # グラフの設定
-    ax.set_xticks(x_pos)
-    ax.set_xticklabels([mode_titles[mode] for mode in modes], fontsize=12, rotation=45, ha='right')
-    ax.set_ylabel('Clone Ratio', fontsize=14)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels([mode_titles[mode] for mode in modes], fontsize=12)
+    ax.set_xlabel('Clone Ratio', fontsize=14)
     ax.set_title(f'Clone Ratio with Co-modification Rate\n{project_name} - {language}', 
                  fontsize=16, fontweight='bold', pad=20)
-    ax.legend(loc='upper right', fontsize=12)
-    ax.grid(axis='y', alpha=0.3)
+    ax.legend(loc='lower right', fontsize=12)
+    ax.grid(axis='x', alpha=0.3)
     
-    # Y軸の範囲設定
+    # X軸の範囲設定
     max_ratio = max(clone_ratio_values) if len(clone_ratio_values) > 0 and max(clone_ratio_values) > 0 else 1
-    ax.set_ylim(0, max_ratio * 1.1)
+    ax.set_xlim(0, max_ratio * 1.1)
     
-    # 値をバーの上に表示
+    # 値をバーの右に表示
     for i, (total, comod) in enumerate(zip(clone_ratio_values, comod_ratio_values)):
         if total > 0:
-            ax.text(i, total + max_ratio * 0.02, 
+            ax.text(total + max_ratio * 0.02, i, 
                    f'{total:.3f}\n({comod:.1%})', 
-                   ha='center', va='bottom', fontsize=10, fontweight='bold')
+                   ha='left', va='center', fontsize=10, fontweight='bold')
     
     plt.tight_layout()
     
