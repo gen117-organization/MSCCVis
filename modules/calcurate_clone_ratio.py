@@ -125,5 +125,5 @@ def analyze_repo(project: dict):
             elif len(production_sets) >= 2:
                 if len(production_fragments) >= 2:
                     clonesets["across-production"][clone_id] = production_fragments
-        result[language] = calculate_clone_ratio(clonesets, hcommit_ccfsw["file_data"])
+        result[language] = calculate_clone_ratio(clonesets, hcommit_ccfsw["file_data"], file_mapper)
     return result
