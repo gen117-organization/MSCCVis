@@ -85,7 +85,7 @@ class CorrespondedLines:
                             tmp2 = result[child_path]["lines"][l]
                             result[child_path]["lines"][l] = tmp1
                             tmp1 = tmp2
-                elif len(diff["deleted_lines"]) > 0:
+                if len(diff["deleted_lines"]) > 0:
                     for child_line in result[child_path]["lines"].keys():
                         if result[child_path]["lines"][child_line] in diff["deleted_lines"]:
                             for l in range(child_line, child_file_loc):
@@ -111,7 +111,7 @@ class CorrespondedLines:
                         else:
                             lines[l] = parent_line
                             parent_line += 1
-                elif len(diff["deleted_lines"]) > 0:
+                if len(diff["deleted_lines"]) > 0:
                     child_line = 1
                     for l in range(1, parent_file_loc+1):
                         if l not in diff["deleted_lines"]:
@@ -402,7 +402,3 @@ def analyze_repo(project: dict):
                     continue
                 queue.append(parent)
             finished_commits.append(commit.hexsha)
-
-
-if __name__ == "__main__":
-    analyze_repo()

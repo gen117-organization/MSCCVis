@@ -11,6 +11,7 @@ def analyze_repo(project):
     url = project["URL"]
     name = url.split("/")[-2] + "." + url.split("/")[-1]
     languages = project["languages"]
+    result = {}
     for language in languages:
         with open(project_root / "dest/csv" / name / f"{language}.csv", "r") as f:
             reader = csv.DictReader(f, delimiter=";")
@@ -58,7 +59,7 @@ def analyze_repo(project):
                 elif len(production_sets) >= 2:
                     if len(production_fragments) >= 2:
                         clonesets["across-production"][clone_id] = production_fragments
-            result = {
+            rslt = {
                 "within-testing": {
                     "count": 0,
                     "comodification_count": 0
@@ -77,7 +78,7 @@ def analyze_repo(project):
                 }
             }
             for clone_id, fragments in clonesets["within-testing"].items():
-                result["within-testing"]["count"] += 1
+                rslt["within-testing"]["count"] += 1
                 modifications = {}
                 for fragment in fragments:
                     m_list = json.loads(fragment["modification"])
@@ -87,9 +88,9 @@ def analyze_repo(project):
                         modifications[m["commit"]].append(m["type"])
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
-                        result["within-testing"]["comodification_count"] += 1
+                        rslt["within-testing"]["comodification_count"] += 1
             for clone_id, fragments in clonesets["within-production"].items():
-                result["within-production"]["count"] += 1
+                rslt["within-production"]["count"] += 1
                 modifications = {}
                 for fragment in fragments:
                     m_list = json.loads(fragment["modification"])
@@ -99,9 +100,9 @@ def analyze_repo(project):
                         modifications[m["commit"]].append(m["type"])
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
-                        result["within-production"]["comodification_count"] += 1
+                        rslt["within-production"]["comodification_count"] += 1
             for clone_id, fragments in clonesets["across-testing"].items():
-                result["across-testing"]["count"] += 1
+                rslt["across-testing"]["count"] += 1
                 modifications = {}
                 for fragment in fragments:
                     m_list = json.loads(fragment["modification"])
@@ -111,9 +112,9 @@ def analyze_repo(project):
                         modifications[m["commit"]].append(m["type"])
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
-                        result["across-testing"]["comodification_count"] += 1
+                        rslt["across-testing"]["comodification_count"] += 1
             for clone_id, fragments in clonesets["across-production"].items():
-                result["across-production"]["count"] += 1
+                rslt["across-production"]["count"] += 1
                 modifications = {}
                 for fragment in fragments:
                     m_list = json.loads(fragment["modification"])
@@ -123,31 +124,6 @@ def analyze_repo(project):
                         modifications[m["commit"]].append(m["type"])
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
-                        result["across-production"]["comodification_count"] += 1
-            print("[within-testing]")
-            if result['within-testing']['count'] > 0:
-                print(f"{name} {language} {result['within-testing']['comodification_count']} / {result['within-testing']['count']} = {result['within-testing']['comodification_count'] / result['within-testing']['count']}")
-            else:
-                print(f"{name} {language} 0 / 0 = 0")
-            print("[within-production]")
-            if result['within-production']['count'] > 0:
-                print(f"{name} {language} {result['within-production']['comodification_count']} / {result['within-production']['count']} = {result['within-production']['comodification_count'] / result['within-production']['count']}")
-            else:
-                print(f"{name} {language} 0 / 0 = 0")
-            print("[across-testing]")
-            if result['across-testing']['count'] > 0:
-                print(f"{name} {language} {result['across-testing']['comodification_count']} / {result['across-testing']['count']} = {result['across-testing']['comodification_count'] / result['across-testing']['count']}")
-            else:
-                print(f"{name} {language} 0 / 0 = 0")
-            print("[across-production]")
-            if result['across-production']['count'] > 0:
-                print(f"{name} {language} {result['across-production']['comodification_count']} / {result['across-production']['count']} = {result['across-production']['comodification_count'] / result['across-production']['count']}")
-            else:
-                print(f"{name} {language} 0 / 0 = 0")
-
-if __name__ == "__main__":
-    dataset_file = project_root / "dataset/selected_projects.json"
-    with open(dataset_file, "r") as f:
-        dataset = json.load(f)
-    for project in dataset:
-        analyze_repo(project)
+                        rslt["across-production"]["comodification_count"] += 1
+            result[language] = rslt
+    return result

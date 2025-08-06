@@ -27,44 +27,44 @@ def parse_diff_str(diff: str):
 
 def find_moving_lines(commit: git.Commit, name: str) -> dict:
     return_result = {}
-    for parent in commit.parents:
-        diffs = parent.diff(commit, create_patch=True)
+    for parent_commit in commit.parents:
+        diff_hunks = parent_commit.diff(commit, create_patch=True)
         output_result = []
-        for diff in diffs:
-            if diff.diff:
-                child_path = diff.b_path
-                parent_path = diff.a_path
+        for diff_hunk in diff_hunks:
+            if diff_hunk.diff:
+                child_path = diff_hunk.b_path
+                parent_path = diff_hunk.a_path
                 try:
-                    result = parse_diff_str(diff.diff.decode("utf-8"))
+                    result = parse_diff_str(diff_hunk.diff.decode("utf-8"))
                     if result is None:
                         continue
                 except UnicodeDecodeError:
                     print(f"diff.diff.decode('utf-8')のデコードに失敗しました．")
-                    print(diff.diff)
+                    print(diff_hunk.diff)
                     continue
-                hunk, old_line_count, new_line_count = result
-                temp_added_lines = []
-                temp_deleted_lines = []
+                hunk, old_file_line_count, new_file_line_count = result
+                potential_inserted_lines = []
+                potential_deleted_lines = []
                 for line in hunk:
                     if line.startswith("+"):
-                        temp_added_lines.append(new_line_count)
-                        new_line_count += 1
+                        potential_inserted_lines.append(new_file_line_count)
+                        new_file_line_count += 1
                     elif line.startswith("-"):
-                        temp_deleted_lines.append(old_line_count)
-                        old_line_count += 1
+                        potential_deleted_lines.append(old_file_line_count)
+                        old_file_line_count += 1
                     else:
-                        old_line_count += 1
-                        new_line_count += 1
+                        old_file_line_count += 1
+                        new_file_line_count += 1
                 inserted_lines = []
                 deleted_lines = []
                 modified_lines = []
-                for added_line in temp_added_lines:
-                    if added_line not in deleted_lines:
-                        inserted_lines.append(added_line)
+                for inserted_line in potential_inserted_lines:
+                    if inserted_line not in potential_deleted_lines:
+                        inserted_lines.append(inserted_line)
                     else:
-                        modified_lines.append(added_line)
-                for deleted_line in temp_deleted_lines:
-                    if deleted_line not in temp_added_lines:
+                        modified_lines.append(inserted_line)
+                for deleted_line in potential_deleted_lines:
+                    if deleted_line not in potential_inserted_lines:
                         deleted_lines.append(deleted_line)
                 output_result.append({
                     "child_path": child_path,
@@ -76,10 +76,10 @@ def find_moving_lines(commit: git.Commit, name: str) -> dict:
         if len(output_result) > 0:
             dest_dir = project_root / "dest/moving_lines" / name
             dest_dir.mkdir(parents=True, exist_ok=True)
-            dest_file = dest_dir / f"{parent.hexsha}-{commit.hexsha}.json"
+            dest_file = dest_dir / f"{parent_commit.hexsha}-{commit.hexsha}.json"
             with open(dest_file, "w") as f:
                 json.dump(output_result, f)
-            return_result[parent.hexsha] = output_result
+            return_result[parent_commit.hexsha] = output_result
     return return_result
                 
 
