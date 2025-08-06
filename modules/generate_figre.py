@@ -74,11 +74,12 @@ def create_clone_ratio_chart_for_project_language(project_data, language, output
     y_pos = np.arange(len(modes))
     
     # 積み上げ棒グラフ（横向き）- 棒を細くするためheightを調整
+    # オレンジを右端から開始するように順序を変更
     bar_height = 0.6  # 棒の太さを調整（デフォルトは0.8）
-    bars1 = ax.barh(y_pos, non_comodified_clone, height=bar_height, color='lightblue', 
-                    label='Non-comodified clone', alpha=0.8)
-    bars2 = ax.barh(y_pos, comodified_clone, left=non_comodified_clone, height=bar_height,
-                    color='orange', label='Comodified clone', alpha=0.8)
+    bars1 = ax.barh(y_pos, comodified_clone, height=bar_height, color='orange', 
+                    label='Comodified clone', alpha=0.8)
+    bars2 = ax.barh(y_pos, non_comodified_clone, left=comodified_clone, height=bar_height,
+                    color='lightblue', label='Non-comodified clone', alpha=0.8)
     
     # グラフの設定
     ax.set_yticks(y_pos)
