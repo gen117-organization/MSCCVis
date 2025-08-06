@@ -33,7 +33,7 @@ def get_latest_codebases(name: str):
         return list(codebases)
     
 
-def calculate_clone_ratio(clone_sets: dict, file_datas: list[dict]):
+def calculate_clone_ratio(clone_sets: dict, file_datas: list[dict], file_mapper: FileMapper):
     """
     クローン率を算出
     """
@@ -101,27 +101,29 @@ def analyze_repo(project: dict):
                     testing_fragments.append(fragment)
                 else:
                     production_fragments.append(fragment)
-                testing_sets = set()
-                for fragment in testing_fragments:
-                    for codebase in codebases:
-                        if fragment["file_path"].startswith(codebase):
-                            testing_sets.add(codebase)
-                if len(testing_sets) == 1:
-                    if len(testing_fragments) >= 2:
-                        clonesets["within-testing"][clone_id] = testing_fragments
-                elif len(testing_sets) >= 2:
-                    if len(testing_fragments) >= 2:
-                        clonesets["across-testing"][clone_id] = testing_fragments
-                production_sets = set()
-                for fragment in production_fragments:
-                    for codebase in codebases:
-                        if fragment["file_path"].startswith(codebase):
-                            production_sets.add(codebase)
-                if len(production_sets) == 1:
-                    if len(production_fragments) >= 2:
-                        clonesets["within-production"][clone_id] = production_fragments
-                elif len(production_sets) >= 2:
-                    if len(production_fragments) >= 2:
-                        clonesets["across-production"][clone_id] = production_fragments
+            testing_sets = set()
+            for fragment in testing_fragments:
+                file_path = file_mapper.get_file_path(fragment["file_id"])
+                for codebase in codebases:
+                    if file_path.startswith(codebase):
+                        testing_sets.add(codebase)
+            if len(testing_sets) == 1:
+                if len(testing_fragments) >= 2:
+                    clonesets["within-testing"][clone_id] = testing_fragments
+            elif len(testing_sets) >= 2:
+                if len(testing_fragments) >= 2:
+                    clonesets["across-testing"][clone_id] = testing_fragments
+            production_sets = set()
+            for fragment in production_fragments:
+                file_path = file_mapper.get_file_path(fragment["file_id"])
+                for codebase in codebases:
+                    if file_path.startswith(codebase):
+                        production_sets.add(codebase)
+            if len(production_sets) == 1:
+                if len(production_fragments) >= 2:
+                    clonesets["within-production"][clone_id] = production_fragments
+            elif len(production_sets) >= 2:
+                if len(production_fragments) >= 2:
+                    clonesets["across-production"][clone_id] = production_fragments
         result[language] = calculate_clone_ratio(clonesets, hcommit_ccfsw["file_data"])
     return result
