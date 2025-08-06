@@ -13,9 +13,109 @@ import calculate_comodification_rate
 import calcurate_clone_ratio
 
 
+def create_clone_ratio_chart_for_project_language(project_data, language, output_dir=None):
+    """
+    単一プロジェクトの単一言語のクローン率と同時修正率を縦向きの棒グラフで可視化する
+    
+    Args:
+        project_data: 単一プロジェクトのデータ
+        language: 対象言語
+        output_dir: 出力ディレクトリ（Noneの場合は表示のみ）
+    """
+    # 日本語フォントの設定
+    plt.rcParams['font.family'] = 'DejaVu Sans'
+    
+    project_name = project_data['name']
+    clone_ratio = project_data['clone_ratio']
+    comodification_rate = project_data['comodification_rate']
+    
+    # 指定された言語のデータを取得
+    lang_clone_data = clone_ratio.get(language, {})
+    lang_comod_data = comodification_rate.get(language, {})
+    
+    modes = ["within-testing", "within-production", "across-testing", "across-production"]
+    mode_titles = {
+        "within-testing": "Within Testing",
+        "within-production": "Within Production", 
+        "across-testing": "Across Testing",
+        "across-production": "Across Production"
+    }
+    
+    # データの準備
+    clone_ratio_values = []
+    comod_ratio_values = []
+    
+    for mode in modes:
+        # クローン率の取得
+        clone_ratio_value = lang_clone_data.get(f"{mode}_clone_ratio", 0)
+        
+        # 同時修正率の計算
+        mode_comod_data = lang_comod_data.get(mode, {"count": 0, "comodification_count": 0})
+        total_clones = mode_comod_data["count"]
+        total_comodifications = mode_comod_data["comodification_count"]
+        comod_ratio = total_comodifications / total_clones if total_clones > 0 else 0
+        
+        clone_ratio_values.append(clone_ratio_value)
+        comod_ratio_values.append(comod_ratio)
+    
+    # データをnumpy配列に変換
+    clone_ratio_values = np.array(clone_ratio_values)
+    comod_ratio_values = np.array(comod_ratio_values)
+    
+    # 同時修正される部分のクローン率
+    comodified_clone = clone_ratio_values * comod_ratio_values
+    # 同時修正されない部分のクローン率
+    non_comodified_clone = clone_ratio_values - comodified_clone
+    
+    # グラフの作成
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    # X軸の位置
+    x_pos = np.arange(len(modes))
+    
+    # 積み上げ棒グラフ（縦向き）
+    bars1 = ax.bar(x_pos, non_comodified_clone, color='lightblue', 
+                   label='Non-comodified clone', alpha=0.8)
+    bars2 = ax.bar(x_pos, comodified_clone, bottom=non_comodified_clone,
+                   color='orange', label='Comodified clone', alpha=0.8)
+    
+    # グラフの設定
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels([mode_titles[mode] for mode in modes], fontsize=12, rotation=45, ha='right')
+    ax.set_ylabel('Clone Ratio', fontsize=14)
+    ax.set_title(f'Clone Ratio with Co-modification Rate\n{project_name} - {language}', 
+                 fontsize=16, fontweight='bold', pad=20)
+    ax.legend(loc='upper right', fontsize=12)
+    ax.grid(axis='y', alpha=0.3)
+    
+    # Y軸の範囲設定
+    max_ratio = max(clone_ratio_values) if len(clone_ratio_values) > 0 and max(clone_ratio_values) > 0 else 1
+    ax.set_ylim(0, max_ratio * 1.1)
+    
+    # 値をバーの上に表示
+    for i, (total, comod) in enumerate(zip(clone_ratio_values, comod_ratio_values)):
+        if total > 0:
+            ax.text(i, total + max_ratio * 0.02, 
+                   f'{total:.3f}\n({comod:.1%})', 
+                   ha='center', va='bottom', fontsize=10, fontweight='bold')
+    
+    plt.tight_layout()
+    
+    if output_dir:
+        # プロジェクト名と言語名を安全なファイル名に変換
+        safe_project_name = project_name.replace("/", "_").replace(".", "_")
+        safe_language_name = language.replace("/", "_").replace(".", "_")
+        output_path = Path(output_dir) / f"clone_ratio_{safe_project_name}_{safe_language_name}.png"
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        print(f"グラフを保存しました: {output_path}")
+        plt.close()  # メモリを節約するため明示的にクローズ
+    else:
+        plt.show()
+
+
 def create_clone_ratio_chart_for_project(project_data, output_dir=None):
     """
-    単一プロジェクトのクローン率と同時修正率を横向きの棒グラフで可視化する
+    単一プロジェクトのクローン率と同時修正率を横向きの棒グラフで可視化する（従来の機能を保持）
     
     Args:
         project_data: 単一プロジェクトのデータ
@@ -116,9 +216,9 @@ def create_clone_ratio_chart_for_project(project_data, output_dir=None):
     if output_dir:
         # プロジェクト名を安全なファイル名に変換
         safe_project_name = project_name.replace("/", "_").replace(".", "_")
-        output_path = Path(output_dir) / f"clone_ratio_{safe_project_name}.png"
+        output_path = Path(output_dir) / f"clone_ratio_{safe_project_name}_all_languages.png"
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
-        print(f"グラフを保存しました: {output_path}")
+        print(f"プロジェクト全言語のグラフを保存しました: {output_path}")
         plt.close()  # メモリを節約するため明示的にクローズ
     else:
         plt.show()
@@ -276,19 +376,37 @@ if __name__ == "__main__":
                 print(f"エラー ({name}): {e}")
                 continue
         
-        # プロジェクトごとに個別のグラフを生成
+        # プロジェクトごと・言語ごとに個別のグラフを生成
         if projects_data:
             output_dir = project_root / "dest"
+            total_charts = 0
             
-            # 各プロジェクトごとに個別のグラフを作成
+            # 各プロジェクトごと・言語ごとに個別のグラフを作成
             for project_data in projects_data:
-                print(f"グラフを生成中: {project_data['name']}")
+                project_name = project_data['name']
+                clone_ratio = project_data['clone_ratio']
+                languages = list(clone_ratio.keys())
+                
+                print(f"プロジェクト '{project_name}' のグラフを生成中...")
+                
+                # 言語ごとに個別のグラフを作成
+                for language in languages:
+                    print(f"  - {language} のグラフを生成中...")
+                    create_clone_ratio_chart_for_project_language(
+                        project_data, language, output_dir=output_dir
+                    )
+                    total_charts += 1
+                
+                # プロジェクトの全言語をまとめたグラフも作成
+                print(f"  - {project_name} の全言語まとめグラフを生成中...")
                 create_clone_ratio_chart_for_project(project_data, output_dir=output_dir)
+                total_charts += 1
             
             # 全プロジェクトをまとめたグラフも作成
             print("全プロジェクトのまとめグラフを生成中...")
             create_clone_ratio_with_comodification_chart(projects_data, output_dir=output_dir)
+            total_charts += 1
             
-            print(f"合計 {len(projects_data) + 1} 個のグラフを生成しました。")
+            print(f"合計 {total_charts} 個のグラフを生成しました。")
         else:
             print("分析可能なプロジェクトがありませんでした。")
