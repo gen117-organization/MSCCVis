@@ -86,7 +86,6 @@ def create_clone_ratio_chart_for_project_language(project_data, language, output
     ax.set_xlabel('Clone Ratio', fontsize=14)
     ax.set_title(f'Clone Ratio with Co-modification Rate\n{project_name} - {language}', 
                  fontsize=16, fontweight='bold', pad=20)
-    ax.legend(loc='lower right', fontsize=12)
     ax.grid(axis='x', alpha=0.3)
     
     # X軸の範囲設定
