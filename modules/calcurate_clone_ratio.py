@@ -225,3 +225,23 @@ def calculate_clone_ratio(clone_sets: list[dict], file_datas: list[dict]):
         result[f"{mode}_cross_service_clone_ratio"] = cross_clone / cross_total if cross_total > 0 else 0
 
     return result
+
+
+def analyze_repo(project: dict):
+    url = project["URL"]
+    name = url.split("/")[-2] + "." + url.split("/")[-1]
+    workdir = project_root / "dest/projects" / name
+    git_repo = git.Repo(workdir)
+    head_commit = git_repo.head.commit
+    languages = project["languages"]
+    result = {}
+    for language in languages:
+        hcommit_ccfsw_file = project_root / "dest/clones_json" / name / head_commit.hexsha / f"{language}.json"
+        with open(hcommit_ccfsw_file, "r") as f:
+            hcommit_ccfsw = json.load(f)
+        codebases = get_latest_codebases(name)
+        file_mapper = FileMapper(hcommit_ccfsw["file_data"], str(workdir))
+        clone_sets = filter_testing_clone_set(hcommit_ccfsw["clone_sets"], file_mapper)
+        clone_sets = filter_cross_service_clone_set(codebases, clone_sets, file_mapper)
+        result[language] = calculate_clone_ratio(clone_sets, hcommit_ccfsw["file_data"])
+    return result

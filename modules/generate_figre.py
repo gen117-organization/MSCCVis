@@ -22,10 +22,6 @@ if __name__ == "__main__":
             head_commit = git_repo.head.commit
             comodification_rate = calculate_comodification_rate.analyze_repo(project)
             print(comodification_rate)
-            for language in project["languages"]:
-                hcommit_ccfsw_file = project_root / "dest/clones_json" / name / head_commit.hexsha / f"{language}.json"
-                with open(hcommit_ccfsw_file, "r") as f:
-                    hcommit_ccfsw = json.load(f)
-                clone_ratio = calcurate_clone_ratio.calculate_clone_ratio(hcommit_ccfsw["clone_sets"], hcommit_ccfsw["file_data"])
-                print(clone_ratio)
+            clone_ratio = calcurate_clone_ratio.analyze_repo(project)
+            print(clone_ratio)
                 
