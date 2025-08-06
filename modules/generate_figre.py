@@ -90,13 +90,12 @@ def create_clone_ratio_chart_for_project_language(project_data, language, output
     ax.grid(axis='x', alpha=0.3)
     
     # X軸の範囲設定
-    max_ratio = max(clone_ratio_values) if len(clone_ratio_values) > 0 and max(clone_ratio_values) > 0 else 1
-    ax.set_xlim(0, max_ratio * 1.1)
+    ax.set_xlim(0, 1)
     
     # 値をバーの右に表示
     for i, (total, comod) in enumerate(zip(clone_ratio_values, comod_ratio_values)):
         if total > 0:
-            ax.text(total + max_ratio * 0.02, i, 
+            ax.text(total + 0.02, i, 
                    f'{total:.3f}\n({comod:.1%})', 
                    ha='left', va='center', fontsize=10, fontweight='bold')
     
