@@ -12,7 +12,7 @@ if __name__ == "__main__":
     with open(dataset_file, "r") as f:
         dataset = json.load(f)
     for project in dataset:
-        url = project["url"]
+        url = project["URL"]
         name = url.split("/")[-2] + "." + url.split("/")[-1]
         
         total = 0
