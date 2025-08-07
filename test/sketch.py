@@ -11,12 +11,11 @@ if __name__ == "__main__":
     dataset_file = project_root / "dataset/selected_projects.json"
     with open(dataset_file, "r") as f:
         dataset = json.load(f)
+    total = 0
+    no_detected = 0
     for project in dataset:
         url = project["URL"]
         name = url.split("/")[-2] + "." + url.split("/")[-1]
-        
-        total = 0
-        no_detected = 0
         for language in project["languages"]:
             clones_csv = project_root / "dest/csv" / name / f"{language}.csv"
             with open(clones_csv, "r") as f:
@@ -24,8 +23,8 @@ if __name__ == "__main__":
                 count = 0
                 for row in reader:
                     count += 1
-                total += count
                 if count == 0:
                     no_detected += 1
-        print(f"{name}: {total} {no_detected}")
+                total += 1
+    print(f"total: {total} no_detected: {no_detected}")
 
