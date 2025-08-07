@@ -18,7 +18,7 @@ if __name__ == "__main__":
         total = 0
         no_detected = 0
         for language in project["languages"]:
-            clones_csv = project_root / "dest/clones_json" / name / language + ".csv"
+            clones_csv = project_root / "dest/csv" / name / f"{language}.csv"
             with open(clones_csv, "r") as f:
                 reader = csv.DictReader(f, delimiter=";")
                 count = 0
