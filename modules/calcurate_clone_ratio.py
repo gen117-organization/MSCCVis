@@ -18,7 +18,6 @@ def get_latest_codebases(name: str):
     """
     ms_detection_file = project_root / "dest/ms_detection" / f"{name}.csv"
     with open(ms_detection_file, "r") as f:
-        import csv
         ms_detection_csv = csv.DictReader(f, delimiter=",")
         latest_row = None
         for row in ms_detection_csv:
