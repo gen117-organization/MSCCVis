@@ -38,8 +38,6 @@ def map_files(url: str) -> dict:
             row = next(reader)
             uSs = claim_parser.parse_uSs(row["uSs"])
             containers = claim_parser.parse_containers(row["CONTAINERS"])
-        os.remove(target)
-        os.remove(project_root / "dest/dc_choice" / "f{name}.csv")
 
         # GitHub Linguistの結果を読み込む
         target = project_root / "dest/github_linguist" / f"{name}.json"
