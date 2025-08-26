@@ -135,8 +135,9 @@ def collect_datas_of_repo(project: dict):
         detected_commits = {}
         need_to_detect_commits = {}
         queue = [hcommit.hexsha]
+        count = 0
         # コミットを幅優先探索
-        while (len(queue) > 0):
+        while (len(queue) > 0) and (count <= 110):
             commit_hash = queue.pop(0)
             commit = git_repo.commit(commit_hash)
             if commit_hash in finished_commits:
@@ -193,6 +194,7 @@ def collect_datas_of_repo(project: dict):
                     detect_cc(project_dir, name, language, commit_hash, exts[language])
                     detected_commits[language].append(commit_hash)
             finished_commits.append(commit_hash)
+            count += 1
             for parent in commit.parents:
                 if parent.hexsha in finished_commits:
                     continue
