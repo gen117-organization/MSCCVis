@@ -99,9 +99,9 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest_file = dest_dir / language
         if language in ANTLR_LANGUAGE:
-            cmd = ["java", "-jar", "-Xss128m", str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-antlr", "|".join(exts), "-w", "2", "-ccfsw", "set"]
+            cmd = ["java", "-jar", "-Xmx20G", "-Xss128m", str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-antlr", "|".join(exts), "-w", "2", "-ccfsw", "set"]
         else:
-            cmd = ["java", "-jar" ,str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-w", "2", "-ccfsw", "set"]
+            cmd = ["java", "-jar" , "-Xmx20G" , "-Xss128m", str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-w", "2", "-ccfsw", "set"]
         subprocess.run(cmd, check=True)
         
         json_dest_dir = project_root / "dest/clones_json" / name / commit_hash
