@@ -128,8 +128,6 @@ def collect_datas_of_repo(project: dict):
     # GitPythonのインスタンスの作成(分析に便利!)
     git_repo = git.Repo(str(project_dir))
     hcommit = git_repo.head.commit
-    for language in languages:
-        detect_cc(project_dir, name, language, hcommit.hexsha, exts[language])
     try:
         finished_commits = []
         detected_commits = {}
@@ -137,7 +135,7 @@ def collect_datas_of_repo(project: dict):
         queue = [hcommit.hexsha]
         count = 0
         # コミットを幅優先探索
-        while (len(queue) > 0) and (count <= 110):
+        while (len(queue) > 0) and (count <= 100):
             commit_hash = queue.pop(0)
             commit = git_repo.commit(commit_hash)
             if commit_hash in finished_commits:
@@ -177,6 +175,7 @@ def collect_datas_of_repo(project: dict):
                     detect_cc(project_dir, name, language, commit_hash, exts[language])
                     detected_commits[language].append(commit_hash)
                     need_to_detect_commits[language].remove(commit_hash)
+                    count += 1
                     continue
                 # この言語のファイルの修正が含まれているか判定する
                 is_modified = False
@@ -193,12 +192,17 @@ def collect_datas_of_repo(project: dict):
                 if is_modified:
                     detect_cc(project_dir, name, language, commit_hash, exts[language])
                     detected_commits[language].append(commit_hash)
+                    count += 1
             finished_commits.append(commit_hash)
-            count += 1
             for parent in commit.parents:
                 if parent.hexsha in finished_commits:
                     continue
                 queue.append(parent.hexsha)
+        detected_commits_dest_dir = project_root / "dest/detected_commits" / name
+        detected_commits_dest_dir.mkdir(parents=True, exist_ok=True)
+        detected_commits_dest_file = detected_commits_dest_dir / f"{hcommit.hexsha}.json"
+        with open(detected_commits_dest_file, "w") as f:
+            json.dump(detected_commits, f)
     except Exception as e:
         print(traceback.format_exc())
         print(e)

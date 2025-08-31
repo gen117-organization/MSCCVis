@@ -633,15 +633,297 @@
                 ],
                 "gravitee-apim-rest-api/gravitee-apim-rest-api-portal-security": [
                     "gravitee-apim-rest-api-portal-security"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-service": [
+                    "gravitee-apim-rest-api-service"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-audit": [
+                    "gravitee-apim-rest-api-services-audit"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-auto-fetch": [
+                    "gravitee-apim-rest-api-services-auto-fetch"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-dictionary": [
+                    "gravitee-apim-rest-api-services-dictionary"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-dynamic-properties": [
+                    "gravitee-apim-rest-api-services-dynamic-properties"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-events": [
+                    "gravitee-apim-rest-api-services-events"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-search-indexer": [
+                    "gravitee-apim-rest-api-services-search-indexer"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-subscription-pre-expiration-notif": [
+                    "gravitee-apim-rest-api-services-subscription-pre-expiration-notif"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-subscriptions": [
+                    "gravitee-apim-rest-api-services-subscriptions"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-sync": [
+                    "gravitee-apim-rest-api-services-sync"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-v3-upgrader": [
+                    "gravitee-apim-rest-api-services-v3-upgrader"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-spec-converter": [
+                    "gravitee-apim-rest-api-spec-converter"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-standalone/gravitee-apim-rest-api-standalone-bootstrap": [
+                    "gravitee-apim-rest-api-standalone-bootstrap"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-standalone/gravitee-apim-rest-api-standalone-container": [
+                    "gravitee-apim-rest-api-standalone-container"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-standalone/gravitee-apim-rest-api-standalone-distribution": [
+                    "gravitee-apim-rest-api-standalone-distribution"
+                ],
+                "gravitee-apim-rest-api/gravitee-apim-rest-api-test-fixtures": [
+                    "gravitee-apim-rest-api-test-fixtures"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-dynamicproperties/gravitee-apim-plugin-apiservice-dynamicproperties-http": [
+                    "gravitee-apim-plugin-apiservice-dynamicproperties-http"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice--handler": [
+                    "gravitee-apim-plugin-apiservice-handler"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-healthcheck-common": [
+                    "gravitee-apim-plugin-apiservice-healthcheck-common"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-healthcheck-http": [
+                    "gravitee-apim-plugin-apiservice-healthcheck-http"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-servicediscovery-consul": [
+                    "gravitee-apim-plugin-apiservice-servicediscovery-consul"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-handler": [
+                    "gravitee-apim-plugin-endpoint-handler"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-http-proxy": [
+                    "gravitee-apim-plugin-endpoint-http-proxy"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-mock": [
+                    "gravitee-apim-plugin-endpoint-mock"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-tcp-proxy": [
+                    "gravitee-apim-plugin-endpoint-tcp-proxy"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-entrypoint/gravitee-apim-plugin-entrypoint-handler": [
+                    "gravitee-apim-plugin-entrypoint-handler"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-entrypoint/gravitee-apim-plugin-entrypoint-http-proxy": [
+                    "gravitee-apim-plugin-entrypoint-http-proxy"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-entrypoint/gravitee-apim-plugin-entrypoint-tcp-proxy": [
+                    "gravitee-apim-plugin-entrypoint-tcp-proxy"
+                ],
+                "gravitee-apim-plugin/gravitee-apim-plugin-reactor/gravitee-apim-plugin-reactor-handler": [
+                    "gravitee-apim-plugin-reactor-handler"
                 ]
-            }
+             },
+             "TypeScript": {
+                "gravitee-apim-e2e": [
+                    "gravitee-apim-e2e"
+                ],
+                "gravitee-apim-console-webui": [
+                    "gravitee-apim-console-webui"
+                ],
+                "gravitee-apim-portal-webui-next": [
+                    "gravitee-apim-portal-webui-next"
+                ],
+                "gravitee-apim-portal-webui": [
+                    "gravitee-apim-portal-webui"
+                ]
+             },
+             "JavaScript": {
+                "gravitee-apim-e2e": [
+                    "gravitee-apim-e2e"
+                ],
+                "gravitee-apim-console-webui": [
+                    "gravitee-apim-console-webui"
+                ],
+                "gravitee-apim-portal-webui-next": [
+                    "gravitee-apim-portal-webui-next"
+                ],
+                "gravitee-apim-portal-webui": [
+                    "gravitee-apim-portal-webui"
+                ]
+             }
         },
         "URL": "https://github.com/gravitee-io/gravitee-api-management"
     },
     {
+        "languages": {
+            "Java": {
+                "sentinel-adapter/sentinel-apache-dubbo-adapter": [
+                    "sentinel-apache-dubbo-adapter"
+                ],
+                "sentinel-adapter/sentinel-apache-dubbo3-adapter": [
+                    "sentinel-apache-dubbo3-adapter"
+                ],
+                "sentinel-adapter/sentinel-apache-httpclient-adapter": [
+                    "sentinel-apache-httpclient-adapter"
+                ],
+                "sentinel-adapter/sentinel-api-gateway-adapter-common": [
+                    "sentinel-api-gateway-adapter-common"
+                ],
+                "sentinel-adapter/sentinel-dubbo-adapter": [
+                    "sentinel-dubbo-adapter"
+                ],
+                "sentinel-adapter/sentinel-grpc-adapter": [
+                    "sentinel-grpc-adapter"
+                ],
+                "sentinel-adapter/sentinel-jax-rx-adapter": [
+                    "sentinel-jax-rx-adapter"
+                ],
+                "sentinel-adapter/sentinel-motan-adapter": [
+                    "sentinel-motan-adapter"
+                ],
+                "sentinel-adapter/sentinel-okhttp-adapter": [
+                    "sentinel-okhttp-adapter"
+                ],
+                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-annotation-quarkus-adapter-deployment": [
+                    "sentinel-annotation-quarkus-adapter-deployment"
+                ],
+                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-jax-rs-quarkus-adapter-deployment": [
+                    "sentinel-jax-rs-quarkus-adapter-deployment"
+                ],
+                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-native-image-quarkus-adapter-deployment": [
+                    "sentinel-nativ-image-quarkus-adapter-deployment"
+                ],
+                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-native-image-quarkus-adapter-runtime": [
+                    "sentinel-native-image-quarkus-adapter-runtime"
+                ],
+                "sentinel-adapter/sentinel-reactor-adapter": [
+                    "sentinel-reactor-adapter"
+                ],
+                "sentinel-adapter/sentinel-sofa-rpc-adapter": [
+                    "sentinel-sofa-rpc-adapter"
+                ],
+                "sentinel-adapter/sentinel-spring-cloud-gateway-adapter": [
+                    "sentinel-spring-cloud-gateway-adapter"
+                ],
+                "sentinel-adapter/sentinel-spring-cloud-gateway-v6x-adapter": [
+                    "sentinel-spring-cloud-gateway-v6x-adapter"
+                ],
+                "sentinel-adapter/sentinel-spring-webflux-adapter": [
+                    "sentinel-spring-webflux-adapter"
+                ],
+                "sentinel-adapter/sentinel-spring-webmvc-adapter": [
+                    "sentinel-spring-webmvc-adapter"
+                ],
+                "sentinel-adapter/sentinel-spring-webmvc-v6x-adapter": [
+                    "sentinel-spring-webmvc-v6x-adapter"
+                ],
+                "sentinel-adapter/sentinel-web-adapter-common": [
+                    "sentinel-web-adapter-common"
+                ],
+                "sentinel-adapter/sentinel-web-servlet": [
+                    "sentinel-web-servlet"
+                ],
+                "sentinel-adapter/sentinel-zuul-adapter": [
+                    "sentinel-zuul-adapter"
+                ],
+                "sentinel-adapter/sentinel-zuul2-adapter": [
+                    "sentinel-zuul2-adapter"
+                ],
+                "sentinel-benchmark": [
+                    "sentinel-benchmark"
+                ],
+                "sentinel-cluster/sentinel-cluster-client-default": [
+                    "sentinel-cluster-client-default"
+                ],
+                "sentinel-cluster/sentinel-cluster-common-default": [
+                    "sentinel-cluster-common-default"
+                ],
+                "sentinel-cluster/sentinel-cluster-server-default": [
+                    "sentinel-cluster-server-default"
+                ],
+                "sentinel-cluster/sentinel-cluster-server-envoy-rls": [
+                    "sentinel-cluster-server-envoy-rls"
+                ],
+                "sentinel-core": [
+                    "sentinel-core"
+                ],
+                "sentinel-dashboard": [
+                    "sentinel-dashboard"
+                ],
+                "sentinel-extension/sentinel-annotation-aspectj": [
+                    "sentinel-annotation-aspectj"
+                ],
+                "sentinel-extension/sentinel-annotation-cdi-interceptor": [
+                    "sentinel-annotation-cdi-interceptor"
+                ],
+                "sentinel-extension/sentinel-datasource-apollo": [
+                    "sentinel-datasource-apollo"
+                ],
+                "sentinel-extension/sentinel-datasource-consul": [
+                    "sentinel-datasource-consul"
+                ],
+                "sentinel-extension/sentinel-datasource-etcd": [
+                    "sentinel-datasource-etcd"
+                ],
+                "sentinel-extension/sentinel-datasource-eureka": [
+                    "sentinel-datasource-eureka"
+                ],
+                "sentinel-extension/sentinel-datasource-extension": [
+                    "sentinel-datasource-extension"
+                ],
+                "sentinel-extension/sentinel-datasource-nacos": [
+                    "sentinel-datasource-nacos"
+                ],
+                "sentinel-extension/sentinel-datasource-redis": [
+                    "sentinel-datasource-redis"
+                ],
+                "sentinel-extension/sentinel-datasource-spring-cloud-config": [
+                    "sentinel-datasource-spring-cloud-config"
+                ],
+                "sentinel-extension/sentinel-datasource-zookeeper": [
+                    "sentinel-datasource-zookeeper"
+                ],
+                "sentinel-extension/sentinel-metric-exporter": [
+                    "sentinel-metric-exporter"
+                ],
+                "sentinel-extension/sentinel-parameter-flow-control": [
+                    "sentinel-parameter-flow-control"
+                ],
+                "sentinel-extension/sentinel-prometheus-metric-exporter": [
+                    "sentinel-prometheus-metric-exporter"
+                ],
+                "sentinel-logging/sentinel-logging-slf4j": [
+                    "sentinel-logging-slf4j"
+                ],
+                "sentinel-transport/sentinel-transport-common": [
+                    "sentinel-transport-common"
+                ],
+                "sentinel-transport/sentinel-transport-netty-http": [
+                    "sentinel-transport-netty-http"
+                ],
+                "sentinel-transport/sentinel-transport-simple-http": [
+                    "sentinel-transport-simple-http"
+                ],
+                "sentinel-transport/sentinel-transport-spring-mvc": [
+                    "sentinel-transport-spring-mvc"
+                ]
+            }
+        },
         "URL": "https://github.com/alibaba/Sentinel"
     },
     {
+        "languages": {
+            "Java" : {
+                "apollo-adminservice": [
+                    "apollo-adminservice"
+                ],
+                "apollo-configservice": [
+                    "apollo-configservice"
+                ],
+                "apollo-portal": [
+                    "apollo-portal"
+                ]
+            }
+        },
         "URL": "https://github.com/apolloconfig/apollo"
     }
 ]
