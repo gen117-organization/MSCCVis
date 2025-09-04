@@ -392,7 +392,8 @@ def analyze_repo(project: dict):
         hcommit = git_repo.commit("HEAD")
         queue = [hcommit]
         finished_commits = []
-        while len(queue) > 0:
+        count = 0
+        while len(queue) > 0 and (count <= 100):
             commit = queue.pop(0)
             if commit.hexsha in finished_commits:
                 continue
@@ -401,4 +402,5 @@ def analyze_repo(project: dict):
                 if parent.hexsha in finished_commits:
                     continue
                 queue.append(parent)
+            count += 1
             finished_commits.append(commit.hexsha)

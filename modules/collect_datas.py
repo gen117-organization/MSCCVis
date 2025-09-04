@@ -198,9 +198,9 @@ def collect_datas_of_repo(project: dict):
                 if parent.hexsha in finished_commits:
                     continue
                 queue.append(parent.hexsha)
-        detected_commits_dest_dir = project_root / "dest/detected_commits" / name
+        detected_commits_dest_dir = project_root / "dest/detected_commits"
         detected_commits_dest_dir.mkdir(parents=True, exist_ok=True)
-        detected_commits_dest_file = detected_commits_dest_dir / f"{hcommit.hexsha}.json"
+        detected_commits_dest_file = detected_commits_dest_dir / f"{name}.json"
         with open(detected_commits_dest_file, "w") as f:
             json.dump(detected_commits, f)
     except Exception as e:
