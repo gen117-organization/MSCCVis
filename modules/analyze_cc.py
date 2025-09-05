@@ -117,11 +117,7 @@ class CorrespondedLines:
                         if l not in diff["deleted_lines"]:
                             lines[child_line] = l
                             child_line += 1
-                elif len(diff["modified_lines"]) > 0:
-                    child_line = 1
-                    for l in range(1, parent_file_loc+1):
-                        lines[child_line] = parent_line
-                else:
+                if len(lines.keys()) == 0:
                     continue
                 result[child_path] = {
                     "lines": lines
