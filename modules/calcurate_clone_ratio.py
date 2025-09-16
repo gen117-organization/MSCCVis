@@ -9,28 +9,7 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 from modules.util import FileMapper
-from modules.claim_parser import parse_uSs
 
-
-def get_latest_codebases(name: str):
-    """
-    サービス名から最新のコードベース一覧を取得する
-    """
-    ms_detection_file = project_root / "dest/ms_detection" / f"{name}.csv"
-    with open(ms_detection_file, "r") as f:
-        ms_detection_csv = csv.DictReader(f, delimiter=",")
-        latest_row = None
-        for row in ms_detection_csv:
-            latest_row = row
-        uSs = parse_uSs(latest_row["uSs"])
-        codebases = set()
-        for uS in uSs:
-            context = uS["build"]["context"]
-            if context is None:
-                continue
-            codebases.add(context)
-        return list(codebases)
-    
 
 def calculate_clone_ratio(clone_sets: dict, file_datas: list[dict], file_mapper: FileMapper):
     """
@@ -82,7 +61,7 @@ def analyze_repo(project: dict):
         hcommit_ccfsw_file = project_root / "dest/clones_json" / name / head_commit.hexsha / f"{language}.json"
         with open(hcommit_ccfsw_file, "r") as f:
             hcommit_ccfsw = json.load(f)
-        codebases = get_latest_codebases(name)
+        codebases = project["languages"][language]
         file_mapper = FileMapper(hcommit_ccfsw["file_data"], str(workdir))
         clonesets = {
             "within-testing": {},
