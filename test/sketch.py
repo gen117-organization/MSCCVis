@@ -2,29 +2,22 @@ import sys
 from pathlib import Path
 import json
 import csv
+import git
 
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
+import modules.collect_datas
+import modules.analyze_cc
 
 if __name__ == "__main__":
-    dataset_file = project_root / "dataset/selected_projects.json"
-    with open(dataset_file, "r") as f:
-        dataset = json.load(f)
-    total = 0
-    no_detected = 0
-    for project in dataset:
-        url = project["URL"]
-        name = url.split("/")[-2] + "." + url.split("/")[-1]
-        for language in project["languages"]:
-            clones_csv = project_root / "dest/csv" / name / f"{language}.csv"
-            with open(clones_csv, "r") as f:
-                reader = csv.DictReader(f, delimiter=";")
-                count = 0
-                for row in reader:
-                    count += 1
-                if count == 0:
-                    no_detected += 1
-                total += 1
-    print(f"total: {total} no_detected: {no_detected}")
-
+    url = "https://github.com/818000/bus"
+    name = url.split("/")[-2] + "." + url.split("/")[-1]
+    workdir = project_root / "dest/projects" / name
+    git_repo = git.Repo(workdir)
+    head_commit = git_repo.head.commit
+    languages = ["Java"]
+    exts = modules.collect_datas.get_exts(workdir)
+    for language in languages:
+        modules.collect_datas.detect_cc(workdir, name, language, head_commit.hexsha, exts[language])
+        modules.analyze_cc.analyze_commit(name, language, head_commit)
