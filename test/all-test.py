@@ -24,5 +24,5 @@ if __name__ == "__main__":
         modules.clone_repo.clone_repo(url)
         #modules.identify_microservice.analyze_repo(url, name, str(workdir))
         #modules.collect_datas.collect_datas_of_repo(project)
-        modules.analyze_cc.analyze_repo(project)
+        #modules.analyze_cc.analyze_repo(project)
         #modules.analyze_modification.analyze_repo(project)

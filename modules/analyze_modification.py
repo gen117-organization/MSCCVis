@@ -40,7 +40,8 @@ def analyze_repo(project):
                 prev[head_commit.hexsha][clone_id][index] = (clone_id, index)
         finished_commits = []
         queue = [head_commit]
-        while len(queue) > 0:
+        count = 0
+        while len(queue) > 0 and (count <= 100):
             commit = queue.pop(0)
             print("commit:", commit.hexsha)
             if commit.hexsha in finished_commits:
@@ -73,6 +74,7 @@ def analyze_repo(project):
                             latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
                             if latest_clone_id is not None and latest_index is not None:
                                 latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "added", "commit": commit.hexsha})
+            count += 1
             finished_commits.append(commit.hexsha)
             prev.pop(commit.hexsha)
         dest_dir = project_root / "dest/csv" / name

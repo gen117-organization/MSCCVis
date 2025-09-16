@@ -330,12 +330,13 @@ def identify_modified_clones(corresponded_fragments: dict, corresponded_lines: C
     return modified_clones
 
 
-def analyze_commit(name: str, language: str, commit: git.Commit):
+def analyze_commit(name: str, language: str, commit: git.Commit) -> bool:
+    result = False
     workdir = project_root / "dest/projects" / name
     # childのCCFinderSWファイルの読み込み
     child_ccfsw_file = project_root / "dest/clones_json" / name / commit.hexsha / f"{language}.json"
     if not child_ccfsw_file.exists():
-        return
+        return result
     with open(child_ccfsw_file, "r") as f:
         child_ccfsw = json.load(f)
     child_filemap = FileMapper(child_ccfsw["file_data"], str(workdir))
@@ -376,6 +377,8 @@ def analyze_commit(name: str, language: str, commit: git.Commit):
         dest_dir.mkdir(parents=True, exist_ok=True)
         with open(dest_dir / f"{language}.json", "w") as f:
             json.dump(modified_clones, f, indent=4)
+        result = True
+    return result
         
 
 def analyze_repo(project: dict):
@@ -393,10 +396,11 @@ def analyze_repo(project: dict):
             commit = queue.pop(0)
             if commit.hexsha in finished_commits:
                 continue
-            analyze_commit(name, language, commit)
+            result = analyze_commit(name, language, commit)
+            if result:
+                count += 1
             for parent in commit.parents:
                 if parent.hexsha in finished_commits:
                     continue
                 queue.append(parent)
-            count += 1
             finished_commits.append(commit.hexsha)
