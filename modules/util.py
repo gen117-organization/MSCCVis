@@ -20,3 +20,8 @@ class FileMapper:
         if path not in self.file_loc.keys():
             return -1
         return self.file_loc[path]
+
+
+def calculate_loc(file_path: str) -> int:
+    with open(file_path, "r") as f:
+        return len(f.readlines())
