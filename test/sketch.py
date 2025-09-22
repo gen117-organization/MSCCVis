@@ -29,6 +29,6 @@ if __name__ == "__main__":
             for file in github_linguist_result[language]["files"]:
                 result["total_loc"] += modules.util.calculate_loc(workdir / file)
                 for service in project["languages"][language]:
-                    if file.startswith(project["languages"][language][service]):
+                    if file.startswith(service):
                         result[service] += modules.util.calculate_loc(workdir / file)
             print(result)
