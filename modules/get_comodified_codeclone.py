@@ -74,7 +74,7 @@ if __name__ == "__main__":
                             print(f"within-testing:{clone_id}")
                             print("---")
                             for fragment in fragments:
-                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
+                                print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
                             break
                 for clone_id, fragments in clonesets["within-production"].items():
                     modifications = {}
@@ -89,7 +89,7 @@ if __name__ == "__main__":
                             print(f"within-production: {clone_id}")
                             print("---")
                             for fragment in fragments:
-                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
+                                print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
                             break
                 for clone_id, fragments in clonesets["across-testing"].items():
                     modifications = {}
@@ -104,7 +104,7 @@ if __name__ == "__main__":
                             print(f"across-testing: {clone_id}")
                             print("---")
                             for fragment in fragments:
-                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
+                                print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
                             break
                 for clone_id, fragments in clonesets["across-production"].items():
                     modifications = {}
@@ -119,5 +119,5 @@ if __name__ == "__main__":
                             print(f"across-production: {clone_id}")
                             print("---")
                             for fragment in fragments:
-                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
+                                print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
                             break
