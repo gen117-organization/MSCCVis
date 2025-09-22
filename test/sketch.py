@@ -40,7 +40,7 @@ if __name__ == "__main__":
                             production_result[service] += modules.util.calculate_loc(workdir / file)
             print(f"[{language} - production] {production_result['total_loc']}")
             for service in production_result:
-                print(f"[{service}] {production_result[service]}")
+                print(f"| {service} | {production_result[service]} |")
             print(f"[{language} - testing] {testing_result['total_loc']}")
             for service in testing_result:
-                print(f"[{service}] {testing_result[service]}")
+                print(f"| {service} | {testing_result[service]} |")
