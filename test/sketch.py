@@ -29,14 +29,14 @@ if __name__ == "__main__":
                 testing_result[service] = 0
             for file in github_linguist_result[language]["files"]:
                 if "test" in file.lower():
-                    testing_result["total_loc"] += modules.util.calculate_loc(workdir / file)
                     for service in project["languages"][language]:
                         if file.startswith(service):
+                            testing_result["total_loc"] += modules.util.calculate_loc(workdir / file)
                             testing_result[service] += modules.util.calculate_loc(workdir / file)
                 else:
-                    production_result["total_loc"] += modules.util.calculate_loc(workdir / file)
                     for service in project["languages"][language]:
                         if file.startswith(service):
+                            production_result["total_loc"] += modules.util.calculate_loc(workdir / file)
                             production_result[service] += modules.util.calculate_loc(workdir / file)
             print(f"[{language} - production] {production_result['total_loc']}")
             for service in production_result:
