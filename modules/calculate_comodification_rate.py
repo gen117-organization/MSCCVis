@@ -89,6 +89,7 @@ def analyze_repo(project):
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
                         rslt["within-testing"]["comodification_count"] += 1
+                        break
             for clone_id, fragments in clonesets["within-production"].items():
                 rslt["within-production"]["count"] += 1
                 modifications = {}
@@ -101,6 +102,7 @@ def analyze_repo(project):
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
                         rslt["within-production"]["comodification_count"] += 1
+                        break
             for clone_id, fragments in clonesets["across-testing"].items():
                 rslt["across-testing"]["count"] += 1
                 modifications = {}
@@ -113,6 +115,7 @@ def analyze_repo(project):
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
                         rslt["across-testing"]["comodification_count"] += 1
+                        break
             for clone_id, fragments in clonesets["across-production"].items():
                 rslt["across-production"]["count"] += 1
                 modifications = {}
@@ -125,5 +128,6 @@ def analyze_repo(project):
                 for commit, types in modifications.items():
                     if types.count("modified") >= 2:
                         rslt["across-production"]["comodification_count"] += 1
+                        break
             result[language] = rslt
     return result

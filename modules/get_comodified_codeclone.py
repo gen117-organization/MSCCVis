@@ -73,6 +73,7 @@ if __name__ == "__main__":
                         if types.count("modified") >= 2:
                             for fragment in fragments:
                                 print(fragment)
+                            break
                 for clone_id, fragments in clonesets["within-production"].items():
                     modifications = {}
                     for fragment in fragments:
@@ -85,6 +86,7 @@ if __name__ == "__main__":
                         if types.count("modified") >= 2:
                             for fragment in fragments:
                                 print(fragment)
+                            break
                 for clone_id, fragments in clonesets["across-testing"].items():
                     modifications = {}
                     for fragment in fragments:
@@ -97,6 +99,7 @@ if __name__ == "__main__":
                         if types.count("modified") >= 2:
                             for fragment in fragments:
                                 print(fragment)
+                            break
                 for clone_id, fragments in clonesets["across-production"].items():
                     modifications = {}
                     for fragment in fragments:
@@ -109,3 +112,4 @@ if __name__ == "__main__":
                         if types.count("modified") >= 2:
                             for fragment in fragments:
                                 print(fragment)
+                            break
