@@ -61,21 +61,21 @@ if __name__ == "__main__":
                     elif len(production_sets) >= 2:
                         if len(production_fragments) >= 2:
                             clonesets["across-production"][clone_id] = production_fragments
-                # for clone_id, fragments in clonesets["within-testing"].items():
-                #     modifications = {}
-                #     for fragment in fragments:
-                #         m_list = json.loads(fragment["modification"])
-                #         for m in m_list:
-                #             if m["commit"] not in modifications:
-                #                 modifications[m["commit"]] = []
-                #             modifications[m["commit"]].append(m["type"])
-                #     for commit, types in modifications.items():
-                #         if types.count("modified") >= 2:
-                #             print(f"within-testing:{clone_id}")
-                #             print("---")
-                #             for fragment in fragments:
-                #                 print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
-                #             break
+                for clone_id, fragments in clonesets["within-testing"].items():
+                    modifications = {}
+                    for fragment in fragments:
+                        m_list = json.loads(fragment["modification"])
+                        for m in m_list:
+                            if m["commit"] not in modifications:
+                                modifications[m["commit"]] = []
+                            modifications[m["commit"]].append(m["type"])
+                    for commit, types in modifications.items():
+                        if types.count("modified") >= 2:
+                            print(f"within-testing:{clone_id}")
+                            print("---")
+                            for fragment in fragments:
+                                print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
+                            break
                 # for clone_id, fragments in clonesets["within-production"].items():
                 #     modifications = {}
                 #     for fragment in fragments:
@@ -91,21 +91,21 @@ if __name__ == "__main__":
                 #             for fragment in fragments:
                 #                 print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
                 #             break
-                for clone_id, fragments in clonesets["across-testing"].items():
-                    modifications = {}
-                    for fragment in fragments:
-                        m_list = json.loads(fragment["modification"])
-                        for m in m_list:
-                            if m["commit"] not in modifications:
-                                modifications[m["commit"]] = []
-                            modifications[m["commit"]].append(m["type"])
-                    for commit, types in modifications.items():
-                        if types.count("modified") >= 2:
-                            print(f"across-testing: {clone_id}")
-                            print("---")
-                            for fragment in fragments:
-                                print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
-                            break
+                # for clone_id, fragments in clonesets["across-testing"].items():
+                #     modifications = {}
+                #     for fragment in fragments:
+                #         m_list = json.loads(fragment["modification"])
+                #         for m in m_list:
+                #             if m["commit"] not in modifications:
+                #                 modifications[m["commit"]] = []
+                #             modifications[m["commit"]].append(m["type"])
+                #     for commit, types in modifications.items():
+                #         if types.count("modified") >= 2:
+                #             print(f"across-testing: {clone_id}")
+                #             print("---")
+                #             for fragment in fragments:
+                #                 print(f"    {fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}, ({fragment["modification"]})")
+                #             break
                 # for clone_id, fragments in clonesets["across-production"].items():
                 #     modifications = {}
                 #     for fragment in fragments:
