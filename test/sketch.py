@@ -22,13 +22,25 @@ if __name__ == "__main__":
         print(name)
         print("--------------------------------")
         for language in languages:
-            print(f"[{language}]")
-            result = {"total_loc": 0}
+            production_result = {"total_loc": 0}
+            testing_result = {"total_loc": 0}
             for service in project["languages"][language]: 
-                result[service] = 0
+                production_result[service] = 0
+                testing_result[service] = 0
             for file in github_linguist_result[language]["files"]:
-                result["total_loc"] += modules.util.calculate_loc(workdir / file)
-                for service in project["languages"][language]:
-                    if file.startswith(service):
-                        result[service] += modules.util.calculate_loc(workdir / file)
-            print(result)
+                if "test" in file.lower():
+                    testing_result["total_loc"] += modules.util.calculate_loc(workdir / file)
+                    for service in project["languages"][language]:
+                        if file.startswith(service):
+                            testing_result[service] += modules.util.calculate_loc(workdir / file)
+                else:
+                    production_result["total_loc"] += modules.util.calculate_loc(workdir / file)
+                    for service in project["languages"][language]:
+                        if file.startswith(service):
+                            production_result[service] += modules.util.calculate_loc(workdir / file)
+            print(f"[{language} - production] {production_result['total_loc']}")
+            for service in production_result:
+                print(f"[{service}] {production_result[service]}")
+            print(f"[{language} - testing] {testing_result['total_loc']}")
+            for service in testing_result:
+                print(f"[{service}] {testing_result[service]}")
