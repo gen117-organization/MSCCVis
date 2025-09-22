@@ -1,929 +1,1170 @@
 [
     {
         "languages": {
-            "Java": {
-                "bus-all": [
-                    "bus-all"
+            "Python": {
+                "seed-data": [
+                    "seed"
                 ],
-                "bus-auth": [
-                    "bus-auth"
-                ],
-                "bus-base": [
-                    "bus-base"
-                ],
-                "bus-bom": [
-                    "bus-bom"
-                ],
-                "bus-cache": [
-                    "bus-cache"
-                ],
-                "bus-core": [
-                    "bus-core"
-                ],
-                "bus-cron": [
-                    "bus-cron"
-                ],
-                "bus-crypto": [
-                    "bus-crypto"
-                ],
-                "bus-extra": [
-                    "bus-extra"
-                ],
-                "bus-gitlab": [
-                    "bus-gitlab"
-                ],
-                "bus-health": [
-                    "bus-health"
-                ],
-                "bus-http": [
-                    "bus-http"
-                ],
-                "bus-image": [
-                    "bus-image"
-                ],
-                "bus-limiter": [
-                    "bus-limiter"
-                ],
-                "bus-logger": [
-                    "bus-logger"
-                ],
-                "bus-mapper": [
-                    "bus-mapper"
-                ],
-                "bus-notify": [
-                    "bus-notify"
-                ],
-                "bus-office": [
-                    "bus-office"
-                ],
-                "bus-opencv": [
-                    "bus-opencv"
-                ],
-                "bus-pager": [
-                    "bus-pager"
-                ],
-                "bus-parent": [
-                    "bus-parent"
-                ],
-                "bus-pay": [
-                    "bus-pay"
-                ],
-                "bus-proxy": [
-                    "bus-proxy"
-                ],
-                "bus-sensitive": [
-                    "bus-sensitive"
-                ],
-                "bus-setting": [
-                    "bus-setting"
-                ],
-                "bus-shade": [
-                    "bus-shade"
-                ],
-                "bus-socket": [
-                    "bus-socket"
-                ],
-                "bus-starter": [
-                    "bus-starter"
-                ],
-                "bus-storage": [
-                    "bus-storage"
-                ],
-                "bus-tracer": [
-                    "bus-tracer"
-                ],
-                "bus-validate": [
-                    "bus-validate"
-                ],
-                "bus-vortex": [
-                    "bus-vortex"
+                "vote": [
+                    "vote"
                 ]
             }
         },
-        "URL": "https://github.com/818000/bus"
+        "URL": "https://github.com/dockersamples/example-voting-app"
     },
     {
         "languages": {
             "Java": {
-                "jupiter-all": [
-                    "jupiter-all"
+                "xs2a-standalone-starter": [
+                    "xs2a-standalone-starter"
                 ],
-                "jupiter-common": [
-                    "jupiter-common"
+                "aspsp-profile/aspsp-profile-server": [
+                    "aspsp-profile"
                 ],
-                "jupiter-example": [
-                    "jupiter-example"
-                ],
-                "jupiter-extension": [
-                    "jupiter-extension"
-                ],
-                "jupiter-flightexec": [
-                    "jupiter-flightexec"
-                ],
-                "jupiter-monitor": [
-                    "jupiter-monitor"
-                ],
-                "jupiter-registry/jupiter-registry-api": [
-                    "jupiter-registry-api"
-                ],
-                "jupiter-registry/jupiter-registry-default": [
-                    "jupiter-registry-default"
-                ],
-                "jupiter-registry/jupiter-registry-zookeeper": [
-                    "jupiter-registry-zookeeper"
-                ],
-                "jupiter-serialization/jupiter-serialization-api": [
-                    "jupiter-serialization-api"
-                ],
-                "jupiter-serialization/jupiter-serialization-hessian": [
-                    "jupiter-serialization-hessian"
-                ],
-                "jupiter-serialization/jupiter-serialization-java": [
-                    "jupiter-serialization-java"
-                ],
-                "jupiter-serialization/jupiter-kryo": [
-                    "jupiter-kryo"
-                ],
-                "jupiter-serialization/jupiter-serialization-protostuff" :[
-                    "jupiter-serialization-protostuff"
-                ],
-                "jupiter-spring-support": [
-                    "jupiter-spring-support"
-                ],
-                "jupiter-transport/jupiter-transport-api": [
-                    "jupiter-transport-api"
-                ],
-                "jupiter-transport/jupiter-transport-netty": [
-                    "jupiter-transport-netty"
+                "consent-management/cms-standalone-service": [
+                    "consent-management"
                 ]
             }
         },
-        "URL": "https://github.com/fengjiachun/Jupiter"
+        "URL": "https://github.com/adorsys/xs2a"
     },
     {
         "languages": {
-            "Java": {
-                "service-asset-management": [
-                    "service-asset-management"
+            "Python": {
+                "app-hitl": [
+                    "batch-hitl"
                 ],
-                "service-batch-operations": [
-                    "service-batch-operations"
-                ],
-                "service-command-delivery": [
-                    "service-command-delivery"
-                ],
-                "service-device-management": [
-                    "service-device-management"
-                ],
-                "service-device-registration": [
-                    "service-device-registration"
-                ],
-                "service-device-state": [
-                    "service-device-state"
-                ],
-                "service-event-management": [
-                    "service-event-management"
-                ],
-                "service-event-search":[
-                    "service-event-search"
-                ],
-                "service-event-sources": [
-                    "service-event-sources"
-                ],
-                "service-inbound-processing": [
-                    "service-inbound-processing"
-                ],
-                "service-instance-management": [
-                    "service-instance-management"
-                ],
-                "service-label-generation": [
-                    "service-label-generation"
-                ],
-                "service-outbound-connectors": [
-                    "service-outbound-connectors"
-                ],
-                "service-schedule-management": [
-                    "service-schedule-management"
-                ],
-                "service-streaming-media": [
-                    "service-streaming-media"
-                ]
-            }       
-        },
-        "URL": "https://github.com/sitewhere/sitewhere"
-    },
-    {
-        "languages": {
-            "Java": {
-                "messaging": [
-                    "axon-messaging"
-                ],
-                "modelling": [
-                    "axon-modelling"
-                ],
-                "eventsourcing": [
-                    "axon-eventsourcing"
-                ],
-                "config": [
-                    "axon-configuration"
-                ],
-                "test": [
-                    "axon-test"
-                ],
-                "axon-server-connector": [
-                    "axon-server-connector"
-                ],
-                "spring": [
-                    "axon-spring"
-                ],
-                "spring-boot-starter": [
-                    "axon-spring-boot-starter"
-                ],
-                "metrics": [
-                    "axon-metrics"
-                ],
-                "metrics-micrometer": [
-                    "axon-micrometer"
-                ],
-                "legacy": [
-                    "axon-legacy"
-                ],
-                "tracing-opentelemetry": [
-                    "axon-tracing-opentelemetry"
+                "app-tasks": [
+                    "batch"
                 ]
             }
         },
-        "URL": "https://github.com/AxonFramework/AxonFramework"
+        "URL": "https://github.com/raster-foundry/raster-foundry"
+    },
+    {
+        "languages": {
+            "Python": {
+                "similarity": [
+                    "similarity"
+                ],
+                "tagrecommendation": [
+                    "tagrecommendation"
+                ]
+            }
+        },
+        "URL": "https://github.com/MTG/freesound"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "cypresse2e": [
+                    "cypress-e2e-report",
+                    "cypress-e2e-tests"
+                ],
+                "mocha": [
+                    "mocha-integration"
+                ],
+                "backend": [
+                    "backend-service"
+                ],
+                "client": [
+                    "client"
+                ]
+            }
+        },
+        "URL": "https://github.com/FightPandemics/FightPandemics"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "src/backend": [
+                    "mqworker",
+                    "apiv1",
+                    "mastodonworker",
+                    "lmtpd",
+                    "apiv2",
+                    "imapworker",
+                    "twitterworker",
+                    "cli",
+                    "identitypoller"
+                ],
+                "src/frontend/web_application": [
+                    "frontend",
+                    "frontend_dev"
+                ]
+            }
+        },
+        "URL": "https://github.com/CaliOpen/Caliopen"
+    },
+    {
+        "languages": {
+            "Go": {
+                "Beam/go/cmd/tracker": [
+                    "beam_tracker"
+                ],
+                "Beam/go/cmd/segments": [
+                    "beam_segments"
+                ]
+            }
+        },
+        "URL": "https://github.com/remp2020/remp"
+    },
+    {
+        "languages": {
+            "Python": {
+                "dockercoins/worker": [
+                    "worker"
+                ],
+                "dockercoins/rng": [
+                    "rng"
+                ]
+            }
+        },
+        "URL": "https://github.com/jpetazzo/container.training"
+    },
+    {
+        "languages": {
+            "TypeScript": {
+                "search-service": [
+                    "search-service-cont"
+                ],
+                "movies-service": [
+                    "movies-service-cont"
+                ],
+                "cinema-catalog-service": [
+                    "cinema-catalog-service-cont"
+                ]
+            },
+            "JavaScript": {
+                "search-service": [
+                    "search-service-cont"
+                ],
+                "movies-service": [
+                    "movies-service-cont"
+                ],
+                "cinema-catalog-service": [
+                    "cinema-catalog-service-cont"
+                ]
+            }
+        },
+        "URL": "https://github.com/DaisukeHirata/express-typescript-openapi3"
     },
     {
         "languages": {
             "Java": {
-                "clients/config-center-client": [
-                    "config-center-client"
+                "gateway-service": [
+                    "service-gateway"
                 ],
-                "clients/config-common": [
-                    "config-common"
+                "zipkin-service": [
+                    "zipkin-service"
                 ],
-                "clients/config-kie-client": [
-                    "config-kie-client"
+                "customer-service": [
+                    "customer-service"
                 ],
-                "clients/dashboard-client": [
-                    "dashboard-client"
+                "account-service": [
+                    "account-service"
                 ],
-                "clients/http-client-common": [
-                    "http-client-common"
+                "discovery-service": [
+                    "discovery-service"
+                ]
+            }
+        },
+        "URL": "https://github.com/piomin/sample-spring-microservices"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "shopping-webclient": [
+                    "shopping-webclient"
                 ],
-                "clients/service-center-client": [
-                    "service-center-client"
+                "shopping-server": [
+                    "shopping-server"
                 ],
-                "common/common-access-log": [
-                    "common-access-log"
+                "management-server": [
+                    "management-server"
                 ],
-                "common/common-protobuf": [
-                    "common-protobuf"
+                "management-webclient": [
+                    "management-webclient"
+                ]
+            }
+        },
+        "URL": "https://github.com/Viveckh/Veniqa"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "frontend": [
+                    "ui"
                 ],
-                "common-rest": [
-                    "common-rest"
+                "backend": [
+                    "api"
+                ]
+            }
+        },
+        "URL": "https://github.com/instedd/oasis"
+    },
+    {
+        "languages": {
+            "Java": {
+                "ts-execute-service": [
+                    "ts-execute-service"
                 ],
-                "core": [
+                "ts-price-service": [
+                    "ts-price-service"
+                ],
+                "ts-travel-service": [
+                    "ts-travel-service"
+                ],
+                "ts-verification-code-service": [
+                    "ts-verification-code-service"
+                ],
+                "ts-travel2-service": [
+                    "ts-travel2-service"
+                ],
+                "ts-consign-service": [
+                    "ts-consign-service"
+                ],
+                "ts-user-service": [
+                    "ts-user-service"
+                ],
+                "ts-preserve-other-service": [
+                    "ts-preserve-other-service"
+                ],
+                "ts-admin-basic-info-service": [
+                    "ts-admin-basic-info-service"
+                ],
+                "ts-travel-plan-service": [
+                    "ts-travel-plan-service"
+                ],
+                "ts-basic-service": [
+                    "ts-basic-service"
+                ],
+                "ts-route-service": [
+                    "ts-route-service"
+                ],
+                "ts-admin-route-service": [
+                    "ts-admin-route-service"
+                ],
+                "ts-admin-user-service": [
+                    "ts-admin-user-service"
+                ],
+                "ts-assurance-service": [
+                    "ts-assurance-service"
+                ],
+                "ts-security-service": [
+                    "ts-security-service"
+                ],
+                "ts-cancel-service": [
+                    "ts-cancel-service"
+                ],
+                "ts-contacts-service": [
+                    "ts-contacts-service"
+                ],
+                "ts-admin-travel-service": [
+                    "ts-admin-travel-service"
+                ],
+                "ts-order-service": [
+                    "ts-order-service"
+                ],
+                "ts-consign-price-service": [
+                    "ts-consign-price-service"
+                ],
+                "ts-train-service": [
+                    "ts-train-service"
+                ],
+                "ts-admin-order-service": [
+                    "ts-admin-order-service"
+                ],
+                "ts-order-other-service": [
+                    "ts-order-other-service"
+                ],
+                "ts-food-service": [
+                    "ts-food-service"
+                ],
+                "ts-config-service": [
+                    "ts-config-service"
+                ],
+                "ts-preserve-service": [
+                    "ts-preserve-service"
+                ],
+                "ts-rebook-service": [
+                    "ts-rebook-service"
+                ],
+                "ts-notification-service": [
+                    "ts-notification-service"
+                ],
+                "ts-route-plan-service": [
+                    "ts-route-plan-service"
+                ],
+                "ts-auth-service": [
+                    "ts-auth-service"
+                ],
+                "ts-payment-service": [
+                    "ts-payment-service"
+                ],
+                "ts-seat-service": [
+                    "ts-seat-service"
+                ],
+                "ts-station-service": [
+                    "ts-station-service"
+                ],
+                "ts-inside-payment-service": [
+                    "ts-inside-payment-service"
+                ]
+            },
+            "JavaScript": {
+                "ts-ui-dashboard": [
+                    "ts-ui-dashboard"
+                ],
+                "ts-ticket-office-service": [
+                    "ts-ticket-office-service"
+                ]
+            }
+        },
+        "URL": "https://github.com/FudanSELab/train-ticket"
+    },
+    {
+        "languages": {
+            "Python": {
+                "data-pipeline": [
+                    "bcregmara"
+                ],
+                "bcreg-aca": [
+                    "bcreg-controller",
+                    "caddy"
+                ]
+            }
+        },
+        "URL": "https://github.com/bcgov/von-bc-registries"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "streamer-ui": [
+                    "ui"
+                ],
+                "streamer": [
+                    "service"
+                ]
+            },
+            "TypeScript": {
+                "streamer-ui": [
+                    "ui"
+                ],
+                "streamer": [
+                    "service"
+                ]
+            }
+        },
+        "URL": "https://github.com/Donders-Institute/streamer"
+    },
+    {
+        "languages": {
+            "Python": {
+                "grin-py": [
+                    "paymentestimator",
+                    "workerstats",
+                    "blockwatcher",
+                    "shareaggr",
+                    "auditor",
+                    "apiv1",
+                    "grinstats",
+                    "payment_api",
+                    "poolstats"
+                ],
+                "grin-js/api": [
+                    "apiv2"
+                ],
+                "grin": [
+                    "grin",
+                    "wallet",
+                    "wallet_private"
+                ],
+                "rmq": [
+                    "rmq"
+                ]
+            },
+            "TypeScript": {
+                "grin-js/api": [
+                    "apiv2"
+                ],
+                "grin": [
+                    "grin",
+                    "wallet",
+                    "wallet_private"
+                ]
+            },
+            "JavaScript": {
+                "grin-js/webui": [
+                    "webui"
+                ],
+                "grin-js/api": [
+                    "apiv2"
+                ],
+                "grin": [
+                    "grin",
+                    "wallet",
+                    "wallet_private"
+                ]
+            }
+        },
+        "URL": "https://github.com/grin-pool/grin-pool"
+    },
+    {
+        "languages": {
+            "Python": {
+                "worker": [
+                    "worker"
+                ],
+                "worker_service": [
+                    "worker-service"
+                ],
+                "main_node": [
+                    "main-node"
+                ]
+            }
+        },
+        "URL": "https://github.com/dpukhkaiev/BRISE2"
+    },
+    {
+        "languages": {
+            "Java": {
+                "auth-service": [
+                    "auth"
+                ],
+                "game-service": [
+                    "game"
+                ],
+                "player-service": [
+                    "player"
+                ]
+            }
+        },
+        "URL": "https://github.com/OpenLiberty/liberty-bikes"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "nodejs-service": [
+                    "week-menu-api"
+                ],
+                "react-webapp": [
+                    "react-webapp"
+                ]
+            }
+        },
+        "URL": "https://github.com/rodrigorodrigues/microservices-design-patterns"
+    },
+    {
+        "languages": {
+            "Python": {
+                "src/yelp-classify": [
+                    "yelp-classify"
+                ],
+                "src/yelp-service": [
+                    "yelp-service"
+                ],
+                "src/flask-app": [
+                    "flask-app"
+                ],
+                "src/twitter-classify": [
+                    "twitter-classify"
+                ],
+                "src/twitter-service": [
+                    "twitter-service"
+                ]
+            }
+        },
+        "URL": "https://github.com/teffland/FoodborneNYC"
+    },
+    {
+        "languages": {
+            "C#": {
+                "src/Microservices": [
+                    "webapi",
+                    "storage-api",
+                    "auditlog-grpc",
+                    "configuration-api",
+                    "identity-api",
+                    "notification-background",
+                    "notification-api",
+                    "identity-grpc",
+                    "product-api",
+                    "auditlog-api",
+                    "notification-grpc"
+                ],
+                "src/IdentityServer/OpenIddict": [
+                    "identity-authserver"
+                ]
+            }
+        },
+        "URL": "https://github.com/phongnguyend/Practical.CleanArchitecture"
+    },
+    {
+        "languages": {
+            "Python": {
+                "src/sharing": [
+                    "SharingService"
+                ],
+                "src/topicextraction": [
+                    "TopicExtractionService"
+                ]
+            },
+            "JavaScript": {
+                "src/mwc": [
+                    "MediaWikiConnector"
+                ],
+                "src/topicextraction": [
+                    "TopicExtractionService"
+                ]
+            }
+        },
+        "URL": "https://github.com/FUB-HCC/IKON-backend"
+    },
+    {
+        "languages": {
+            "Java": {
+                "gateway-service": [
+                    "gateway"
+                ],
+                "discovery-service": [
+                    "discovery"
+                ],
+                "provider-service": [
+                    "provider"
+                ],
+                "config-server": [
+                    "config"
+                ],
+                "patient-service": [
+                    "patient"
+                ]
+            }
+        },
+        "URL": "https://github.com/MuizMahdi/EHR-Route"
+    },
+    {
+        "languages": {
+            "Java": {
+                "ftgo-api-gateway": [
+                    "ftgo-api-gateway"
+                ],
+                "ftgo-kitchen-service": [
+                    "ftgo-kitchen-service"
+                ],
+                "ftgo-order-history-service": [
+                    "ftgo-order-history-service"
+                ],
+                "ftgo-delivery-service": [
+                    "ftgo-delivery-service"
+                ],
+                "ftgo-order-service": [
+                    "ftgo-order-service"
+                ],
+                "ftgo-accounting-service": [
+                    "ftgo-accounting-service"
+                ],
+                "ftgo-restaurant-service": [
+                    "ftgo-restaurant-service"
+                ],
+                "ftgo-consumer-service": [
+                    "ftgo-consumer-service"
+                ]
+            }
+        },
+        "URL": "https://github.com/microservices-patterns/ftgo-application"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "exec-ui": [
+                    "exec-ui"
+                ],
+                "exec-db": [
+                    "exec-db-setup"
+                ]
+            },
+            "Java": {
+                "exec-api": [
+                    "exec-api"
+                ],
+                "exec-analysis": [
+                    "exec-analysis"
+                ]
+            }
+        },
+        "URL": "https://github.com/Hygieia/ExecDashboard"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "rcm": [
+                    "rcm"
+                ],
+                "tagger": [
+                    "tagger_backend",
+                    "tagger_client"
+                ],
+                "faceted_search": [
+                    "faceted_search"
+                ]
+            }
+        },
+        "URL": "https://github.com/dgutman/webix_image_organizer"
+    },
+    {
+        "languages": {
+            "Python": {
+                "python/opentelemetry/manual_instrumentation": [
+                    "py-opentelemetry-manual-otlp-client",
+                    "py-opentelemetry-manual-otlp-server"
+                ],
+                "python/opentelemetry/auto_instrumentation": [
+                    "py-opentelemetry-auto-otlp-client",
+                    "py-opentelemetry-auto-collector-client",
+                    "py-opentelemetry-auto-collector-server",
+                    "py-opentelemetry-auto-otlp-server"
+                ],
+                "python/opentracing": [
+                    "py-opentracing-client",
+                    "py-opentracing-server"
+                ],
+                "demo-client/otlp": [
+                    "demo-client-otlp"
+                ],
+                "tools/integration": [
+                    "integration-test",
+                    "config-generator"
+                ]
+            },
+            "Go": {
+                "go/opentracing/server": [
+                    "go-opentracing-server"
+                ],
+                "go/opentelemetry/otlp/client": [
+                    "go-opentelemetry-otlp-client"
+                ],
+                "go/opentelemetry/otlp/server": [
+                    "go-opentelemetry-otlp-server"
+                ],
+                "go/opentelemetry/collector/server": [
+                    "go-opentelemetry-collector-server"
+                ],
+                "go/opentelemetry/collector/client": [
+                    "go-opentelemetry-collector-client"
+                ],
+                "go/opentracing/client": [
+                    "go-opentracing-client"
+                ]
+            },
+            "Java": {
+                "java/otlp": [
+                    "java-otlp-client",
+                    "java-otlp-server"
+                ],
+                "java/client": [
+                    "java-specialagent-client"
+                ],
+                "java/microdonuts": [
+                    "java-opentracing-server"
+                ],
+                "java/server": [
+                    "java-specialagent-server"
+                ]
+            }
+        },
+        "URL": "https://github.com/lightstep/opentelemetry-examples"
+    },
+    {
+        "languages": {
+            "Python": {
+                "django-rest-swagger": [
+                    "web_rest"
+                ],
+                "django-notifier": [
+                    "web_socket"
+                ]
+            }
+        },
+        "URL": "https://github.com/MathieuB1/KOREK"
+    },
+    {
+        "languages": {
+            "Python": {
+                "harvester": [
+                    "harvester-beat",
+                    "harvester-api",
+                    "harvester-worker",
+                    "harvester-monitor"
+                ],
+                "explorer-api": [
+                    "explorer-api"
+                ]
+            }
+        },
+        "URL": "https://github.com/mvs-org/explorer"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "tweets": [
+                    "tweets"
+                ],
+                "coordinator": [
+                    "coordinator"
+                ],
+                "frontend": [
+                    "frontend"
+                ],
+                "rssreader": [
+                    "rssreader"
+                ]
+            }
+        },
+        "URL": "https://github.com/cod1ng-earth/coding-earth"
+    },
+    {
+        "languages": {
+            "Java": {
+                "backend": [
+                    "backend"
+                ],
+                "authserver": [
+                    "auth"
+                ],
+                "registry": [
+                    "registry"
+                ],
+                "gateway": [
+                    "gateway"
+                ]
+            }
+        },
+        "URL": "https://github.com/flowant/website"
+    },
+    {
+        "languages": {
+            "Java": {
+                "eureka-server": [
+                    "eureka-server"
+                ],
+                "donor-profile-service": [
+                    "donor-profile-service"
+                ],
+                "chat-service": [
+                    "chat-service"
+                ],
+                "login-service": [
+                    "login-service"
+                ],
+                "config-server": [
+                    "config-service"
+                ],
+                "zuul-api": [
+                    "zuul-api"
+                ],
+                "recepient-profile-service": [
+                    "recepient-profile-service"
+                ],
+                "reportservice": [
+                    "report-service"
+                ],
+                "search-service": [
+                    "search-service"
+                ]
+            }
+        },
+        "URL": "https://github.com/stackroute/ibm-wave7-lifeline"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "admin": [
+                    "admin"
+                ],
+                "api": [
+                    "api"
+                ],
+                "verification_code": [
+                    "verification_code"
+                ],
+                "user": [
+                    "user"
+                ]
+            },
+            "TypeScript": {
+                "api": [
+                    "api"
+                ],
+                "verification_code": [
+                    "verification_code"
+                ],
+                "email": [
+                    "email"
+                ],
+                "user": [
+                    "user"
+                ]
+            }
+        },
+        "URL": "https://github.com/icebob/catalyst"
+    },
+    {
+        "languages": {
+            "Python": {
+                "celery-queue": [
+                    "monitor",
+                    "worker"
+                ],
+                "api": [
+                    "web"
+                ]
+            }
+        },
+        "URL": "https://github.com/mattkohl/docker-flask-celery-redis"
+    },
+    {
+        "languages": {
+            "Python": {
+                "client": [
+                    "yaba_client"
+                ],
+                "app": [
+                    "yaba_api"
+                ]
+            },
+            "JavaScript": {
+                "visualization": [
+                    "yaba_visualization"
+                ],
+                "interface": [
+                    "yaba_interface"
+                ]
+            }
+        },
+        "URL": "https://github.com/PecanProject/BETYdb-YABA"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "services/core": [
                     "core"
                 ],
-                "dynamic-config/config-appolo": [
-                    "config-appolo"
+                "services/facade": [
+                    "facade"
                 ],
-                "dynamic-config/config-cc": [
-                    "config-cc"
+                "services/im": [
+                    "im"
                 ],
-                "dynamic-config/config-consul": [
-                    "config-consul"
+                "services/transaction": [
+                    "transaction"
                 ],
-                "dynamic-config/config-etcd": [
-                    "config-etcd"
-                ],
-                "dynamic-config/config-kie": [
-                    "config-kie"
-                ],
-                "dynamic-config/config-nacos": [
-                    "config-nacos"
-                ],
-                "dynamic-config/config-zookeeper": [
-                    "config-zookeeper"
-                ],
-                "edge": [
-                    "edge"
-                ],
-                "foundations/foundation-common": [
-                    "foundation-common"
-                ],
-                "foundations/foundation-config": [
-                    "foundation-config"
-                ],
-                "foundations/foundation-metrics": [
-                    "foundation-metrics"
-                ],
-                "foundations/foundation-protobuf": [
-                    "foundation-protobuf"
-                ],
-                "foundations/foundation-registry": [
-                    "foundation-registry"
-                ],
-                "foundations/foundation-spi": [
-                    "foundation-spi"
-                ],
-                "foundations/foundation-ssl": [
-                    "foundation-ssl"
-                ],
-                "foundations/foundation-test-scaffolding": [
-                    "foundation-test-scaffolding"
-                ],
-                "foundations/foundation-vertx": [
-                    "foundation-vertx"
-                ],
-                "governance": [
-                    "governance"
-                ],
-                "handlers/handler-fault-injection": [
-                    "handler-fault-injection"
-                ],
-                "handlers/handler-flowcontrol-qps": [
-                    "handler-flowcontrol-qps"
-                ],
-                "handlers/handler-governance": [
-                    "handler-governance"
-                ],
-                "handlers/handler-loadbalance": [
-                    "handler-loadbalance"
-                ],
-                "handlers/handler-publickey-auth": [
-                    "handler-publickey-auth"
-                ],
-                "handler-router": [
-                    "handler-router"
-                ],
-                "handlers/handler-tracing-zipkin": [
-                    "handler-tracing-zipkin"
-                ],
-                "metrics/metrics-core": [
-                    "metrics-core"
-                ],
-                "metrics/metrics-integration": [
-                    "metrics-integration"
-                ],
-                "providers/provider-jaxrs": [
-                    "provider-jaxrs"
-                ],
-                "providers/provider-pojo": [
-                    "provider-pojo"
-                ],
-                "providers/provider-rest-common": [
-                    "provider-rest-common"
-                ],
-                "providers/provider-springmvc": [
-                    "provider-springmvc"
-                ],
-                "service-registry/registry-consul": [
-                    "registry-consul"
-                ],
-                "service-registry/registry-etcd": [
-                    "registry-etcd"
-                ],
-                "service-registry/registry-lightweight": [
-                    "registry-lightweight"
-                ],
-                "service-registry/registry-local": [
-                    "registry-local"
-                ],
-                "service-registry/registry-nacos": [
-                    "registry-nacos"
-                ],
-                "service-registry/registry-service-center": [
-                    "registry-service-center"
-                ],
-                "service-registry/registry-zero-config": [
-                    "registry-zero-config"
-                ],
-                "service-registry/registry-zookeeper": [
-                    "registry-zookeeper"
-                ],
-                "solutions/solution-basic": [
-                    "solution-basic"
-                ],
-                "spring-boot": [
-                    "spring-boot"
-                ],
-                "swagger/swagger-generator/generator-core": [
-                    "generator-core"
-                ],
-                "swagger/swagger-generator/generator-jaxrs": [
-                    "generator-jaxrs"
-                ],
-                "swagger/swagger-generator/generator-spring-data": [
-                    "generator-spring-data"
-                ],
-                "swagger/swagger-generator/generator-springmvc": [
-                    "generator-springmvc"
-                ],
-                "swagger/swagger-invocation/invocation-core": [
-                    "invocation-core"
-                ],
-                "swagger/swagger-invocation/invocation-jaxrs": [
-                    "invocation-jaxrs"
-                ],
-                "swagger/swagger-invocation/invocation-springmvc": [
-                    "invocation-springmvc"
-                ],
-                "swagger/swagger-invocation/invocation-validator": [
-                    "invocation-validator"
-                ],
-                "tracing/tracing-common": [
-                    "tracing-common"
-                ],
-                "tracing/tracing-zipkin": [
-                    "tracing-zipkin"
-                ],
-                "transports/transport-common": [
-                    "transport-common"
-                ],
-                "transports/transport-highway": [
-                    "transport-highway"
-                ],
-                "transports/transport-rest": [
-                    "transport-rest"
+                "services/auth": [
+                    "auth"
                 ]
             }
         },
-        "URL": "https://github.com/apache/servicecomb-java-chassis"
+        "URL": "https://github.com/TibebeJS/masterlance"
+    },
+    {
+        "languages": {
+            "Python": {
+                "issuer_controller": [
+                    "caddyx",
+                    "myorg-controller"
+                ],
+                "issuer_pipeline": [
+                    "myorg-pipeline"
+                ]
+            }
+        },
+        "URL": "https://github.com/bcgov/aries-vcr-issuer-controller"
     },
     {
         "languages": {
             "Java": {
-                "gravitee-apim-common": [
-                    "gravitee-apim-common"
+                "streams-to-redisgraph-service": [
+                    "app-streams-to-redisgraph"
                 ],
-                "garavitee-apim-definiton/gravitee-apim-definiton-jackson": [
-                    "gravitee-apim-definiton-jackson"
+                "db-to-streams-service": [
+                    "app-db-to-streams"
                 ],
-                "gravitee-apim-definition/gravitee-apim-definition-model": [
-                    "gravitee-apim-definition-model"
+                "caching-service": [
+                    "app-caching"
                 ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-buffer": [
-                    "gravitee-apim-gateway-buffer"
+                "sql-rest-api": [
+                    "app-sql-rest-api"
                 ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-connector": [
-                    "gravitee-apim-gateway-connector"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-core": [
-                    "gravitee-apim-gateway-core"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-dictionary": [
-                    "gravitee-apim-gateway-dictionary"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-env": [
-                    "gravitee-apim-gateway-env"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-flow": [
-                    "gravitee-apim-gateway-flow"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-handlers/gravitee-apim-gateway-handlers-api": [
-                    "gravitee-apim-gateway-handlers-api"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-handlers/gravitee-apim-gateway-handlers-shared-policy-group": [
-                    "gravitee-apim-gateway-handlers-shared-policy-group"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-http": [
-                    "gravitee-apim-gateway-http"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-opentelemetry": [
-                    "gravitee-apim-gateway-opentelemetry"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-platfrom": [
-                    "gravitee-apim-gateway-platfrom"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-policy": [
-                    "gravitee-apim-gateway-policy"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-reactor": [
-                    "gravitee-apim-gateway-reactor"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-reporting": [
-                    "gravitee-apim-gateway-reporting"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-repository": [
-                    "gravitee-apim-gateway-repository"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-resource": [
-                    "gravitee-apim-gateway-resource"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-security/gravitee-apim-gateway-security-apikey": [
-                    "gravitee-apim-gateway-security-apikey"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-security/gravitee-apim-gateway-security-jwt": [
-                    "gravitee-apim-gateway-security-jwt"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-security/gravitee-apim-gateway-security-keyless": [
-                    "gravitee-apim-gateway-security-keyless"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-security/gravitee-apim-gateway-security-oauth2": [
-                    "gravitee-apim-gateway-security-oauth2"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-services/gravitee-apim-gateway-services-debug": [
-                    "gravitee-apim-gateway-services-debug"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-services/gravitee-apim-gateway-services-endpoint-discovery": [
-                    "gravitee-apim-gateway-services-endpoint-discovery"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-services/gravitee-apim-gateway-services-helthcheck": [
-                    "gravitee-apim-gateway-services-helthcheck"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-services/gravitee-apim-gateway-services-heartbeat": [
-                    "gravitee-apim-gateway-services-heartbeat"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-services/gravitee-apim-gateway-services-services-sync": [
-                    "gravitee-apim-gateway-services-services-sync"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-standalone/gravitee-apim-gateway-standalone-bootstrap": [
-                    "gravitee-apim-gateway-standalone-bootstrap"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-standalone/gravitee-apim-gateway-standalone-container": [
-                    "gravitee-apim-gateway-standalone-container"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-standalone/gravitee-gateway-standalone-distribution": [
-                    "gravitee-gateway-standalone-distribution"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-tcp": [
-                    "gravitee-apim-gateway-tcp"
-                ],
-                "gravitee-apim-gateway/gravitee-apim-gateway-tests-sdk": [
-                    "gravitee-apim-gateway-tests-sdk"
-                ],
-                "gravitee-apim-integration-tests": [
-                    "gravitee-apim-integration-tests"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-api": [
-                    "gravitee-apim-repository-api"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-coverage": [
-                    "gravitee-apim-repository-coverage"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-elasticsearch": [
-                    "gravitee-apim-repository-elasticsearch"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-jdbc": [
-                    "gravitee-apim-repository-jdbc"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-mongodb": [
-                    "gravitee-apim-repository-mongodb"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-noop": [
-                    "gravitee-apim-repository-noop"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-redis": [
-                    "gravitee-apim-repository-redis"
-                ],
-                "gravitee-apim-repository/gravitee-apim-repository-test": [
-                    "gravitee-apim-repository-test"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-automation/gravitee-apim-rest-api-automation-rest": [
-                    "gravitee-apim-rest-api-automation-rest"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-automation/gravitee-apim-rest-api-automation-security": [
-                    "gravitee-apim-rest-api-automation-security"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-common": [
-                    "gravitee-apim-rest-api-common"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-fetcher": [
-                    "gravitee-apim-rest-api-fetcher"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-idp/gravitee-apim-rest-api-idp-api": [
-                    "gravitee-apim-rest-api-idp-api"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-idp/gravitee-apim-rest-api-core": [
-                    "gravitee-apim-rest-api-core"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-idp/gravitee-apim-rest-api-idp-ldap": [
-                    "gravitee-apim-rest-api-idp-ldap"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-idp/gravitee-apim-rest-api-idp-memory": [
-                    "gravitee-apim-rest-api-idp-memory"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-idp/gravitee-apim-rest-api-idp-repository": [
-                    "gravitee-apim-rest-api-idp-repository"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-integration-controller": [
-                    "gravitee-apim-rest-api-integration-controller"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-management-v2/gravitee-apim-rest-api-management-v2-rest": [
-                    "gravitee-apim-rest-api-management-v2-rest"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-management-v2/gravitee-apim-rest-api-management-v2-security": [
-                    "gravitee-apim-rest-api-management-v2-security"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-management/gravitee-apim-rest-api-management-rest": [
-                    "gravitee-apim-rest-api-management-rest"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-management/gravitee-apim-rest-api-management-security": [
-                    "gravitee-apim-rest-api-management-security"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-model": [
-                    "gravitee-apim-rest-api-model"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-portal-rest": [
-                    "gravitee-apim-rest-api-portal-rest"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-portal-security": [
-                    "gravitee-apim-rest-api-portal-security"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-service": [
-                    "gravitee-apim-rest-api-service"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-audit": [
-                    "gravitee-apim-rest-api-services-audit"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-auto-fetch": [
-                    "gravitee-apim-rest-api-services-auto-fetch"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-dictionary": [
-                    "gravitee-apim-rest-api-services-dictionary"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-dynamic-properties": [
-                    "gravitee-apim-rest-api-services-dynamic-properties"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-events": [
-                    "gravitee-apim-rest-api-services-events"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-search-indexer": [
-                    "gravitee-apim-rest-api-services-search-indexer"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-subscription-pre-expiration-notif": [
-                    "gravitee-apim-rest-api-services-subscription-pre-expiration-notif"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-subscriptions": [
-                    "gravitee-apim-rest-api-services-subscriptions"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-sync": [
-                    "gravitee-apim-rest-api-services-sync"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-services/gravitee-apim-rest-api-services-v3-upgrader": [
-                    "gravitee-apim-rest-api-services-v3-upgrader"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-spec-converter": [
-                    "gravitee-apim-rest-api-spec-converter"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-standalone/gravitee-apim-rest-api-standalone-bootstrap": [
-                    "gravitee-apim-rest-api-standalone-bootstrap"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-standalone/gravitee-apim-rest-api-standalone-container": [
-                    "gravitee-apim-rest-api-standalone-container"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-standalone/gravitee-apim-rest-api-standalone-distribution": [
-                    "gravitee-apim-rest-api-standalone-distribution"
-                ],
-                "gravitee-apim-rest-api/gravitee-apim-rest-api-test-fixtures": [
-                    "gravitee-apim-rest-api-test-fixtures"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-dynamicproperties/gravitee-apim-plugin-apiservice-dynamicproperties-http": [
-                    "gravitee-apim-plugin-apiservice-dynamicproperties-http"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice--handler": [
-                    "gravitee-apim-plugin-apiservice-handler"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-healthcheck-common": [
-                    "gravitee-apim-plugin-apiservice-healthcheck-common"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-healthcheck-http": [
-                    "gravitee-apim-plugin-apiservice-healthcheck-http"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-apiservice/gravitee-apim-plugin-apiservice-servicediscovery-consul": [
-                    "gravitee-apim-plugin-apiservice-servicediscovery-consul"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-handler": [
-                    "gravitee-apim-plugin-endpoint-handler"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-http-proxy": [
-                    "gravitee-apim-plugin-endpoint-http-proxy"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-mock": [
-                    "gravitee-apim-plugin-endpoint-mock"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-endpoint/gravitee-apim-plugin-endpoint-tcp-proxy": [
-                    "gravitee-apim-plugin-endpoint-tcp-proxy"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-entrypoint/gravitee-apim-plugin-entrypoint-handler": [
-                    "gravitee-apim-plugin-entrypoint-handler"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-entrypoint/gravitee-apim-plugin-entrypoint-http-proxy": [
-                    "gravitee-apim-plugin-entrypoint-http-proxy"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-entrypoint/gravitee-apim-plugin-entrypoint-tcp-proxy": [
-                    "gravitee-apim-plugin-entrypoint-tcp-proxy"
-                ],
-                "gravitee-apim-plugin/gravitee-apim-plugin-reactor/gravitee-apim-plugin-reactor-handler": [
-                    "gravitee-apim-plugin-reactor-handler"
+                "streams-to-redisearch-service": [
+                    "app-streams-to-redis-hashes"
                 ]
-             },
-             "TypeScript": {
-                "gravitee-apim-e2e": [
-                    "gravitee-apim-e2e"
+            },
+            "JavaScript": {
+                "ui-redis-front-end/redis-front": [
+                    "app-frontend"
                 ],
-                "gravitee-apim-console-webui": [
-                    "gravitee-apim-console-webui"
+                "comments-service": [
+                    "app-comments"
                 ],
-                "gravitee-apim-portal-webui-next": [
-                    "gravitee-apim-portal-webui-next"
-                ],
-                "gravitee-apim-portal-webui": [
-                    "gravitee-apim-portal-webui"
+                "notifications-service-node": [
+                    "ws-notifications-service"
                 ]
-             },
-             "JavaScript": {
-                "gravitee-apim-e2e": [
-                    "gravitee-apim-e2e"
-                ],
-                "gravitee-apim-console-webui": [
-                    "gravitee-apim-console-webui"
-                ],
-                "gravitee-apim-portal-webui-next": [
-                    "gravitee-apim-portal-webui-next"
-                ],
-                "gravitee-apim-portal-webui": [
-                    "gravitee-apim-portal-webui"
-                ]
-             }
+            }
         },
-        "URL": "https://github.com/gravitee-io/gravitee-api-management"
+        "URL": "https://github.com/tgrall/redis-microservices-demo"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "services/events-management": [
+                    "events-management"
+                ],
+                "services/user-management": [
+                    "user-management"
+                ],
+                "services/authentication": [
+                    "authentication"
+                ],
+                "services/notification": [
+                    "notification"
+                ],
+                "services/articles-management": [
+                    "articles-management"
+                ]
+            }
+        },
+        "URL": "https://github.com/rithinch/Event-Driven-Microservices-Sample"
+    },
+    {
+        "languages": {
+            "Python": {
+                "data_entry_server": [
+                    "data-entry-server"
+                ],
+                "web_server": [
+                    "resolver-web-server"
+                ],
+                "test_suite": [
+                    "test-service"
+                ]
+            },
+            "JavaScript": {
+                "data_entry_server": [
+                    "data-entry-server"
+                ],
+                "web_server": [
+                    "resolver-web-server"
+                ],
+                "test_suite": [
+                    "test-service"
+                ]
+            }
+        },
+        "URL": "https://github.com/gs1/GS1_DigitalLink_Resolver_CE"
     },
     {
         "languages": {
             "Java": {
-                "sentinel-adapter/sentinel-apache-dubbo-adapter": [
-                    "sentinel-apache-dubbo-adapter"
+                "spring-boot-admin": [
+                    "spring-boot-admin"
                 ],
-                "sentinel-adapter/sentinel-apache-dubbo3-adapter": [
-                    "sentinel-apache-dubbo3-adapter"
+                "customer-core": [
+                    "customer-core"
                 ],
-                "sentinel-adapter/sentinel-apache-httpclient-adapter": [
-                    "sentinel-apache-httpclient-adapter"
+                "customer-self-service-backend": [
+                    "customer-self-service-backend"
                 ],
-                "sentinel-adapter/sentinel-api-gateway-adapter-common": [
-                    "sentinel-api-gateway-adapter-common"
+                "policy-management-backend": [
+                    "policy-management-backend"
                 ],
-                "sentinel-adapter/sentinel-dubbo-adapter": [
-                    "sentinel-dubbo-adapter"
+                "customer-management-backend": [
+                    "customer-management-backend"
+                ]
+            },
+            "JavaScript": {
+                "customer-self-service-frontend": [
+                    "customer-self-service-frontend"
                 ],
-                "sentinel-adapter/sentinel-grpc-adapter": [
-                    "sentinel-grpc-adapter"
+                "policy-management-frontend": [
+                    "policy-management-frontend"
                 ],
-                "sentinel-adapter/sentinel-jax-rx-adapter": [
-                    "sentinel-jax-rx-adapter"
+                "risk-management-server": [
+                    "risk-management-server"
                 ],
-                "sentinel-adapter/sentinel-motan-adapter": [
-                    "sentinel-motan-adapter"
-                ],
-                "sentinel-adapter/sentinel-okhttp-adapter": [
-                    "sentinel-okhttp-adapter"
-                ],
-                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-annotation-quarkus-adapter-deployment": [
-                    "sentinel-annotation-quarkus-adapter-deployment"
-                ],
-                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-jax-rs-quarkus-adapter-deployment": [
-                    "sentinel-jax-rs-quarkus-adapter-deployment"
-                ],
-                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-native-image-quarkus-adapter-deployment": [
-                    "sentinel-nativ-image-quarkus-adapter-deployment"
-                ],
-                "sentinel-adapter/sentinel-quarkus-adapter/sentinel-native-image-quarkus-adapter-runtime": [
-                    "sentinel-native-image-quarkus-adapter-runtime"
-                ],
-                "sentinel-adapter/sentinel-reactor-adapter": [
-                    "sentinel-reactor-adapter"
-                ],
-                "sentinel-adapter/sentinel-sofa-rpc-adapter": [
-                    "sentinel-sofa-rpc-adapter"
-                ],
-                "sentinel-adapter/sentinel-spring-cloud-gateway-adapter": [
-                    "sentinel-spring-cloud-gateway-adapter"
-                ],
-                "sentinel-adapter/sentinel-spring-cloud-gateway-v6x-adapter": [
-                    "sentinel-spring-cloud-gateway-v6x-adapter"
-                ],
-                "sentinel-adapter/sentinel-spring-webflux-adapter": [
-                    "sentinel-spring-webflux-adapter"
-                ],
-                "sentinel-adapter/sentinel-spring-webmvc-adapter": [
-                    "sentinel-spring-webmvc-adapter"
-                ],
-                "sentinel-adapter/sentinel-spring-webmvc-v6x-adapter": [
-                    "sentinel-spring-webmvc-v6x-adapter"
-                ],
-                "sentinel-adapter/sentinel-web-adapter-common": [
-                    "sentinel-web-adapter-common"
-                ],
-                "sentinel-adapter/sentinel-web-servlet": [
-                    "sentinel-web-servlet"
-                ],
-                "sentinel-adapter/sentinel-zuul-adapter": [
-                    "sentinel-zuul-adapter"
-                ],
-                "sentinel-adapter/sentinel-zuul2-adapter": [
-                    "sentinel-zuul2-adapter"
-                ],
-                "sentinel-benchmark": [
-                    "sentinel-benchmark"
-                ],
-                "sentinel-cluster/sentinel-cluster-client-default": [
-                    "sentinel-cluster-client-default"
-                ],
-                "sentinel-cluster/sentinel-cluster-common-default": [
-                    "sentinel-cluster-common-default"
-                ],
-                "sentinel-cluster/sentinel-cluster-server-default": [
-                    "sentinel-cluster-server-default"
-                ],
-                "sentinel-cluster/sentinel-cluster-server-envoy-rls": [
-                    "sentinel-cluster-server-envoy-rls"
-                ],
-                "sentinel-core": [
-                    "sentinel-core"
-                ],
-                "sentinel-dashboard": [
-                    "sentinel-dashboard"
-                ],
-                "sentinel-extension/sentinel-annotation-aspectj": [
-                    "sentinel-annotation-aspectj"
-                ],
-                "sentinel-extension/sentinel-annotation-cdi-interceptor": [
-                    "sentinel-annotation-cdi-interceptor"
-                ],
-                "sentinel-extension/sentinel-datasource-apollo": [
-                    "sentinel-datasource-apollo"
-                ],
-                "sentinel-extension/sentinel-datasource-consul": [
-                    "sentinel-datasource-consul"
-                ],
-                "sentinel-extension/sentinel-datasource-etcd": [
-                    "sentinel-datasource-etcd"
-                ],
-                "sentinel-extension/sentinel-datasource-eureka": [
-                    "sentinel-datasource-eureka"
-                ],
-                "sentinel-extension/sentinel-datasource-extension": [
-                    "sentinel-datasource-extension"
-                ],
-                "sentinel-extension/sentinel-datasource-nacos": [
-                    "sentinel-datasource-nacos"
-                ],
-                "sentinel-extension/sentinel-datasource-redis": [
-                    "sentinel-datasource-redis"
-                ],
-                "sentinel-extension/sentinel-datasource-spring-cloud-config": [
-                    "sentinel-datasource-spring-cloud-config"
-                ],
-                "sentinel-extension/sentinel-datasource-zookeeper": [
-                    "sentinel-datasource-zookeeper"
-                ],
-                "sentinel-extension/sentinel-metric-exporter": [
-                    "sentinel-metric-exporter"
-                ],
-                "sentinel-extension/sentinel-parameter-flow-control": [
-                    "sentinel-parameter-flow-control"
-                ],
-                "sentinel-extension/sentinel-prometheus-metric-exporter": [
-                    "sentinel-prometheus-metric-exporter"
-                ],
-                "sentinel-logging/sentinel-logging-slf4j": [
-                    "sentinel-logging-slf4j"
-                ],
-                "sentinel-transport/sentinel-transport-common": [
-                    "sentinel-transport-common"
-                ],
-                "sentinel-transport/sentinel-transport-netty-http": [
-                    "sentinel-transport-netty-http"
-                ],
-                "sentinel-transport/sentinel-transport-simple-http": [
-                    "sentinel-transport-simple-http"
-                ],
-                "sentinel-transport/sentinel-transport-spring-mvc": [
-                    "sentinel-transport-spring-mvc"
+                "customer-management-frontend": [
+                    "customer-management-frontend"
                 ]
             }
         },
-        "URL": "https://github.com/alibaba/Sentinel"
+        "URL": "https://github.com/Microservice-API-Patterns/LakesideMutual"
     },
     {
         "languages": {
-            "Java" : {
-                "apollo-adminservice": [
-                    "apollo-adminservice"
+            "Java": {
+                "documents-service": [
+                    "mn-documents-service"
                 ],
-                "apollo-configservice": [
-                    "apollo-configservice"
+                "policy-service": [
+                    "mn-policy-service"
                 ],
-                "apollo-portal": [
-                    "apollo-portal"
+                "pricing-service": [
+                    "mn-pricing-service"
+                ],
+                "agent-portal-gateway": [
+                    "mn-agent-portal-gateway"
+                ],
+                "payment-service": [
+                    "mn-payment-service"
+                ],
+                "dashboard-service": [
+                    "mn-dashboard-service"
+                ],
+                "product-service": [
+                    "mn-product-service"
+                ],
+                "auth-service": [
+                    "mn-auth-service"
+                ],
+                "policy-search-service": [
+                    "mn-policy-search-service"
+                ],
+                "chat-service": [
+                    "mn-chat-service"
                 ]
             }
         },
-        "URL": "https://github.com/apolloconfig/apollo"
+        "URL": "https://github.com/asc-lab/micronaut-microservices-poc"
+    },
+    {
+        "languages": {
+            "Java": {
+                "src/cartservice": [
+                    "cartservice"
+                ],
+                "src/productservice": [
+                    "productservice"
+                ],
+                "src/frontend": [
+                    "frontend"
+                ],
+                "src/checkoutservice": [
+                    "checkoutservice"
+                ]
+            }
+        },
+        "URL": "https://github.com/aliyun/alibabacloud-microservice-demo"
+    },
+    {
+        "languages": {
+            "C#": {
+                "src/AuditlogService": [
+                    "auditlogservice"
+                ],
+                "src/InvoiceService": [
+                    "invoiceservice"
+                ],
+                "src/WorkshopManagementEventHandler": [
+                    "workshopmanagementeventhandler"
+                ],
+                "src/NotificationService": [
+                    "notificationservice"
+                ],
+                "src/WorkshopManagementAPI": [
+                    "workshopmanagementapi"
+                ],
+                "src/VehicleManagementAPI": [
+                    "vehiclemanagementapi"
+                ],
+                "src/TimeService": [
+                    "timeservice"
+                ],
+                "src/CustomerManagementAPI": [
+                    "customermanagementapi"
+                ],
+                "src/WebApp": [
+                    "webapp"
+                ]
+            }
+        },
+        "URL": "https://github.com/EdwinVW/pitstop"
+    },
+    {
+        "languages": {
+            "Java": {
+                "services/mod": [
+                    "mod"
+                ],
+                "services/parser": [
+                    "parser"
+                ]
+            },
+            "JavaScript": {
+                "services/add": [
+                    "add"
+                ],
+                "services/pow": [
+                    "pow"
+                ]
+            }
+        },
+        "URL": "https://github.com/nquocnghia/microcalc"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "api-node": [
+                    "api-node"
+                ],
+                "frontend": [
+                    "nextjs"
+                ]
+            }
+        },
+        "URL": "https://github.com/javieroc/docker-microservices"
+    },
+    {
+        "languages": {
+            "TypeScript": {
+                "media-service": [
+                    "media-service"
+                ],
+                "user-management-service": [
+                    "user-management-service"
+                ],
+                "api": [
+                    "api"
+                ]
+            }
+        },
+        "URL": "https://github.com/dms98br/nest-microservices"
+    },
+    {
+        "languages": {
+            "Ruby": {
+                "parsers/package-tracking": [
+                    "parser_package_tracking"
+                ],
+                "viewers/package-tracking": [
+                    "viewer_package_tracking"
+                ]
+            }
+        },
+        "URL": "https://github.com/Phyks/medonay"
+    },
+    {
+        "languages": {
+            "JavaScript": {
+                "frontend/landing": [
+                    "landing"
+                ],
+                "frontend/app/web": [
+                    "web"
+                ],
+                "backend/api": [
+                    "api"
+                ]
+            }
+        },
+        "URL": "https://github.com/atulmy/fullstack-javascript-architecture"
     }
 ]
