@@ -62,7 +62,6 @@ if __name__ == "__main__":
                         if len(production_fragments) >= 2:
                             clonesets["across-production"][clone_id] = production_fragments
                 for clone_id, fragments in clonesets["within-testing"].items():
-                    print("within-testing")
                     modifications = {}
                     for fragment in fragments:
                         m_list = json.loads(fragment["modification"])
@@ -75,7 +74,6 @@ if __name__ == "__main__":
                             for fragment in fragments:
                                 print(fragment)
                 for clone_id, fragments in clonesets["within-production"].items():
-                    print("within-production")
                     modifications = {}
                     for fragment in fragments:
                         m_list = json.loads(fragment["modification"])
@@ -88,7 +86,6 @@ if __name__ == "__main__":
                             for fragment in fragments:
                                 print(fragment)
                 for clone_id, fragments in clonesets["across-testing"].items():
-                    print("across-testing")
                     modifications = {}
                     for fragment in fragments:
                         m_list = json.loads(fragment["modification"])
@@ -101,7 +98,6 @@ if __name__ == "__main__":
                             for fragment in fragments:
                                 print(fragment)
                 for clone_id, fragments in clonesets["across-production"].items():
-                    print("across-production")
                     modifications = {}
                     for fragment in fragments:
                         m_list = json.loads(fragment["modification"])
