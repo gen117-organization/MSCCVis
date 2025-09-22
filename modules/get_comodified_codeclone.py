@@ -72,7 +72,7 @@ if __name__ == "__main__":
                     for commit, types in modifications.items():
                         if types.count("modified") >= 2:
                             for fragment in fragments:
-                                print(fragment)
+                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}")
                             break
                 for clone_id, fragments in clonesets["within-production"].items():
                     modifications = {}
@@ -84,8 +84,9 @@ if __name__ == "__main__":
                             modifications[m["commit"]].append(m["type"])
                     for commit, types in modifications.items():
                         if types.count("modified") >= 2:
+                            print(f"within-production: {clone_id}")
                             for fragment in fragments:
-                                print(fragment)
+                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}")
                             break
                 for clone_id, fragments in clonesets["across-testing"].items():
                     modifications = {}
@@ -97,8 +98,9 @@ if __name__ == "__main__":
                             modifications[m["commit"]].append(m["type"])
                     for commit, types in modifications.items():
                         if types.count("modified") >= 2:
+                            print(f"across-testing: {clone_id}")
                             for fragment in fragments:
-                                print(fragment)
+                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}")
                             break
                 for clone_id, fragments in clonesets["across-production"].items():
                     modifications = {}
@@ -110,6 +112,7 @@ if __name__ == "__main__":
                             modifications[m["commit"]].append(m["type"])
                     for commit, types in modifications.items():
                         if types.count("modified") >= 2:
+                            print(f"across-production: {clone_id}")
                             for fragment in fragments:
-                                print(fragment)
+                                print(f"{fragment["file_path"]}:{fragment["start_line"]}-{fragment["end_line"]}")
                             break
