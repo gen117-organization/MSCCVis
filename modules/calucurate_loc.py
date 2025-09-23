@@ -12,6 +12,9 @@ if __name__ == "__main__":
     dataset_file = project_root / "dataset/selected_projects.json"
     with open(dataset_file, "r") as f:
         dataset = json.load(f)
+    production_languages_total_loc = {}
+    testing_languages_total_loc = {}
+    languages_total_service_count = {}
     for project in dataset:
         url = project["URL"]
         name = url.split("/")[-2] + "." + url.split("/")[-1]
@@ -38,9 +41,21 @@ if __name__ == "__main__":
                         if file.startswith(service):
                             production_result["total_loc"] += modules.util.calculate_loc(workdir / file)
                             production_result[service] += modules.util.calculate_loc(workdir / file)
+            if language not in production_languages_total_loc:
+                production_languages_total_loc[language] = 0
+            if language not in testing_languages_total_loc:
+                testing_languages_total_loc[language] = 0
+            if language not in languages_total_service_count:
+                languages_total_service_count[language] = 0
+            production_languages_total_loc[language] += production_result["total_loc"]
+            testing_languages_total_loc[language] += testing_result["total_loc"]
+            languages_total_service_count[language] += len(project["languages"][language])
             print(f"[{language} - production] {production_result['total_loc']}")
             for service in production_result:
                 print(f"| {service} | {production_result[service]} |")
             print(f"[{language} - testing] {testing_result['total_loc']}")
             for service in testing_result:
                 print(f"| {service} | {testing_result[service]} |")
+    print(f"production_languages_total_loc: {production_languages_total_loc}")
+    print(f"testing_languages_total_loc: {testing_languages_total_loc}")
+    print(f"languages_total_service_count: {languages_total_service_count}")
