@@ -19,16 +19,16 @@ if __name__ == "__main__":
         for language in result:
             if language not in results:
                 results[language] = {
-                    "within-testing": [],
-                    "within-production": [],
-                    "across-testing": [],
-                    "across-production": []
+                    "within-testing_clone_ratio": [],
+                    "within-production_clone_ratio": [],
+                    "across-testing_clone_ratio": [],
+                    "across-production_clone_ratio": []
                 }
             for mode in result[language]:
                 results[language][mode].append(result[language][mode])
 
     # 全言語全モードの箱ひげ図を横に並べて描画
-    modes = ["within-testing", "within-production", "across-testing", "across-production"]
+    modes = ["within-testing_clone_ratio", "within-production_clone_ratio", "across-testing_clone_ratio", "across-production_clone_ratio"]
     languages = list(results.keys())
 
     fig, axes = plt.subplots(1, len(modes), figsize=(5 * len(modes), 6), sharey=True)
