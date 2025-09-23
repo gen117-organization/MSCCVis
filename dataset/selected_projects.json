@@ -726,25 +726,6 @@
     {
         "languages": {
             "Java": {
-                "backend": [
-                    "backend"
-                ],
-                "authserver": [
-                    "auth"
-                ],
-                "registry": [
-                    "registry"
-                ],
-                "gateway": [
-                    "gateway"
-                ]
-            }
-        },
-        "URL": "https://github.com/flowant/website"
-    },
-    {
-        "languages": {
-            "Java": {
                 "eureka-server": [
                     "eureka-server"
                 ],

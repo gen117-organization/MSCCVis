@@ -344,7 +344,7 @@ def create_clone_ratio_with_comodification_chart(projects_data, output_dir=None)
 
 
 if __name__ == "__main__":
-    dataset_file = project_root / "dataset/selected_projects-mo.json"
+    dataset_file = project_root / "dataset/selected_projects.json"
     with open(dataset_file, "r") as f:
         dataset = json.load(f)
         
