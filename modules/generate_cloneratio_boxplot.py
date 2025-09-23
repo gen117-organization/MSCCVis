@@ -52,6 +52,7 @@ if __name__ == "__main__":
         axes[idx].boxplot(data, labels=labels, showmeans=True)
         axes[idx].set_title(mode, fontsize=12)
         axes[idx].tick_params(axis='x', rotation=45)
+        axes[idx].set_ylim(0, 1)
 
     plt.tight_layout()
     
