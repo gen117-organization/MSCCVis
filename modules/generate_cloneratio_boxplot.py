@@ -38,8 +38,10 @@ if __name__ == "__main__":
 
     for idx, mode in enumerate(modes):
         data = []
+        labels = []
         for language in languages:
             data.append(results[language][mode])
+            labels.append(language)
         
         # データ数を出力
         total_data_points = sum(len(d) for d in data)
@@ -47,7 +49,9 @@ if __name__ == "__main__":
         for i, language in enumerate(languages):
             print(f"  {language}: {len(data[i])}個")
         
-        axes[idx].boxplot(data, showmeans=True)
+        axes[idx].boxplot(data, labels=labels, showmeans=True)
+        axes[idx].set_title(mode, fontsize=12)
+        axes[idx].tick_params(axis='x', rotation=45)
 
     plt.tight_layout()
     
