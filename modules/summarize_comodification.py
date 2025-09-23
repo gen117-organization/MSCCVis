@@ -15,6 +15,8 @@ if __name__ == "__main__":
     results = {}
     for project in dataset:
         comodification_rate = modules.calculate_comodification_rate.analyze_repo(project)
+        url = project["URL"]
+        name = url.split("/")[-2] + "." + url.split("/")[-1]
         for language in comodification_rate:
             if language not in results:
                 results[language] = {
@@ -23,7 +25,11 @@ if __name__ == "__main__":
                     "across-testing": 0,
                     "across-production": 0
                 }
+            flag = False
             for mode in comodification_rate[language]:
                 if comodification_rate[language][mode]["comodification_count"] > 0:
                     results[language][mode] += 1
+                    flag = True
+            if flag:
+                print(f"{name} {language}")
     print(results)
