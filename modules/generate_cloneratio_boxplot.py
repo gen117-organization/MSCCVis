@@ -31,27 +31,25 @@ if __name__ == "__main__":
     modes = ["within-testing_clone_ratio", "within-production_clone_ratio", "across-testing_clone_ratio", "across-production_clone_ratio"]
     languages = list(results.keys())
 
-    fig, axes = plt.subplots(1, len(modes), figsize=(5 * len(modes), 6), sharey=True)
+    fig, axes = plt.subplots(1, len(modes), figsize=(3 * len(modes), 6), sharey=True)
 
     if len(modes) == 1:
         axes = [axes]
 
     for idx, mode in enumerate(modes):
         data = []
-        labels = []
         for language in languages:
             data.append(results[language][mode])
-            labels.append(language)
-        axes[idx].boxplot(data, labels=labels, showmeans=True)
-        axes[idx].set_title(mode, fontsize=14)
-        axes[idx].set_xlabel("言語", fontsize=12)
-        if idx == 0:
-            axes[idx].set_ylabel("クローン率", fontsize=12)
-        axes[idx].tick_params(axis='x', rotation=45)
+        
+        # データ数を出力
+        total_data_points = sum(len(d) for d in data)
+        print(f"{mode}: {total_data_points}個のデータポイント")
+        for i, language in enumerate(languages):
+            print(f"  {language}: {len(data[i])}個")
+        
+        axes[idx].boxplot(data, showmeans=True)
 
     plt.tight_layout()
-    plt.suptitle("全言語・全モードのクローン率 箱ひげ図", fontsize=16, y=1.03)
-    plt.subplots_adjust(top=0.88)
     
     # PNG形式で保存
     output_path = project_root / "dest/cloneratio_boxplot.png"
