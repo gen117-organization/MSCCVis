@@ -31,5 +31,5 @@ if __name__ == "__main__":
                     results[language][mode] += 1
                     flag = True
             if flag:
-                print(f"{name} {language}")
+                print(f"{name}_{language}: {comodification_rate[language]}")
     print(results)
