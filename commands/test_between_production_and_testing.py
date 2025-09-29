@@ -44,7 +44,7 @@ if __name__ == "__main__":
                     else:
                         comodification_rate_lists[language][mode].append(0)
     for language in TARGET_LANGUAGES:
-        print(f"{language} within-testing vs within-production: {stats.ttest_ind(clone_ratio_lists[language]["within-testing_clone_ratio"], clone_ratio_lists[language]["within-production_clone_ratio"])}")
-        print(f"{language} across-testing vs across-production: {stats.ttest_ind(clone_ratio_lists[language]["across-testing_clone_ratio"], clone_ratio_lists[language]["across-production_clone_ratio"])}")
-        print(f"{language} within-testing vs within-production: {stats.ttest_ind(comodification_rate_lists[language]["within-testing"], comodification_rate_lists[language]["within-production"])}")
-        print(f"{language} across-testing vs across-production: {stats.ttest_ind(comodification_rate_lists[language]["across-testing"], comodification_rate_lists[language]["across-production"])}")
+        print(f"{language} within-testing vs within-production(clone ratio): {stats.ttest_ind(clone_ratio_lists[language]["within-testing_clone_ratio"], clone_ratio_lists[language]["within-production_clone_ratio"])}")
+        print(f"{language} across-testing vs across-production(clone ratio): {stats.ttest_ind(clone_ratio_lists[language]["across-testing_clone_ratio"], clone_ratio_lists[language]["across-production_clone_ratio"])}")
+        print(f"{language} within-testing vs within-production(comodification rate): {stats.ttest_ind(comodification_rate_lists[language]["within-testing"], comodification_rate_lists[language]["within-production"])}")
+        print(f"{language} across-testing vs across-production(comodification rate): {stats.ttest_ind(comodification_rate_lists[language]["across-testing"], comodification_rate_lists[language]["across-production"])}")
