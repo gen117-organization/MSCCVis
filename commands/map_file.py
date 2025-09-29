@@ -7,7 +7,7 @@ import os
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 from config import TARGET_PROGRAMING_LANGUAGES, BASED_DATASET
-import claim_parser
+import modules.claim_parser
 
 def map_files(url: str) -> dict:
     """
@@ -36,8 +36,8 @@ def map_files(url: str) -> dict:
         with open(target, "r") as f:
             reader = csv.DictReader(f)
             row = next(reader)
-            uSs = claim_parser.parse_uSs(row["uSs"])
-            containers = claim_parser.parse_containers(row["CONTAINERS"])
+            uSs = modules.claim_parser.parse_uSs(row["uSs"])
+            containers = modules.claim_parser.parse_containers(row["CONTAINERS"])
 
         # GitHub Linguistの結果を読み込む
         target = project_root / "dest/github_linguist" / f"{name}.json"

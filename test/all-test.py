@@ -6,7 +6,7 @@ project_root = Path(__file__).parent.parent
 
 sys.path.append(str(project_root))
 import modules.clone_repo
-import modules.identify_microservice
+import commands.identify_microservice
 import modules.collect_datas
 import modules.analyze_cc
 import modules.analyze_modification
