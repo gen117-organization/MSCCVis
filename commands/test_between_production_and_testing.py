@@ -43,8 +43,19 @@ if __name__ == "__main__":
                         comodification_rate_lists[language][mode].append(comodification_rate[language][mode]["comodification_count"] / comodification_rate[language][mode]["count"])
                     else:
                         comodification_rate_lists[language][mode].append(0)
+    print("Production vs Testing")
+    print("--------------------------------")
     for language in TARGET_LANGUAGES:
         print(f"{language} within-testing vs within-production(clone ratio): {stats.ttest_ind(clone_ratio_lists[language]["within-testing_clone_ratio"], clone_ratio_lists[language]["within-production_clone_ratio"])}")
         print(f"{language} across-testing vs across-production(clone ratio): {stats.ttest_ind(clone_ratio_lists[language]["across-testing_clone_ratio"], clone_ratio_lists[language]["across-production_clone_ratio"])}")
         print(f"{language} within-testing vs within-production(comodification rate): {stats.ttest_ind(comodification_rate_lists[language]["within-testing"], comodification_rate_lists[language]["within-production"])}")
         print(f"{language} across-testing vs across-production(comodification rate): {stats.ttest_ind(comodification_rate_lists[language]["across-testing"], comodification_rate_lists[language]["across-production"])}")
+    print("================================================")
+    print("Within vs Across")
+    print("--------------------------------")
+    for language in TARGET_LANGUAGES:
+        print(f"{language} within-testing vs across-testing(clone ratio): {stats.ttest_ind(clone_ratio_lists[language]["within-testing_clone_ratio"], clone_ratio_lists[language]["across-testing_clone_ratio"])}")
+        print(f"{language} within-production vs across-production(clone ratio): {stats.ttest_ind(clone_ratio_lists[language]["within-production_clone_ratio"], clone_ratio_lists[language]["across-production_clone_ratio"])}")
+        print(f"{language} within-testing vs across-testing(comodification rate): {stats.ttest_ind(comodification_rate_lists[language]["within-testing"], comodification_rate_lists[language]["across-testing"])}")
+        print(f"{language} within-production vs across-production(comodification rate): {stats.ttest_ind(comodification_rate_lists[language]["within-production"], comodification_rate_lists[language]["across-production"])}")
+    print("================================================")
