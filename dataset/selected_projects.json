@@ -151,28 +151,6 @@
     },
     {
         "languages": {
-            "Java": {
-                "customer-service": [
-                    "customer-service"
-                ],
-                "gateway-service": [
-                    "service-gateway"
-                ],
-                "zipkin-service": [
-                    "zipkin-service"
-                ],
-                "account-service": [
-                    "account-service"
-                ],
-                "discovery-service": [
-                    "discovery-service"
-                ]
-            }
-        },
-        "URL": "https://github.com/piomin/sample-spring-microservices"
-    },
-    {
-        "languages": {
             "JavaScript": {
                 "management-server": [
                     "management-server"
@@ -689,22 +667,6 @@
     },
     {
         "languages": {
-            "Python": {
-                "harvester": [
-                    "harvester-monitor",
-                    "harvester-beat",
-                    "harvester-api",
-                    "harvester-worker"
-                ],
-                "explorer-api": [
-                    "explorer-api"
-                ]
-            }
-        },
-        "URL": "https://github.com/mvs-org/explorer"
-    },
-    {
-        "languages": {
             "JavaScript": {
                 "rssreader": [
                     "rssreader"
@@ -845,28 +807,6 @@
     },
     {
         "languages": {
-            "JavaScript": {
-                "services/facade": [
-                    "facade"
-                ],
-                "services/core": [
-                    "core"
-                ],
-                "services/im": [
-                    "im"
-                ],
-                "services/auth": [
-                    "auth"
-                ],
-                "services/transaction": [
-                    "transaction"
-                ]
-            }
-        },
-        "URL": "https://github.com/TibebeJS/masterlance"
-    },
-    {
-        "languages": {
             "Python": {
                 "issuer_controller": [
                     "caddyx",
@@ -960,42 +900,6 @@
             }
         },
         "URL": "https://github.com/gs1/GS1_DigitalLink_Resolver_CE"
-    },
-    {
-        "languages": {
-            "Java": {
-                "policy-management-backend": [
-                    "policy-management-backend"
-                ],
-                "customer-management-backend": [
-                    "customer-management-backend"
-                ],
-                "customer-self-service-backend": [
-                    "customer-self-service-backend"
-                ],
-                "spring-boot-admin": [
-                    "spring-boot-admin"
-                ],
-                "customer-core": [
-                    "customer-core"
-                ]
-            },
-            "JavaScript": {
-                "customer-self-service-frontend": [
-                    "customer-self-service-frontend"
-                ],
-                "policy-management-frontend": [
-                    "policy-management-frontend"
-                ],
-                "customer-management-frontend": [
-                    "customer-management-frontend"
-                ],
-                "risk-management-server": [
-                    "risk-management-server"
-                ]
-            }
-        },
-        "URL": "https://github.com/Microservice-API-Patterns/LakesideMutual"
     },
     {
         "languages": {
@@ -1120,35 +1024,6 @@
             }
         },
         "URL": "https://github.com/javieroc/docker-microservices"
-    },
-    {
-        "languages": {
-            "TypeScript": {
-                "media-service": [
-                    "media-service"
-                ],
-                "user-management-service": [
-                    "user-management-service"
-                ],
-                "api": [
-                    "api"
-                ]
-            }
-        },
-        "URL": "https://github.com/dms98br/nest-microservices"
-    },
-    {
-        "languages": {
-            "Ruby": {
-                "viewers/package-tracking": [
-                    "viewer_package_tracking"
-                ],
-                "parsers/package-tracking": [
-                    "parser_package_tracking"
-                ]
-            }
-        },
-        "URL": "https://github.com/Phyks/medonay"
     },
     {
         "languages": {
