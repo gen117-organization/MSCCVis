@@ -39,6 +39,7 @@ if __name__ == "__main__":
                 queue.append(parent)
             finished_commits.append(commit.hexsha)
         projects.append(len(target_commits))
+        print(f"{name} の分析コミット数: {len(target_commits)}")
         with open(dest_dir / f"{name}.json", "w") as f:
             json.dump(target_commits, f)
     print(f"平均分析コミット数: {statistics.mean(projects)}")
