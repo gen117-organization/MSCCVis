@@ -773,20 +773,6 @@
     {
         "languages": {
             "Python": {
-                "api": [
-                    "web"
-                ],
-                "celery-queue": [
-                    "monitor",
-                    "worker"
-                ]
-            }
-        },
-        "URL": "https://github.com/mattkohl/docker-flask-celery-redis"
-    },
-    {
-        "languages": {
-            "Python": {
                 "app": [
                     "yaba_api"
                 ],
