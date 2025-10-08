@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 import json
+import statistics
 
 import git
 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
         projects.append(len(target_commits))
         with open(dest_dir / f"{name}.json", "w") as f:
             json.dump(target_commits, f)
-    print(f"平均分析コミット数: {projects.mean()}")
-    print(f"最大分析コミット数: {projects.max()}")
-    print(f"最小分析コミット数: {projects.min()}")
-    print(f"分析コミット数の中央値: {projects.median()}")
+    print(f"平均分析コミット数: {statistics.mean(projects)}")
+    print(f"最大分析コミット数: {max(projects)}")
+    print(f"最小分析コミット数: {min(projects)}")
+    print(f"分析コミット数の中央値: {statistics.median(projects)}")
