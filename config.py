@@ -49,4 +49,7 @@ ANTLR_LANGUAGE = (
 )
 
 # リポジトリマイニングするコミット数
-SEARCH_DEPTH = 100
+SEARCH_DEPTH = -1
+
+# 何コミット区切りで分析するか
+ANALYSIS_FREQUENCY = 100
