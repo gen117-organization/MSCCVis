@@ -32,11 +32,11 @@ if __name__ == "__main__":
             commit = queue.pop(0)
             if commit.hexsha in finished_commits:
                 continue
-            count += 1
             if count % ANALYSIS_FREQUENCY == 0:
                 target_commits.append(commit.hexsha)
             for parent in commit.parents:
                 queue.append(parent)
+            count += 1
             finished_commits.append(commit.hexsha)
         projects.append(len(target_commits))
         print(f"{name} の分析コミット数: {len(target_commits)}")
