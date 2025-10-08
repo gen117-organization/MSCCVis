@@ -11,5 +11,5 @@ import modules.select_project
 
 if __name__ == "__main__":
     modules.identify_microservice.analyze_dataset()
-    modules.map_file.map_file()
-    modules.select_project.select_project()
+    modules.map_file.main()
+    modules.select_project.main()
