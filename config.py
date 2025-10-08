@@ -8,7 +8,7 @@ project_root = Path(__file__).parent
         選別前のデータセットのパスを記入してください．
         ヘッダーが存在しており，"URL"列にGitHubのURLが記載されている,';'区切りのCSVファイルに対応しています．
 """
-BASED_DATASET = project_root / "dataset/mo_datasets.csv"
+BASED_DATASET = project_root / "dataset/Filtered.csv"
 
 """
     選別後のデータセット：
