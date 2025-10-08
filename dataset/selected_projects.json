@@ -2,11 +2,11 @@
     {
         "languages": {
             "Python": {
-                "seed-data": [
-                    "seed"
-                ],
                 "vote": [
                     "vote"
+                ],
+                "seed-data": [
+                    "seed"
                 ]
             }
         },
@@ -31,11 +31,11 @@
     {
         "languages": {
             "Python": {
-                "app-hitl": [
-                    "batch-hitl"
-                ],
                 "app-tasks": [
                     "batch"
+                ],
+                "app-hitl": [
+                    "batch-hitl"
                 ]
             }
         },
@@ -44,11 +44,11 @@
     {
         "languages": {
             "Python": {
-                "similarity": [
-                    "similarity"
-                ],
                 "tagrecommendation": [
                     "tagrecommendation"
+                ],
+                "similarity": [
+                    "similarity"
                 ]
             }
         },
@@ -58,17 +58,17 @@
         "languages": {
             "JavaScript": {
                 "cypresse2e": [
-                    "cypress-e2e-report",
-                    "cypress-e2e-tests"
+                    "cypress-e2e-tests",
+                    "cypress-e2e-report"
+                ],
+                "client": [
+                    "client"
                 ],
                 "mocha": [
                     "mocha-integration"
                 ],
                 "backend": [
                     "backend-service"
-                ],
-                "client": [
-                    "client"
                 ]
             }
         },
@@ -77,20 +77,20 @@
     {
         "languages": {
             "JavaScript": {
+                "src/frontend/web_application": [
+                    "frontend_dev",
+                    "frontend"
+                ],
                 "src/backend": [
+                    "cli",
+                    "twitterworker",
+                    "imapworker",
                     "mqworker",
                     "apiv1",
-                    "mastodonworker",
-                    "lmtpd",
                     "apiv2",
-                    "imapworker",
-                    "twitterworker",
-                    "cli",
+                    "lmtpd",
+                    "mastodonworker",
                     "identitypoller"
-                ],
-                "src/frontend/web_application": [
-                    "frontend",
-                    "frontend_dev"
                 ]
             }
         },
@@ -99,11 +99,11 @@
     {
         "languages": {
             "Go": {
-                "Beam/go/cmd/tracker": [
-                    "beam_tracker"
-                ],
                 "Beam/go/cmd/segments": [
                     "beam_segments"
+                ],
+                "Beam/go/cmd/tracker": [
+                    "beam_tracker"
                 ]
             }
         },
@@ -112,11 +112,11 @@
     {
         "languages": {
             "Python": {
-                "dockercoins/worker": [
-                    "worker"
-                ],
                 "dockercoins/rng": [
                     "rng"
+                ],
+                "dockercoins/worker": [
+                    "worker"
                 ]
             }
         },
@@ -124,26 +124,26 @@
     },
     {
         "languages": {
-            "TypeScript": {
-                "search-service": [
-                    "search-service-cont"
-                ],
-                "movies-service": [
-                    "movies-service-cont"
-                ],
-                "cinema-catalog-service": [
-                    "cinema-catalog-service-cont"
-                ]
-            },
             "JavaScript": {
                 "search-service": [
                     "search-service-cont"
                 ],
+                "cinema-catalog-service": [
+                    "cinema-catalog-service-cont"
+                ],
                 "movies-service": [
                     "movies-service-cont"
+                ]
+            },
+            "TypeScript": {
+                "search-service": [
+                    "search-service-cont"
                 ],
                 "cinema-catalog-service": [
                     "cinema-catalog-service-cont"
+                ],
+                "movies-service": [
+                    "movies-service-cont"
                 ]
             }
         },
@@ -152,14 +152,14 @@
     {
         "languages": {
             "Java": {
+                "customer-service": [
+                    "customer-service"
+                ],
                 "gateway-service": [
                     "service-gateway"
                 ],
                 "zipkin-service": [
                     "zipkin-service"
-                ],
-                "customer-service": [
-                    "customer-service"
                 ],
                 "account-service": [
                     "account-service"
@@ -174,21 +174,37 @@
     {
         "languages": {
             "JavaScript": {
-                "shopping-webclient": [
-                    "shopping-webclient"
-                ],
-                "shopping-server": [
-                    "shopping-server"
-                ],
                 "management-server": [
                     "management-server"
                 ],
                 "management-webclient": [
                     "management-webclient"
+                ],
+                "shopping-webclient": [
+                    "shopping-webclient"
+                ],
+                "shopping-server": [
+                    "shopping-server"
                 ]
             }
         },
         "URL": "https://github.com/Viveckh/Veniqa"
+    },
+    {
+        "languages": {
+            "Python": {
+                "web": [
+                    "twitchbot_webserver"
+                ],
+                "mqtt_logger": [
+                    "twitchbot_mqtt_logger"
+                ],
+                "bot": [
+                    "twitchbot_bot"
+                ]
+            }
+        },
+        "URL": "https://github.com/tisboyo/Twitch_Bot"
     },
     {
         "languages": {
@@ -206,23 +222,44 @@
     {
         "languages": {
             "Java": {
+                "ts-admin-travel-service": [
+                    "ts-admin-travel-service"
+                ],
+                "ts-basic-service": [
+                    "ts-basic-service"
+                ],
+                "ts-seat-service": [
+                    "ts-seat-service"
+                ],
+                "ts-route-service": [
+                    "ts-route-service"
+                ],
                 "ts-execute-service": [
                     "ts-execute-service"
                 ],
-                "ts-price-service": [
-                    "ts-price-service"
+                "ts-train-service": [
+                    "ts-train-service"
+                ],
+                "ts-payment-service": [
+                    "ts-payment-service"
                 ],
                 "ts-travel-service": [
                     "ts-travel-service"
                 ],
-                "ts-verification-code-service": [
-                    "ts-verification-code-service"
+                "ts-price-service": [
+                    "ts-price-service"
                 ],
-                "ts-travel2-service": [
-                    "ts-travel2-service"
+                "ts-preserve-service": [
+                    "ts-preserve-service"
                 ],
-                "ts-consign-service": [
-                    "ts-consign-service"
+                "ts-admin-order-service": [
+                    "ts-admin-order-service"
+                ],
+                "ts-rebook-service": [
+                    "ts-rebook-service"
+                ],
+                "ts-consign-price-service": [
+                    "ts-consign-price-service"
                 ],
                 "ts-user-service": [
                     "ts-user-service"
@@ -230,68 +267,11 @@
                 "ts-preserve-other-service": [
                     "ts-preserve-other-service"
                 ],
-                "ts-admin-basic-info-service": [
-                    "ts-admin-basic-info-service"
-                ],
-                "ts-travel-plan-service": [
-                    "ts-travel-plan-service"
-                ],
-                "ts-basic-service": [
-                    "ts-basic-service"
-                ],
-                "ts-route-service": [
-                    "ts-route-service"
-                ],
-                "ts-admin-route-service": [
-                    "ts-admin-route-service"
-                ],
-                "ts-admin-user-service": [
-                    "ts-admin-user-service"
-                ],
-                "ts-assurance-service": [
-                    "ts-assurance-service"
-                ],
-                "ts-security-service": [
-                    "ts-security-service"
-                ],
-                "ts-cancel-service": [
-                    "ts-cancel-service"
-                ],
-                "ts-contacts-service": [
-                    "ts-contacts-service"
-                ],
-                "ts-admin-travel-service": [
-                    "ts-admin-travel-service"
-                ],
-                "ts-order-service": [
-                    "ts-order-service"
-                ],
-                "ts-consign-price-service": [
-                    "ts-consign-price-service"
-                ],
-                "ts-train-service": [
-                    "ts-train-service"
-                ],
-                "ts-admin-order-service": [
-                    "ts-admin-order-service"
-                ],
-                "ts-order-other-service": [
-                    "ts-order-other-service"
-                ],
-                "ts-food-service": [
-                    "ts-food-service"
+                "ts-travel2-service": [
+                    "ts-travel2-service"
                 ],
                 "ts-config-service": [
                     "ts-config-service"
-                ],
-                "ts-preserve-service": [
-                    "ts-preserve-service"
-                ],
-                "ts-rebook-service": [
-                    "ts-rebook-service"
-                ],
-                "ts-notification-service": [
-                    "ts-notification-service"
                 ],
                 "ts-route-plan-service": [
                     "ts-route-plan-service"
@@ -299,25 +279,61 @@
                 "ts-auth-service": [
                     "ts-auth-service"
                 ],
-                "ts-payment-service": [
-                    "ts-payment-service"
+                "ts-food-service": [
+                    "ts-food-service"
                 ],
-                "ts-seat-service": [
-                    "ts-seat-service"
+                "ts-travel-plan-service": [
+                    "ts-travel-plan-service"
+                ],
+                "ts-admin-user-service": [
+                    "ts-admin-user-service"
+                ],
+                "ts-security-service": [
+                    "ts-security-service"
                 ],
                 "ts-station-service": [
                     "ts-station-service"
+                ],
+                "ts-admin-basic-info-service": [
+                    "ts-admin-basic-info-service"
+                ],
+                "ts-admin-route-service": [
+                    "ts-admin-route-service"
+                ],
+                "ts-cancel-service": [
+                    "ts-cancel-service"
+                ],
+                "ts-order-other-service": [
+                    "ts-order-other-service"
+                ],
+                "ts-assurance-service": [
+                    "ts-assurance-service"
+                ],
+                "ts-notification-service": [
+                    "ts-notification-service"
+                ],
+                "ts-order-service": [
+                    "ts-order-service"
+                ],
+                "ts-verification-code-service": [
+                    "ts-verification-code-service"
+                ],
+                "ts-consign-service": [
+                    "ts-consign-service"
+                ],
+                "ts-contacts-service": [
+                    "ts-contacts-service"
                 ],
                 "ts-inside-payment-service": [
                     "ts-inside-payment-service"
                 ]
             },
             "JavaScript": {
-                "ts-ui-dashboard": [
-                    "ts-ui-dashboard"
-                ],
                 "ts-ticket-office-service": [
                     "ts-ticket-office-service"
+                ],
+                "ts-ui-dashboard": [
+                    "ts-ui-dashboard"
                 ]
             }
         },
@@ -330,8 +346,8 @@
                     "bcregmara"
                 ],
                 "bcreg-aca": [
-                    "bcreg-controller",
-                    "caddy"
+                    "caddy",
+                    "bcreg-controller"
                 ]
             }
         },
@@ -339,20 +355,20 @@
     },
     {
         "languages": {
-            "JavaScript": {
-                "streamer-ui": [
-                    "ui"
-                ],
+            "TypeScript": {
                 "streamer": [
                     "service"
+                ],
+                "streamer-ui": [
+                    "ui"
                 ]
             },
-            "TypeScript": {
-                "streamer-ui": [
-                    "ui"
-                ],
+            "JavaScript": {
                 "streamer": [
                     "service"
+                ],
+                "streamer-ui": [
+                    "ui"
                 ]
             }
         },
@@ -360,51 +376,51 @@
     },
     {
         "languages": {
-            "Python": {
-                "grin-py": [
-                    "paymentestimator",
-                    "workerstats",
-                    "blockwatcher",
-                    "shareaggr",
-                    "auditor",
-                    "apiv1",
-                    "grinstats",
-                    "payment_api",
-                    "poolstats"
+            "TypeScript": {
+                "grin": [
+                    "wallet",
+                    "wallet_private",
+                    "grin"
                 ],
                 "grin-js/api": [
                     "apiv2"
+                ]
+            },
+            "Python": {
+                "grin-py": [
+                    "shareaggr",
+                    "grinstats",
+                    "payment_api",
+                    "auditor",
+                    "workerstats",
+                    "blockwatcher",
+                    "paymentestimator",
+                    "poolstats",
+                    "apiv1"
                 ],
                 "grin": [
-                    "grin",
                     "wallet",
-                    "wallet_private"
+                    "wallet_private",
+                    "grin"
                 ],
                 "rmq": [
                     "rmq"
-                ]
-            },
-            "TypeScript": {
+                ],
                 "grin-js/api": [
                     "apiv2"
-                ],
-                "grin": [
-                    "grin",
-                    "wallet",
-                    "wallet_private"
                 ]
             },
             "JavaScript": {
+                "grin": [
+                    "wallet",
+                    "wallet_private",
+                    "grin"
+                ],
                 "grin-js/webui": [
                     "webui"
                 ],
                 "grin-js/api": [
                     "apiv2"
-                ],
-                "grin": [
-                    "grin",
-                    "wallet",
-                    "wallet_private"
                 ]
             }
         },
@@ -413,14 +429,14 @@
     {
         "languages": {
             "Python": {
+                "main_node": [
+                    "main-node"
+                ],
                 "worker": [
                     "worker"
                 ],
                 "worker_service": [
                     "worker-service"
-                ],
-                "main_node": [
-                    "main-node"
                 ]
             }
         },
@@ -429,14 +445,14 @@
     {
         "languages": {
             "Java": {
-                "auth-service": [
-                    "auth"
+                "player-service": [
+                    "player"
                 ],
                 "game-service": [
                     "game"
                 ],
-                "player-service": [
-                    "player"
+                "auth-service": [
+                    "auth"
                 ]
             }
         },
@@ -458,20 +474,20 @@
     {
         "languages": {
             "Python": {
-                "src/yelp-classify": [
-                    "yelp-classify"
-                ],
                 "src/yelp-service": [
                     "yelp-service"
-                ],
-                "src/flask-app": [
-                    "flask-app"
                 ],
                 "src/twitter-classify": [
                     "twitter-classify"
                 ],
+                "src/flask-app": [
+                    "flask-app"
+                ],
                 "src/twitter-service": [
                     "twitter-service"
+                ],
+                "src/yelp-classify": [
+                    "yelp-classify"
                 ]
             }
         },
@@ -481,19 +497,19 @@
         "languages": {
             "C#": {
                 "src/Microservices": [
-                    "webapi",
-                    "storage-api",
-                    "auditlog-grpc",
-                    "configuration-api",
-                    "identity-api",
-                    "notification-background",
-                    "notification-api",
                     "identity-grpc",
-                    "product-api",
+                    "configuration-api",
+                    "storage-api",
+                    "notification-grpc",
+                    "auditlog-grpc",
                     "auditlog-api",
-                    "notification-grpc"
+                    "notification-api",
+                    "product-api",
+                    "webapi",
+                    "identity-api",
+                    "notification-background"
                 ],
-                "src/IdentityServer/OpenIddict": [
+                "src/IdentityServers/OpenIddict": [
                     "identity-authserver"
                 ]
             }
@@ -503,19 +519,19 @@
     {
         "languages": {
             "Python": {
-                "src/sharing": [
-                    "SharingService"
-                ],
                 "src/topicextraction": [
                     "TopicExtractionService"
+                ],
+                "src/sharing": [
+                    "SharingService"
                 ]
             },
             "JavaScript": {
-                "src/mwc": [
-                    "MediaWikiConnector"
-                ],
                 "src/topicextraction": [
                     "TopicExtractionService"
+                ],
+                "src/mwc": [
+                    "MediaWikiConnector"
                 ]
             }
         },
@@ -524,20 +540,20 @@
     {
         "languages": {
             "Java": {
-                "gateway-service": [
-                    "gateway"
-                ],
                 "discovery-service": [
                     "discovery"
-                ],
-                "provider-service": [
-                    "provider"
                 ],
                 "config-server": [
                     "config"
                 ],
+                "gateway-service": [
+                    "gateway"
+                ],
                 "patient-service": [
                     "patient"
+                ],
+                "provider-service": [
+                    "provider"
                 ]
             }
         },
@@ -546,17 +562,14 @@
     {
         "languages": {
             "Java": {
-                "ftgo-api-gateway": [
-                    "ftgo-api-gateway"
+                "ftgo-restaurant-service": [
+                    "ftgo-restaurant-service"
                 ],
                 "ftgo-kitchen-service": [
                     "ftgo-kitchen-service"
                 ],
-                "ftgo-order-history-service": [
-                    "ftgo-order-history-service"
-                ],
-                "ftgo-delivery-service": [
-                    "ftgo-delivery-service"
+                "ftgo-consumer-service": [
+                    "ftgo-consumer-service"
                 ],
                 "ftgo-order-service": [
                     "ftgo-order-service"
@@ -564,11 +577,14 @@
                 "ftgo-accounting-service": [
                     "ftgo-accounting-service"
                 ],
-                "ftgo-restaurant-service": [
-                    "ftgo-restaurant-service"
+                "ftgo-api-gateway": [
+                    "ftgo-api-gateway"
                 ],
-                "ftgo-consumer-service": [
-                    "ftgo-consumer-service"
+                "ftgo-delivery-service": [
+                    "ftgo-delivery-service"
+                ],
+                "ftgo-order-history-service": [
+                    "ftgo-order-history-service"
                 ]
             }
         },
@@ -597,52 +613,53 @@
     },
     {
         "languages": {
-            "JavaScript": {
-                "rcm": [
-                    "rcm"
+            "Java": {
+                "java/client": [
+                    "java-specialagent-client"
                 ],
-                "tagger": [
-                    "tagger_backend",
-                    "tagger_client"
+                "java/microdonuts": [
+                    "java-opentracing-server"
                 ],
-                "faceted_search": [
-                    "faceted_search"
+                "java/otlp": [
+                    "java-otlp-server",
+                    "java-otlp-client"
+                ],
+                "java/server": [
+                    "java-specialagent-server"
                 ]
-            }
-        },
-        "URL": "https://github.com/dgutman/webix_image_organizer"
-    },
-    {
-        "languages": {
+            },
             "Python": {
-                "python/opentelemetry/manual_instrumentation": [
-                    "py-opentelemetry-manual-otlp-client",
-                    "py-opentelemetry-manual-otlp-server"
-                ],
                 "python/opentelemetry/auto_instrumentation": [
                     "py-opentelemetry-auto-otlp-client",
-                    "py-opentelemetry-auto-collector-client",
                     "py-opentelemetry-auto-collector-server",
-                    "py-opentelemetry-auto-otlp-server"
+                    "py-opentelemetry-auto-otlp-server",
+                    "py-opentelemetry-auto-collector-client"
                 ],
-                "python/opentracing": [
-                    "py-opentracing-client",
-                    "py-opentracing-server"
+                "python/opentelemetry/manual_instrumentation": [
+                    "py-opentelemetry-manual-otlp-server",
+                    "py-opentelemetry-manual-otlp-client"
                 ],
                 "demo-client/otlp": [
                     "demo-client-otlp"
                 ],
                 "tools/integration": [
-                    "integration-test",
-                    "config-generator"
+                    "config-generator",
+                    "integration-test"
+                ],
+                "python/opentracing": [
+                    "py-opentracing-client",
+                    "py-opentracing-server"
                 ]
             },
             "Go": {
+                "go/opentelemetry/collector/client": [
+                    "go-opentelemetry-collector-client"
+                ],
+                "go/opentracing/client": [
+                    "go-opentracing-client"
+                ],
                 "go/opentracing/server": [
                     "go-opentracing-server"
-                ],
-                "go/opentelemetry/otlp/client": [
-                    "go-opentelemetry-otlp-client"
                 ],
                 "go/opentelemetry/otlp/server": [
                     "go-opentelemetry-otlp-server"
@@ -650,26 +667,8 @@
                 "go/opentelemetry/collector/server": [
                     "go-opentelemetry-collector-server"
                 ],
-                "go/opentelemetry/collector/client": [
-                    "go-opentelemetry-collector-client"
-                ],
-                "go/opentracing/client": [
-                    "go-opentracing-client"
-                ]
-            },
-            "Java": {
-                "java/otlp": [
-                    "java-otlp-client",
-                    "java-otlp-server"
-                ],
-                "java/client": [
-                    "java-specialagent-client"
-                ],
-                "java/microdonuts": [
-                    "java-opentracing-server"
-                ],
-                "java/server": [
-                    "java-specialagent-server"
+                "go/opentelemetry/otlp/client": [
+                    "go-opentelemetry-otlp-client"
                 ]
             }
         },
@@ -678,11 +677,11 @@
     {
         "languages": {
             "Python": {
-                "django-rest-swagger": [
-                    "web_rest"
-                ],
                 "django-notifier": [
                     "web_socket"
+                ],
+                "django-rest-swagger": [
+                    "web_rest"
                 ]
             }
         },
@@ -692,10 +691,10 @@
         "languages": {
             "Python": {
                 "harvester": [
+                    "harvester-monitor",
                     "harvester-beat",
                     "harvester-api",
-                    "harvester-worker",
-                    "harvester-monitor"
+                    "harvester-worker"
                 ],
                 "explorer-api": [
                     "explorer-api"
@@ -707,17 +706,17 @@
     {
         "languages": {
             "JavaScript": {
-                "tweets": [
-                    "tweets"
+                "rssreader": [
+                    "rssreader"
                 ],
                 "coordinator": [
                     "coordinator"
                 ],
+                "tweets": [
+                    "tweets"
+                ],
                 "frontend": [
                     "frontend"
-                ],
-                "rssreader": [
-                    "rssreader"
                 ]
             }
         },
@@ -726,14 +725,33 @@
     {
         "languages": {
             "Java": {
+                "backend": [
+                    "backend"
+                ],
+                "gateway": [
+                    "gateway"
+                ],
+                "authserver": [
+                    "auth"
+                ],
+                "registry": [
+                    "registry"
+                ]
+            }
+        },
+        "URL": "https://github.com/flowant/website"
+    },
+    {
+        "languages": {
+            "Java": {
+                "search-service": [
+                    "search-service"
+                ],
+                "recepient-profile-service": [
+                    "recepient-profile-service"
+                ],
                 "eureka-server": [
                     "eureka-server"
-                ],
-                "donor-profile-service": [
-                    "donor-profile-service"
-                ],
-                "chat-service": [
-                    "chat-service"
                 ],
                 "login-service": [
                     "login-service"
@@ -744,14 +762,14 @@
                 "zuul-api": [
                     "zuul-api"
                 ],
-                "recepient-profile-service": [
-                    "recepient-profile-service"
+                "donor-profile-service": [
+                    "donor-profile-service"
                 ],
                 "reportservice": [
                     "report-service"
                 ],
-                "search-service": [
-                    "search-service"
+                "chat-service": [
+                    "chat-service"
                 ]
             }
         },
@@ -760,9 +778,6 @@
     {
         "languages": {
             "JavaScript": {
-                "admin": [
-                    "admin"
-                ],
                 "api": [
                     "api"
                 ],
@@ -771,6 +786,9 @@
                 ],
                 "user": [
                     "user"
+                ],
+                "admin": [
+                    "admin"
                 ]
             },
             "TypeScript": {
@@ -780,11 +798,11 @@
                 "verification_code": [
                     "verification_code"
                 ],
-                "email": [
-                    "email"
-                ],
                 "user": [
                     "user"
+                ],
+                "email": [
+                    "email"
                 ]
             }
         },
@@ -793,12 +811,12 @@
     {
         "languages": {
             "Python": {
+                "api": [
+                    "web"
+                ],
                 "celery-queue": [
                     "monitor",
                     "worker"
-                ],
-                "api": [
-                    "web"
                 ]
             }
         },
@@ -807,19 +825,19 @@
     {
         "languages": {
             "Python": {
-                "client": [
-                    "yaba_client"
-                ],
                 "app": [
                     "yaba_api"
+                ],
+                "client": [
+                    "yaba_client"
                 ]
             },
             "JavaScript": {
-                "visualization": [
-                    "yaba_visualization"
-                ],
                 "interface": [
                     "yaba_interface"
+                ],
+                "visualization": [
+                    "yaba_visualization"
                 ]
             }
         },
@@ -828,20 +846,20 @@
     {
         "languages": {
             "JavaScript": {
-                "services/core": [
-                    "core"
-                ],
                 "services/facade": [
                     "facade"
+                ],
+                "services/core": [
+                    "core"
                 ],
                 "services/im": [
                     "im"
                 ],
-                "services/transaction": [
-                    "transaction"
-                ],
                 "services/auth": [
                     "auth"
+                ],
+                "services/transaction": [
+                    "transaction"
                 ]
             }
         },
@@ -863,23 +881,6 @@
     },
     {
         "languages": {
-            "Java": {
-                "streams-to-redisgraph-service": [
-                    "app-streams-to-redisgraph"
-                ],
-                "db-to-streams-service": [
-                    "app-db-to-streams"
-                ],
-                "caching-service": [
-                    "app-caching"
-                ],
-                "sql-rest-api": [
-                    "app-sql-rest-api"
-                ],
-                "streams-to-redisearch-service": [
-                    "app-streams-to-redis-hashes"
-                ]
-            },
             "JavaScript": {
                 "ui-redis-front-end/redis-front": [
                     "app-frontend"
@@ -890,6 +891,23 @@
                 "notifications-service-node": [
                     "ws-notifications-service"
                 ]
+            },
+            "Java": {
+                "streams-to-redisgraph-service": [
+                    "app-streams-to-redisgraph"
+                ],
+                "sql-rest-api": [
+                    "app-sql-rest-api"
+                ],
+                "streams-to-redisearch-service": [
+                    "app-streams-to-redis-hashes"
+                ],
+                "db-to-streams-service": [
+                    "app-db-to-streams"
+                ],
+                "caching-service": [
+                    "app-caching"
+                ]
             }
         },
         "URL": "https://github.com/tgrall/redis-microservices-demo"
@@ -897,20 +915,20 @@
     {
         "languages": {
             "JavaScript": {
+                "services/authentication": [
+                    "authentication"
+                ],
                 "services/events-management": [
                     "events-management"
+                ],
+                "services/articles-management": [
+                    "articles-management"
                 ],
                 "services/user-management": [
                     "user-management"
                 ],
-                "services/authentication": [
-                    "authentication"
-                ],
                 "services/notification": [
                     "notification"
-                ],
-                "services/articles-management": [
-                    "articles-management"
                 ]
             }
         },
@@ -919,25 +937,25 @@
     {
         "languages": {
             "Python": {
-                "data_entry_server": [
-                    "data-entry-server"
+                "test_suite": [
+                    "test-service"
                 ],
                 "web_server": [
                     "resolver-web-server"
                 ],
-                "test_suite": [
-                    "test-service"
+                "data_entry_server": [
+                    "data-entry-server"
                 ]
             },
             "JavaScript": {
-                "data_entry_server": [
-                    "data-entry-server"
+                "test_suite": [
+                    "test-service"
                 ],
                 "web_server": [
                     "resolver-web-server"
                 ],
-                "test_suite": [
-                    "test-service"
+                "data_entry_server": [
+                    "data-entry-server"
                 ]
             }
         },
@@ -946,20 +964,20 @@
     {
         "languages": {
             "Java": {
-                "spring-boot-admin": [
-                    "spring-boot-admin"
-                ],
-                "customer-core": [
-                    "customer-core"
-                ],
-                "customer-self-service-backend": [
-                    "customer-self-service-backend"
-                ],
                 "policy-management-backend": [
                     "policy-management-backend"
                 ],
                 "customer-management-backend": [
                     "customer-management-backend"
+                ],
+                "customer-self-service-backend": [
+                    "customer-self-service-backend"
+                ],
+                "spring-boot-admin": [
+                    "spring-boot-admin"
+                ],
+                "customer-core": [
+                    "customer-core"
                 ]
             },
             "JavaScript": {
@@ -969,11 +987,11 @@
                 "policy-management-frontend": [
                     "policy-management-frontend"
                 ],
-                "risk-management-server": [
-                    "risk-management-server"
-                ],
                 "customer-management-frontend": [
                     "customer-management-frontend"
+                ],
+                "risk-management-server": [
+                    "risk-management-server"
                 ]
             }
         },
@@ -982,35 +1000,35 @@
     {
         "languages": {
             "Java": {
-                "documents-service": [
-                    "mn-documents-service"
-                ],
-                "policy-service": [
-                    "mn-policy-service"
-                ],
                 "pricing-service": [
                     "mn-pricing-service"
-                ],
-                "agent-portal-gateway": [
-                    "mn-agent-portal-gateway"
-                ],
-                "payment-service": [
-                    "mn-payment-service"
-                ],
-                "dashboard-service": [
-                    "mn-dashboard-service"
-                ],
-                "product-service": [
-                    "mn-product-service"
                 ],
                 "auth-service": [
                     "mn-auth-service"
                 ],
-                "policy-search-service": [
-                    "mn-policy-search-service"
+                "documents-service": [
+                    "mn-documents-service"
+                ],
+                "payment-service": [
+                    "mn-payment-service"
+                ],
+                "policy-service": [
+                    "mn-policy-service"
+                ],
+                "agent-portal-gateway": [
+                    "mn-agent-portal-gateway"
                 ],
                 "chat-service": [
                     "mn-chat-service"
+                ],
+                "product-service": [
+                    "mn-product-service"
+                ],
+                "policy-search-service": [
+                    "mn-policy-search-service"
+                ],
+                "dashboard-service": [
+                    "mn-dashboard-service"
                 ]
             }
         },
@@ -1019,17 +1037,17 @@
     {
         "languages": {
             "Java": {
-                "src/cartservice": [
-                    "cartservice"
-                ],
-                "src/productservice": [
-                    "productservice"
-                ],
                 "src/frontend": [
                     "frontend"
                 ],
+                "src/cartservice": [
+                    "cartservice"
+                ],
                 "src/checkoutservice": [
                     "checkoutservice"
+                ],
+                "src/productservice": [
+                    "productservice"
                 ]
             }
         },
@@ -1038,17 +1056,14 @@
     {
         "languages": {
             "C#": {
-                "src/AuditlogService": [
-                    "auditlogservice"
-                ],
-                "src/InvoiceService": [
-                    "invoiceservice"
-                ],
                 "src/WorkshopManagementEventHandler": [
                     "workshopmanagementeventhandler"
                 ],
-                "src/NotificationService": [
-                    "notificationservice"
+                "src/CustomerManagementAPI": [
+                    "customermanagementapi"
+                ],
+                "src/WebApp": [
+                    "webapp"
                 ],
                 "src/WorkshopManagementAPI": [
                     "workshopmanagementapi"
@@ -1056,14 +1071,17 @@
                 "src/VehicleManagementAPI": [
                     "vehiclemanagementapi"
                 ],
+                "src/NotificationService": [
+                    "notificationservice"
+                ],
+                "src/AuditlogService": [
+                    "auditlogservice"
+                ],
+                "src/InvoiceService": [
+                    "invoiceservice"
+                ],
                 "src/TimeService": [
                     "timeservice"
-                ],
-                "src/CustomerManagementAPI": [
-                    "customermanagementapi"
-                ],
-                "src/WebApp": [
-                    "webapp"
                 ]
             }
         },
@@ -1072,19 +1090,19 @@
     {
         "languages": {
             "Java": {
-                "services/mod": [
-                    "mod"
-                ],
                 "services/parser": [
                     "parser"
+                ],
+                "services/mod": [
+                    "mod"
                 ]
             },
             "JavaScript": {
-                "services/add": [
-                    "add"
-                ],
                 "services/pow": [
                     "pow"
+                ],
+                "services/add": [
+                    "add"
                 ]
             }
         },
@@ -1122,11 +1140,11 @@
     {
         "languages": {
             "Ruby": {
-                "parsers/package-tracking": [
-                    "parser_package_tracking"
-                ],
                 "viewers/package-tracking": [
                     "viewer_package_tracking"
+                ],
+                "parsers/package-tracking": [
+                    "parser_package_tracking"
                 ]
             }
         },
@@ -1135,11 +1153,11 @@
     {
         "languages": {
             "JavaScript": {
-                "frontend/landing": [
-                    "landing"
-                ],
                 "frontend/app/web": [
                     "web"
+                ],
+                "frontend/landing": [
+                    "landing"
                 ],
                 "backend/api": [
                     "api"
