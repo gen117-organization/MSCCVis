@@ -142,6 +142,7 @@ def collect_datas_of_repo(project: dict):
                 if language not in detectable_languages:
                     continue
                 detect_cc(project_dir, name, language, commit_hash, exts[language])
+            prev_commit = commit
 
     except Exception as e:
         print(traceback.format_exc())
