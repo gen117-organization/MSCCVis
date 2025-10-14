@@ -127,17 +127,18 @@ def collect_datas_of_repo(project: dict):
         analyzed_commit_hashes = json.load(f)
     hcommit = git_repo.head.commit
     try:
-        prev = analyzed_commit_hashes.pop(0)
-        prev_commit = git_repo.commit(prev)
+        prev_commit = git_repo.commit(analyzed_commit_hashes[0])
         for commit_hash in analyzed_commit_hashes:
+            # コードクローン検出
+            for language in languages:
+                detect_cc(project_dir, name, language, commit_hash, exts[language])
+            if commit_hash == analyzed_commit_hashes[0]:
+                continue
             commit = git_repo.commit(commit_hash)
             print(f"checkout to {commit_hash}...")
             git_repo.git.checkout(commit_hash)
             # 修正を保存
             find_moving_lines(commit, prev_commit, name)
-            # コードクローン検出
-            for language in languages:
-                detect_cc(project_dir, name, language, commit_hash, exts[language])
             prev_commit = commit
 
     except Exception as e:
