@@ -17,19 +17,19 @@ class CorrespondedLines:
     def get_parent_line(self, child_path: str, child_line: int):
         if child_path not in self.corresponded_lines.keys():
             return child_line
-        if child_line not in self.corresponded_lines[child_path]["lines"].keys():
+        if child_line not in self.corresponded_lines[child_path].keys():
             return child_line
-        return self.corresponded_lines[child_path]["lines"][child_line]
+        return self.corresponded_lines[child_path][child_line]
     
     def is_file_having_moved_lines(self, child_path):
         if child_path not in self.corresponded_lines.keys():
             return False
-        if len(self.corresponded_lines[child_path]["lines"].keys()) == 0:
+        if len(self.corresponded_lines[child_path].keys()) == 0:
             return False
         return True
     
     def is_line_deleted(self, parent_path: str, parent_line: int):
-        for diff in self.line_diffs:
+        for diff in self.hunks:
             if diff["parent_path"] != parent_path:
                 continue
             if parent_line in diff["deleted_lines"]:
@@ -37,7 +37,7 @@ class CorrespondedLines:
         return False
     
     def is_line_added(self, child_path: str, child_line: int):
-        for diff in self.line_diffs:
+        for diff in self.hunks:
             if diff["child_path"] != child_path:
                 continue
             if child_line in diff["inserted_lines"]:
@@ -45,7 +45,7 @@ class CorrespondedLines:
         return False
     
     def is_line_modified(self, path: str, line: int):
-        for diff in self.line_diffs:
+        for diff in self.hunks:
             if diff["child_path"] != path:
                 continue
             if line in diff["modified_lines"]:
@@ -57,9 +57,9 @@ class CorrespondedLines:
             return child_end_line - child_start_line + 1
         loc = 0
         for l in range(child_start_line, child_end_line+1):
-            if l not in self.corresponded_lines[child_path]["lines"].keys():
+            if l not in self.corresponded_lines[child_path].keys():
                 continue
-            if self.corresponded_lines[child_path]["lines"][l] is not None:
+            if self.corresponded_lines[child_path][l] is not None:
                 loc += 1
         return loc
 
