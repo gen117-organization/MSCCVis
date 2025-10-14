@@ -127,7 +127,6 @@ def collect_datas_of_repo(project: dict):
         analyzed_commit_hashes = json.load(f)
     hcommit = git_repo.head.commit
     try:
-        # コミットを幅優先探索
         prev = analyzed_commit_hashes.pop(0)
         prev_commit = git_repo.commit(prev)
         for commit_hash in analyzed_commit_hashes:
@@ -136,11 +135,8 @@ def collect_datas_of_repo(project: dict):
             git_repo.git.checkout(commit_hash)
             # 修正を保存
             find_moving_lines(commit, prev_commit, name)
-            detectable_languages = project["languages"].keys()
             # コードクローン検出
             for language in languages:
-                if language not in detectable_languages:
-                    continue
                 detect_cc(project_dir, name, language, commit_hash, exts[language])
             prev_commit = commit
 
