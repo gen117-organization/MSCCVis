@@ -130,7 +130,7 @@ def collect_datas_of_repo(project: dict):
         prev_commit = git_repo.commit(analyzed_commit_hashes[0])
         count = 0
         for commit_hash in analyzed_commit_hashes:
-            if count > 3:
+            if count > 5:
                 break
             # コードクローン検出
             for language in languages:

@@ -43,7 +43,7 @@ def analyze_repo(project):
         prev_commit = head_commit
         count = 0
         for commit_hash in analyzed_commit_hashes:
-            if count > 3:
+            if count > 5:
                 break
             if commit_hash == head_commit.hexsha:
                 count += 1

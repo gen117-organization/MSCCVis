@@ -16,7 +16,7 @@ if __name__ == "__main__":
         dataset = json.load(f)
     dest_dir = project_root / "dest/analyzed_commits"
     dest_dir.mkdir(parents=True, exist_ok=True)
-    projects = []
+    target_projects = []
     for project in dataset:
         url = project["URL"]
         name = url.split("/")[-2] + "." + url.split("/")[-1]
@@ -38,11 +38,12 @@ if __name__ == "__main__":
                 queue.append(parent)
             count += 1
             finished_commits.append(commit.hexsha)
-        projects.append(len(target_commits))
+        if len(target_commits) >= 5:
+            target_projects.append(project)
         print(f"{name} の分析コミット数: {len(target_commits)}")
         with open(dest_dir / f"{name}.json", "w") as f:
             json.dump(target_commits, f)
-    print(f"平均分析コミット数: {statistics.mean(projects)}")
-    print(f"最大分析コミット数: {max(projects)}")
-    print(f"最小分析コミット数: {min(projects)}")
-    print(f"分析コミット数の中央値: {statistics.median(projects)}")
+    dest_dir = project_root / "dest"
+    with open(dest_dir / "selected_projects.json", "w") as f:
+        json.dump(target_projects, f)
+    print(f"選択されたプロジェクト数: {len(target_projects)}")
