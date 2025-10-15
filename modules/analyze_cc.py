@@ -441,9 +441,14 @@ def analyze_repo(project: dict):
     head_commit = git_repo.commit(analyzed_commit_hashes[0])
     for language in languages:
         prev = head_commit
+        count = 0
         for commit_hash in analyzed_commit_hashes:
+            if count > 3:
+                break
             if commit_hash == head_commit.hexsha:
+                count += 1
                 continue
             commit = git_repo.commit(commit_hash)
             analyze_commit(name, language, commit, prev)
             prev = commit
+            count += 1

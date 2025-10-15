@@ -518,28 +518,6 @@
     {
         "languages": {
             "Java": {
-                "discovery-service": [
-                    "discovery"
-                ],
-                "config-server": [
-                    "config"
-                ],
-                "gateway-service": [
-                    "gateway"
-                ],
-                "patient-service": [
-                    "patient"
-                ],
-                "provider-service": [
-                    "provider"
-                ]
-            }
-        },
-        "URL": "https://github.com/MuizMahdi/EHR-Route"
-    },
-    {
-        "languages": {
-            "Java": {
                 "ftgo-restaurant-service": [
                     "ftgo-restaurant-service"
                 ],
@@ -654,19 +632,6 @@
     },
     {
         "languages": {
-            "Python": {
-                "django-notifier": [
-                    "web_socket"
-                ],
-                "django-rest-swagger": [
-                    "web_rest"
-                ]
-            }
-        },
-        "URL": "https://github.com/MathieuB1/KOREK"
-    },
-    {
-        "languages": {
             "JavaScript": {
                 "rssreader": [
                     "rssreader"
@@ -705,73 +670,6 @@
     },
     {
         "languages": {
-            "Java": {
-                "search-service": [
-                    "search-service"
-                ],
-                "recepient-profile-service": [
-                    "recepient-profile-service"
-                ],
-                "eureka-server": [
-                    "eureka-server"
-                ],
-                "login-service": [
-                    "login-service"
-                ],
-                "config-server": [
-                    "config-service"
-                ],
-                "zuul-api": [
-                    "zuul-api"
-                ],
-                "donor-profile-service": [
-                    "donor-profile-service"
-                ],
-                "reportservice": [
-                    "report-service"
-                ],
-                "chat-service": [
-                    "chat-service"
-                ]
-            }
-        },
-        "URL": "https://github.com/stackroute/ibm-wave7-lifeline"
-    },
-    {
-        "languages": {
-            "JavaScript": {
-                "api": [
-                    "api"
-                ],
-                "verification_code": [
-                    "verification_code"
-                ],
-                "user": [
-                    "user"
-                ],
-                "admin": [
-                    "admin"
-                ]
-            },
-            "TypeScript": {
-                "api": [
-                    "api"
-                ],
-                "verification_code": [
-                    "verification_code"
-                ],
-                "user": [
-                    "user"
-                ],
-                "email": [
-                    "email"
-                ]
-            }
-        },
-        "URL": "https://github.com/icebob/catalyst"
-    },
-    {
-        "languages": {
             "Python": {
                 "app": [
                     "yaba_api"
@@ -804,61 +702,6 @@
             }
         },
         "URL": "https://github.com/bcgov/aries-vcr-issuer-controller"
-    },
-    {
-        "languages": {
-            "JavaScript": {
-                "ui-redis-front-end/redis-front": [
-                    "app-frontend"
-                ],
-                "comments-service": [
-                    "app-comments"
-                ],
-                "notifications-service-node": [
-                    "ws-notifications-service"
-                ]
-            },
-            "Java": {
-                "streams-to-redisgraph-service": [
-                    "app-streams-to-redisgraph"
-                ],
-                "sql-rest-api": [
-                    "app-sql-rest-api"
-                ],
-                "streams-to-redisearch-service": [
-                    "app-streams-to-redis-hashes"
-                ],
-                "db-to-streams-service": [
-                    "app-db-to-streams"
-                ],
-                "caching-service": [
-                    "app-caching"
-                ]
-            }
-        },
-        "URL": "https://github.com/tgrall/redis-microservices-demo"
-    },
-    {
-        "languages": {
-            "JavaScript": {
-                "services/authentication": [
-                    "authentication"
-                ],
-                "services/events-management": [
-                    "events-management"
-                ],
-                "services/articles-management": [
-                    "articles-management"
-                ],
-                "services/user-management": [
-                    "user-management"
-                ],
-                "services/notification": [
-                    "notification"
-                ]
-            }
-        },
-        "URL": "https://github.com/rithinch/Event-Driven-Microservices-Sample"
     },
     {
         "languages": {
@@ -976,55 +819,5 @@
             }
         },
         "URL": "https://github.com/EdwinVW/pitstop"
-    },
-    {
-        "languages": {
-            "Java": {
-                "services/parser": [
-                    "parser"
-                ],
-                "services/mod": [
-                    "mod"
-                ]
-            },
-            "JavaScript": {
-                "services/pow": [
-                    "pow"
-                ],
-                "services/add": [
-                    "add"
-                ]
-            }
-        },
-        "URL": "https://github.com/nquocnghia/microcalc"
-    },
-    {
-        "languages": {
-            "JavaScript": {
-                "api-node": [
-                    "api-node"
-                ],
-                "frontend": [
-                    "nextjs"
-                ]
-            }
-        },
-        "URL": "https://github.com/javieroc/docker-microservices"
-    },
-    {
-        "languages": {
-            "JavaScript": {
-                "frontend/app/web": [
-                    "web"
-                ],
-                "frontend/landing": [
-                    "landing"
-                ],
-                "backend/api": [
-                    "api"
-                ]
-            }
-        },
-        "URL": "https://github.com/atulmy/fullstack-javascript-architecture"
     }
 ]
