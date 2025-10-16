@@ -402,6 +402,8 @@ def analyze_commit(name: str, language: str, commit: git.Commit, prev: git.Commi
     parent_filemap = FileMapper(parent_ccfsw["file_data"], str(workdir))
     # コミット間のLineDiffファイルの読み込み
     line_diff_file = project_root / "dest/moving_lines" / name / f"{commit.hexsha}-{prev.hexsha}.json"
+    if not line_diff_file.exists():
+        return False
     with open(line_diff_file, "r") as f:
         hunks = json.load(f)
     # 修正がなければこのコミットの処理は終了
