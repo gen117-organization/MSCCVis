@@ -390,13 +390,13 @@ def analyze_commit(name: str, language: str, commit: git.Commit, prev: git.Commi
     workdir = project_root / "dest/projects" / name
     print(f"{commit.hexsha}-{prev.hexsha}")
     # childのCCFinderSWファイルの読み込み
-    child_ccfsw_file = project_root / "dest/clones_json" / name / commit.hexsha / f"{language}.json"
+    child_ccfsw_file = project_root / "dest/clones_json" / name / prev.hexsha / f"{language}.json"
     with open(child_ccfsw_file, "r") as f:
         child_ccfsw = json.load(f)
     child_filemap = FileMapper(child_ccfsw["file_data"], str(workdir))
 
     # parentのCCFinderSWファイルの読み込み
-    parent_ccfsw_file = project_root / "dest/clones_json" / name / prev.hexsha / f"{language}.json"
+    parent_ccfsw_file = project_root / "dest/clones_json" / name / commit.hexsha / f"{language}.json"
     with open(parent_ccfsw_file, "r") as f:
         parent_ccfsw = json.load(f)
     parent_filemap = FileMapper(parent_ccfsw["file_data"], str(workdir))
