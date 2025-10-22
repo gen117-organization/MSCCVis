@@ -19,16 +19,18 @@ if __name__ == "__main__":
         for language in comodification_rate:
             if language not in results:
                 results[language] = {
-                    "within-testing": 0,
-                    "within-production": 0,
-                    "across-testing": 0,
-                    "across-production": 0
+                    "within-testing": [],
+                    "within-production": [],
+                    "across-testing": [],
+                    "across-production": []
                 }
             flag = False
             for mode in comodification_rate[language]:
-                if comodification_rate[language][mode]["comodification_count"] > 0:
-                    results[language][mode] += 1
-                    flag = True
-            if flag:
-                print(f"{name}_{language}: {comodification_rate[language]}")
-    print(results)
+                if comodification_rate[language][mode]["count"] > 0:
+                    results[language][mode].append(comodification_rate[language][mode]["comodification_count"] / comodification_rate[language][mode]["count"])
+                else:
+                    results[language][mode].append(0)
+    for language in results:
+        print(f"{language}:")
+        for mode in results[language]:
+            print(f"{mode}: max_{max(results[language][mode])}, min_{min(results[language][mode])}")
