@@ -17,7 +17,9 @@ def analyze_repo(project):
     print("name:", name)
     for language in project["languages"]:
         print("language:", language)
-        head_commit = git_repo.head.commit
+        with open(project_root / "dest/analyzed_commits" / f"{name}.json", "r") as f:
+            analyzed_commit_hashes = json.load(f)
+        head_commit = git_repo.commit(analyzed_commit_hashes[0])
         hcommit_ccfsw_file = project_root / "dest/clones_json" / name / head_commit.hexsha / f"{language}.json"
         with open(hcommit_ccfsw_file, "r") as f:
             hcommit_ccfsw = json.load(f)
@@ -38,8 +40,6 @@ def analyze_repo(project):
                     "modification": []
                 }
                 prev[head_commit.hexsha][clone_id][index] = (clone_id, index)
-        with open(project_root / "dest/analyzed_commits" / f"{name}.json", "r") as f:
-            analyzed_commit_hashes = json.load(f)
         prev_commit = head_commit
         count = 0
         for commit_hash in analyzed_commit_hashes:
