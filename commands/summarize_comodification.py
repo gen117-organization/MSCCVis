@@ -33,4 +33,4 @@ if __name__ == "__main__":
     for language in results:
         print(f"{language}:")
         for mode in results[language]:
-            print(f"{mode}: max_{max(results[language][mode])}, min_{min(results[language][mode])}")
+            print(f"{mode}: max_{max(results[language][mode]):.3f}, min_{min(results[language][mode]):.3f}")
