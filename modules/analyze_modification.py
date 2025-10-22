@@ -69,7 +69,7 @@ def analyze_repo(project):
                         if latest_clone_id is not None and latest_index is not None:
                             latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "modified", "commit": prev_commit.hexsha})
                     elif fragment["type"] == "added":
-                        latest_clone_id, latest_index = prev[prev_commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
+                        latest_clone_id, latest_index = prev[prev_commit.hexsha][(int(fragment["child"]["clone_id"]), int(fragment["child"]["index"]))]
                         if latest_clone_id is not None and latest_index is not None:
                             latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "added", "commit": commit.hexsha})
             count += 1
