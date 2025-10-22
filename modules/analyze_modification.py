@@ -59,8 +59,8 @@ def analyze_repo(project):
             prev[commit.hexsha] = {}
             for modified_clone in modified_clones:
                 for fragment in modified_clone["fragments"]:
-                    prev[commit.hexsha].setdefault((int(fragment["parent"]["clone_id"]), int(fragment["parent"]["index"])), (None, None))
                     if fragment["type"] != "added":
+                        prev[commit.hexsha].setdefault((int(fragment["parent"]["clone_id"]), int(fragment["parent"]["index"])), (None, None))
                         # 子コミットの対応が取れていなければNoneにして辿るのをやめる．
                         if ((int(fragment["child"]["clone_id"]), int(fragment["child"]["index"])) in prev[prev_commit.hexsha]):
                             prev[commit.hexsha][(int(fragment["parent"]["clone_id"]), int(fragment["parent"]["index"]))] = prev[prev_commit.hexsha][(int(fragment["child"]["clone_id"]), int(fragment["child"]["index"]))]
