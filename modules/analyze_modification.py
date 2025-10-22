@@ -53,6 +53,7 @@ def analyze_repo(project):
             modified_clones_file = project_root / "dest/modified_clones" / name / f"{commit.hexsha}-{prev_commit.hexsha}" / f"{language}.json"
             if not modified_clones_file.exists():
                 prev[commit.hexsha] = prev[prev_commit.hexsha]
+                count += 1
                 continue
             with open(modified_clones_file, "r") as f:
                 modified_clones = json.load(f)
@@ -60,20 +61,21 @@ def analyze_repo(project):
             for modified_clone in modified_clones:
                 for fragment in modified_clone["fragments"]:
                     if fragment["type"] != "added":
-                        if int(fragment["parent"]["clone_id"]) not in prev[commit.hexsha]:
-                            prev[commit.hexsha][int(fragment["parent"]["clone_id"])] = {}
-                        if (int(fragment["child"]["clone_id"]) not in prev[commit.hexsha]) or (int(fragment["child"]["index"]) not in prev[commit.hexsha][int(fragment["child"]["clone_id"])]):
+                        prev[commit.hexsha].setdefault(int(fragment["parent"]["clone_id"]), {})
+                        # 子コミットの対応が取れていなければNoneにして辿るのをやめる．
+                        if (int(fragment["child"]["clone_id"]) not in prev[prev_commit.hexsha]) or (int(fragment["child"]["index"]) not in prev[prev_commit.hexsha][int(fragment["child"]["clone_id"])]):
                             prev[commit.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = (None, None)
+                        # 子コミットの対応が取れていれば親コミットに引き継ぐ
                         else:
-                            prev[commit.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
+                            prev[commit.hexsha][int(fragment["parent"]["clone_id"])][int(fragment["parent"]["index"])] = prev[prev_commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]    
                     if (int(fragment["child"]["clone_id"]) not in prev[commit.hexsha]) or (int(fragment["child"]["index"]) not in prev[commit.hexsha][int(fragment["child"]["clone_id"])]):
                         continue
                     if fragment["type"] == "modified":
-                        latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
+                        latest_clone_id, latest_index = prev[prev_commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
                         if latest_clone_id is not None and latest_index is not None:
                             latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "modified", "commit": commit.hexsha})
                     elif fragment["type"] == "added":
-                        latest_clone_id, latest_index = prev[commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
+                        latest_clone_id, latest_index = prev[prev_commit.hexsha][int(fragment["child"]["clone_id"])][int(fragment["child"]["index"])]
                         if latest_clone_id is not None and latest_index is not None:
                             latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "added", "commit": commit.hexsha})
             count += 1

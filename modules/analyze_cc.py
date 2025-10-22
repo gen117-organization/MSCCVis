@@ -64,7 +64,7 @@ class CorrespondedLines:
         return loc
 
     def _correspond_lines(self, hunks: list[dict], child_filemap: FileMapper, parent_filemap: FileMapper):
-        result: dict[str, dict[str, int | None]] = {}
+        result = {}
         # 1) ファイル単位に hunk 情報を集約（重複・隣接・順序に依存しないため）
         by_file: dict[tuple[str, str], dict[str, set[int]]] = {}
         for h in hunks:
@@ -140,7 +140,7 @@ def get_clone_map(clonesets: list[dict], filemap: FileMapper) -> dict[str, list[
 
 
 def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clonesets: list[dict], parent_clonesets: list[dict], child_filemap: FileMapper, parent_filemap: FileMapper):
-    corresponded_fragments: dict[int, dict[int, tuple[int, int] | None]] = {}
+    corresponded_fragments = {}
     
     # 親側のフラグメントを path ごとにまとめる
     parent_clone_map = get_clone_map(parent_clonesets, parent_filemap)
@@ -169,6 +169,9 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
             p_end_pred   = corresponded_lines.get_parent_line(child_path, c_end)
             # 子フラグメント内の「親行に写る行」の個数（0なら新規扱い）
             parent_loc_in_child_frag = corresponded_lines.get_fragment_loc_of_parent(child_path, c_start, c_end)
+            if parent_loc_in_child_frag == 0:
+                corresponded_fragments.setdefault(child_clone_id, {})[index] = None
+                continue
 
              # 子→親・親→子の対応テーブルを一度だけ構築（子フラグメント範囲内）
             # child2parent: {child_line -> parent_line or None}
@@ -188,11 +191,6 @@ def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clone
                 # 1) 完全一致（境界一致）: 子端点が親端点に写っている
                 if p_start_pred == ps and p_end_pred == pe:
                     mapped = (pfrag["clone_id"], pfrag["index"])
-                    break
-
-                # 新規：子フラグメント内に親へ写る行が一切無い
-                if parent_loc_in_child_frag == 0:
-                    mapped = None
                     break
 
                 c_len = c_end - c_start + 1
