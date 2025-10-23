@@ -36,10 +36,20 @@ def determine_by_tag(workdir: Path) -> list[str]:
     tags = git_repo.tags
     target_commits = []
     count = 0
-    for tag in reversed(tags):
+    tag_list = []
+    for tag in tags:
+        commit = tag.commit
+        tag_list.append({
+            "tag": tag.name,
+            "sha": commit.hexsha,
+            "date": commit.committed_datetime
+        })
+    # コミット日時の新しい順（降順）にソート
+    tag_list.sort(key=lambda x: x["date"], reverse=True)
+    for tag in tag_list:
         if count >= SEARCH_DEPTH:
             break
-        target_commits.append(tag.commit.hexsha)
+        target_commits.append(tag["sha"])
         count += 1
     return target_commits
 

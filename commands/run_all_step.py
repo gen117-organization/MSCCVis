@@ -19,6 +19,6 @@ if __name__ == "__main__":
     if len(args) == 1:
         for project in dataset:
             #modules.clone_repo.clone_repo(project["URL"])
-            #modules.collect_datas.collect_datas_of_repo(project)
-            #modules.analyze_cc.analyze_repo(project)
+            modules.collect_datas.collect_datas_of_repo(project)
+            modules.analyze_cc.analyze_repo(project)
             modules.analyze_modification.analyze_repo(project)
