@@ -48,8 +48,15 @@ ANTLR_LANGUAGE = (
     "C"
 )
 
-# リポジトリマイニングするコミット数
-SEARCH_DEPTH = -1
+"""
+    分析するコミットの決め方を設定します．
+    tag: タグがついているコミットを分析する．
+    frequency: ANALYSIS_FREQUENCYで設定したコミット区切りで分析する．
+"""
+ANALYSIS_METHOD = "tag"
 
 # 何コミット区切りで分析するか
 ANALYSIS_FREQUENCY = 50
+
+# リポジトリマイニングするコミット数
+SEARCH_DEPTH = 5

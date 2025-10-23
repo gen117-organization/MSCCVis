@@ -40,19 +40,14 @@ def analyze_repo(project):
                 }
                 prev[head_commit.hexsha][(clone_id, index)] = (clone_id, index)
         prev_commit = head_commit
-        count = 0
         for commit_hash in analyzed_commit_hashes:
-            if count > 5:
-                break
             if commit_hash == head_commit.hexsha:
-                count += 1
                 continue
             commit = git_repo.commit(commit_hash)
             print("commit:", commit.hexsha)
             modified_clones_file = project_root / "dest/modified_clones" / name / f"{commit.hexsha}-{prev_commit.hexsha}" / f"{language}.json"
             if not modified_clones_file.exists():
                 prev[commit.hexsha] = prev[prev_commit.hexsha]
-                count += 1
                 continue
             with open(modified_clones_file, "r") as f:
                 modified_clones = json.load(f)
@@ -73,7 +68,6 @@ def analyze_repo(project):
                         latest_clone_id, latest_index = prev[prev_commit.hexsha][(int(fragment["child"]["clone_id"]), int(fragment["child"]["index"]))]
                         if latest_clone_id is not None and latest_index is not None:
                             latest_codeclones[latest_clone_id][latest_index]["modification"].append({"type": "added", "commit": commit.hexsha})
-            count += 1
             prev_commit = commit
         dest_dir = project_root / "dest/csv" / name
         dest_dir.mkdir(parents=True, exist_ok=True)
