@@ -12,11 +12,14 @@ if __name__ == "__main__":
     with open(dataset_file, "r") as f:
         dataset = json.load(f)
     results = {}
+    project_count = {}
     for project in dataset:
         comodification_rate = modules.calculate_comodification_rate.analyze_repo(project)
         url = project["URL"]
         name = url.split("/")[-2] + "." + url.split("/")[-1]
         for language in comodification_rate:
+            project_count.setdefault(language, 0)
+            project_count[language] += 1
             if language not in results:
                 results[language] = {
                     "within-testing": [],
@@ -31,6 +34,6 @@ if __name__ == "__main__":
                 else:
                     results[language][mode].append(0)
     for language in results:
-        print(f"{language}: {len(results[language])}")
+        print(f"{language}: {project_count[language]}")
         for mode in results[language]:
             print(f"{mode}: max_{max(results[language][mode]):.3f}, min_{min(results[language][mode]):.3f}")
