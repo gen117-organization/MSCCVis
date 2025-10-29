@@ -31,3 +31,4 @@ if __name__ == "__main__":
         print(f"{language}: {project_count[language]}")
         for mode in results[language]:
             print(f"{mode}: max_{max(results[language][mode]):.3f}, min_{min(results[language][mode]):.3f}")
+            print(f"{mode}: results_{results[language][mode]}")
