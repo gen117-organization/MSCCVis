@@ -21,7 +21,6 @@ if __name__ == "__main__":
             project_count.setdefault(language, 0)
             project_count[language] += 1
             results.setdefault(language, {})
-            flag = False
             for mode in comodification_rate[language]:
                 results[language].setdefault(mode, [])
                 if comodification_rate[language][mode]["count"] > 0:
