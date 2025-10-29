@@ -20,15 +20,10 @@ if __name__ == "__main__":
         for language in comodification_rate:
             project_count.setdefault(language, 0)
             project_count[language] += 1
-            if language not in results:
-                results[language] = {
-                    "within-testing": [],
-                    "within-production": [],
-                    "across-testing": [],
-                    "across-production": []
-                }
+            results.setdefault(language, {})
             flag = False
             for mode in comodification_rate[language]:
+                results[language].setdefault(mode, [])
                 if comodification_rate[language][mode]["count"] > 0:
                     results[language][mode].append(comodification_rate[language][mode]["comodification_count"] / comodification_rate[language][mode]["count"])
                 else:

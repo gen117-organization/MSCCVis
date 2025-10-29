@@ -59,7 +59,7 @@ def analyze_repo(project: dict):
             for file_path, line_flags in file_dict.get(mode, {}).items():
                 total += len(line_flags)
                 clone += sum(line_flags)
-            result_lang[f"{mode}_clone_ratio"] = clone / total if total > 0 else 0
+            result_lang[mode] = clone / total if total > 0 else 0
         result[language] = result_lang
     git_repo.git.checkout(hcommit)
     return result
