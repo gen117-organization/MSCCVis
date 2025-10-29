@@ -1,7 +1,6 @@
 import json
 import sys
 from pathlib import Path
-import csv
 
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
@@ -32,3 +31,4 @@ def analyze_repo(project):
                         result_lang[mode]["comodification_count"] += 1
                         break
         result[language] = result_lang
+    return result
