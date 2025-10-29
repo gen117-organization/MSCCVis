@@ -28,7 +28,7 @@ def analyze_repo(project: dict):
         first_commit_ccfsw_file = project_root / "dest/clones_json" / name / first_commit / f"{language}.json"
         with open(first_commit_ccfsw_file, "r") as f:
             project_ccfsw_data = json.load(f)
-        file_mapper = FileMapper(project_ccfsw_data["files"], str(workdir))
+        file_mapper = FileMapper(project_ccfsw_data["file_data"], str(workdir))
         clonesets = get_codeclones_classified_by_type(project, language)
         file_dict = {}
         for file_data in project_ccfsw_data["file_data"]:
