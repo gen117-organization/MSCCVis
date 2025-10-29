@@ -5,7 +5,7 @@ import json
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-import modules.calcurate_clone_ratio
+import modules.calculate_clone_ratio
 import modules.calculate_comodification_rate
 import scipy.stats as stats
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
             "across-production": []
         }
     for project in dataset:
-        clone_ratio = modules.calcurate_clone_ratio.analyze_repo(project)
+        clone_ratio = modules.calculate_clone_ratio.analyze_repo(project)
         comodification_rate = modules.calculate_comodification_rate.analyze_repo(project)
         for language in TARGET_LANGUAGES:
             if language in clone_ratio:

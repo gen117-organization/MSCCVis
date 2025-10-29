@@ -9,7 +9,7 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 import modules.calculate_comodification_rate
-import modules.calcurate_clone_ratio
+import modules.calculate_clone_ratio
 
 
 def create_clone_ratio_chart_for_project_language(project_data, language, output_dir=None):
@@ -360,7 +360,7 @@ if __name__ == "__main__":
                 
                 # データを分析
                 comodification_rate = modules.calculate_comodification_rate.analyze_repo(project)
-                clone_ratio = modules.calcurate_clone_ratio.analyze_repo(project)
+                clone_ratio = modules.calculate_clone_ratio.analyze_repo(project)
                 
                 projects_data.append({
                     'name': name,
