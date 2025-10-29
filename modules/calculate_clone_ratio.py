@@ -30,9 +30,15 @@ def analyze_repo(project: dict):
             project_ccfsw_data = json.load(f)
         file_mapper = FileMapper(project_ccfsw_data["file_data"], str(workdir))
         clonesets = get_codeclones_classified_by_type(project, language)
+        codebases = project["languages"][language].keys()
         file_dict = {}
         for file_data in project_ccfsw_data["file_data"]:
             file_path = file_mapper.get_file_path(file_data["file_id"])
+            for codebase in codebases:
+                if file_path.startswith(codebase):
+                    break
+            else:
+                continue
             if "test" in file_path.lower():
                 file_dict.setdefault("within-testing", {})
                 file_dict["within-testing"][file_path] = [False] * (calculate_loc(str(workdir / file_path))+1)
