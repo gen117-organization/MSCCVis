@@ -10,6 +10,7 @@ sys.path.append(str(project_root))
 from config import SELECTED_DATASET, ANALYSIS_FREQUENCY, SEARCH_DEPTH, ANALYSIS_METHOD
 import modules.clone_repo
 
+
 def determine_by_frequency(workdir: Path) -> list[str]:
     git_repo = git.Repo(str(workdir))
     head_commit = git_repo.head.commit

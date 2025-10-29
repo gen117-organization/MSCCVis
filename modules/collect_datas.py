@@ -129,13 +129,13 @@ def collect_datas_of_repo(project: dict):
     try:
         prev_commit = hcommit
         for commit_hash in analyzed_commit_hashes:
+            print(f"checkout to {commit_hash}...")
+            git_repo.git.checkout(commit_hash)
             for language in languages:
                 detect_cc(project_dir, name, language, commit_hash, exts[language])
             if commit_hash == hcommit.hexsha:
                 continue
             commit = git_repo.commit(commit_hash)
-            print(f"checkout to {commit_hash}...")
-            git_repo.git.checkout(commit_hash)
             # 修正を保存
             find_moving_lines(commit, prev_commit, name)
             prev_commit = commit
