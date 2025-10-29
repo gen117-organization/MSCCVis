@@ -63,7 +63,7 @@ def get_codeclones_classified_by_type(project: dict, language: str) -> dict:
         is_production = False
         for row in fragments:
             path = row["file_path"]
-            if "test" in path:
+            if "test" in path.lower():
                 is_testing = True    
             else:
                 is_production = True
