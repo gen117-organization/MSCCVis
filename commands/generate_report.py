@@ -22,12 +22,12 @@ def main():
     for project in dataset:
         url = project["URL"]
         name = url.split("/")[-2] + "." + url.split("/")[-1]
-        clonesets = get_codeclones_classified_by_type(project, language)
         comodification_rate = modules.calculate_comodification_rate.analyze_repo(project)
         clone_ratio = modules.calculate_clone_ratio.analyze_repo(project)
         for language in project["languages"].keys():
+            clonesets = get_codeclones_classified_by_type(project, language)
             results[f"{name}_{language}"] = {}
-            results[f"{name}_{language}"]["clonesets"] = clonesets[language]
+            results[f"{name}_{language}"]["clonesets"] = clonesets
             results[f"{name}_{language}"]["comodification_rate"] = comodification_rate[language]
             results[f"{name}_{language}"]["clone_ratio"] = clone_ratio[language]
 
