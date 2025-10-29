@@ -8,6 +8,7 @@ sys.path.append(str(project_root))
 
 from modules.util import get_codeclones_classified_by_type
 from modules.util import calculate_loc
+from modules.util import FileMapper
 import modules.github_linguist
 
 
@@ -20,14 +21,18 @@ def analyze_repo(project: dict):
     with open(project_root / "dest/analyzed_commits" / f"{name}.json", "r") as f:
         analyzed_commits = json.load(f)
     git_repo.git.checkout(analyzed_commits[0])
-    github_linguist_result = modules.github_linguist.run_github_linguist(str(workdir))
+    first_commit = analyzed_commits[0]
     languages = project["languages"]
     result = {}
     for language in languages:
+        first_commit_ccfsw_file = project_root / "dest/clones_json" / name / first_commit / f"{language}.json"
+        with open(first_commit_ccfsw_file, "r") as f:
+            project_ccfsw_data = json.load(f)
+        file_mapper = FileMapper(project_ccfsw_data["files"], str(workdir))
         clonesets = get_codeclones_classified_by_type(project, language)
         file_dict = {}
-        for file_data in github_linguist_result.get(language, {}).get("files", []):
-            file_path = str(file_data).replace(str(workdir)+"/", "")
+        for file_data in project_ccfsw_data["file_data"]:
+            file_path = file_mapper.get_file_path(file_data["file_id"])
             if "test" in file_path.lower():
                 file_dict.setdefault("within-testing", {})
                 file_dict["within-testing"][file_path] = [False] * (calculate_loc(str(workdir / file_path))+1)
