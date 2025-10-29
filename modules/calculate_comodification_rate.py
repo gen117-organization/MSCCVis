@@ -9,8 +9,6 @@ from modules.util import get_codeclones_classified_by_type
 
 
 def analyze_repo(project):
-    url = project["URL"]
-    name = url.split("/")[-2] + "." + url.split("/")[-1]
     languages = project["languages"]
     result = {}
     for language in languages:
