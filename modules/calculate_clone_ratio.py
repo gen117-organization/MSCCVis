@@ -22,14 +22,12 @@ def analyze_repo(project: dict):
     git_repo.git.checkout(analyzed_commits[0])
     languages = project["languages"]
     github_linguist_result = run_github_linguist(str(workdir))
-    print(github_linguist_result)
     result = {}
     for language in languages:
         clonesets = get_codeclones_classified_by_type(project, language)
         codebases = project["languages"][language].keys()
         file_dict = {}
-        for file_path in github_linguist_result.get(language, {}).get("files_data", []):
-            print(file_path)
+        for file_path in github_linguist_result.get(language, {}).get("files", []):
             for codebase in codebases:
                 if file_path.startswith(codebase):
                     break
