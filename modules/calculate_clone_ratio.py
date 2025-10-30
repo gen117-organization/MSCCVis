@@ -28,6 +28,7 @@ def analyze_repo(project: dict):
         codebases = project["languages"][language].keys()
         file_dict = {}
         for file_path in github_linguist_result.get(language, {}).get("files_data", []):
+            print(file_path)
             for codebase in codebases:
                 if file_path.startswith(codebase):
                     break
