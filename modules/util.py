@@ -74,6 +74,7 @@ def get_codeclones_classified_by_type(project: dict, language: str) -> dict:
                 if fragment["file_path"].startswith(codebase):
                     service_set.add(codebase)
                     service_fragments.append(fragment)
+                    break
 
         # 有効なフラグメントがなければスキップ
         if len(service_fragments) <= 1:
