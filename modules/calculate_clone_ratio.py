@@ -22,6 +22,7 @@ def analyze_repo(project: dict):
     git_repo.git.checkout(analyzed_commits[0])
     languages = project["languages"]
     github_linguist_result = run_github_linguist(str(workdir))
+    print(github_linguist_result)
     result = {}
     for language in languages:
         clonesets = get_codeclones_classified_by_type(project, language)
