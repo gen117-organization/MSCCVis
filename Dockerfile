@@ -6,7 +6,7 @@ RUN apt-get update \
         git \
         ruby \
         ruby-dev \
-        openjdk-17-jdk-headless \
+        default-jdk-headless \
         pkg-config \
         cmake \
         libcurl4-openssl-dev \
@@ -20,7 +20,7 @@ RUN apt-get update \
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
+    JAVA_HOME=/usr/lib/jvm/default-java \
     PATH="$JAVA_HOME/bin:${PATH}"
 
 WORKDIR /app
