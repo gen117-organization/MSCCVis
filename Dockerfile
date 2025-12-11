@@ -13,6 +13,8 @@ RUN apt-get update \
         cmake \
         libssl-dev \
         libssh2-1-dev \
+        zlib1g-dev \
+        libpcre3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
