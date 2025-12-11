@@ -8,12 +8,16 @@ RUN apt-get update \
         build-essential \
         cargo \
         ruby-full \
+        ruby-dev \
         libgit2-dev \
         pkg-config \
         cmake \
         libssl-dev \
         libssh2-1-dev \
         zlib1g-dev \
+        libicu-dev \
+        libmagic-dev \
+        shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
@@ -25,8 +29,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# GitHub Linguist (Ruby gem) をインストール（システムの libgit2 を利用）
-RUN RUGGED_USE_SYSTEM_LIBGIT2=ON gem install --no-document github-linguist -- --use-system-libraries --with-git2-include=/usr/include --with-git2-lib=/usr/lib/x86_64-linux-gnu
+# GitHub Linguist (Ruby gem) をインストール（libgit2 を同梱ビルド）
+RUN RUGGED_USE_SYSTEM_LIBGIT2=OFF gem install --no-document github-linguist
 
 # ccfindersw-parser を取得してビルド（バイナリをイメージに同梱）
 ARG CCF_PARSER_REPO=https://github.com/YukiOhta0519/ccfindersw-parser.git
