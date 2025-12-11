@@ -25,8 +25,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# GitHub Linguist (Ruby gem) をインストール
-RUN gem install --no-document github-linguist
+# GitHub Linguist (Ruby gem) をインストール（libgit2 を同梱ビルド）
+RUN RUGGED_USE_SYSTEM_LIBGIT2=OFF gem install --no-document github-linguist
 
 # ccfindersw-parser を取得してビルド（バイナリをイメージに同梱）
 ARG CCF_PARSER_REPO=https://github.com/YukiOhta0519/ccfindersw-parser.git
