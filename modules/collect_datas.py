@@ -104,7 +104,7 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
         dest_file = dest_dir / language
         language_arg = convert_language_for_ccfindersw(language)
         base_cmd = [
-            "java", "-jar", "-Xmx20G", "-Xss128m", str(CCFINDERSW_JAR), "D",
+            "java", "-jar", "-Xmx16G", "-Xss128m", str(CCFINDERSW_JAR), "D",
             "-d", str(project), "-l", language_arg, "-o", str(dest_file)
         ]
         if language in ANTLR_LANGUAGE:
@@ -120,6 +120,7 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
         subprocess.run(cmd, check=True)
     except Exception as e:
         print("CCFinderの実行に失敗しました．")
+        print(traceback.format_exc())
         raise e
 
 
