@@ -4,6 +4,7 @@ MSCCATools を Docker で実行するためのセットアップ手順です。
 - Python や Java をローカルで用意する必要はありませんが、`lib/CCFinderSW-1.0` 配下の JAR はイメージに同梱されます。
 - `ccfindersw-parser` は Docker ビルド時に `https://github.com/YukiOhta0519/ccfindersw-parser.git` から clone してビルドされ、イメージ内に同梱されます。
 - GitHub からリポジトリを clone する処理を行うため、Docker ビルド・実行時ともにネットワークアクセスが必要です。
+- GitHub Linguist は Docker ビルド時に gem としてインストールされます（`github-linguist` コマンドが利用可能）。
 
 ## イメージのビルド
 ```bash

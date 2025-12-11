@@ -7,7 +7,13 @@ import git
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from config import SELECTED_DATASET, ANALYSIS_FREQUENCY, SEARCH_DEPTH, ANALYSIS_METHOD
+from config import (
+    SELECTED_DATASET,
+    SELECTED_DATASET_CANDIDATES,
+    ANALYSIS_FREQUENCY,
+    SEARCH_DEPTH,
+    ANALYSIS_METHOD,
+)
 import modules.clone_repo
 
 
@@ -73,7 +79,7 @@ def determine_analyzed_commits_by_mergecommits(workdir: Path) -> list[str]:
 
 
 if __name__ == "__main__":
-    with open(SELECTED_DATASET, "r") as f:
+    with open(SELECTED_DATASET_CANDIDATES, "r") as f:
         dataset = json.load(f)
     analyzed_commits_dir = project_root / "dest/analyzed_commits"
     analyzed_commits_dir.mkdir(parents=True, exist_ok=True)
@@ -94,7 +100,7 @@ if __name__ == "__main__":
             with open(analyzed_commits_dir / f"{name}.json", "w") as f:
                 json.dump(target_commits, f)
 
-    selected_projects_path = project_root / "dest" / "selected_projects.json"
-    with open(selected_projects_path, "w") as f:
+    Path(SELECTED_DATASET).parent.mkdir(parents=True, exist_ok=True)
+    with open(SELECTED_DATASET, "w") as f:
         json.dump(target_projects, f)
     print(f"選択されたプロジェクト数: {len(target_projects)}")

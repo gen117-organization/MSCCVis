@@ -7,7 +7,7 @@ import sys
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from config import BASED_DATASET
+from config import BASED_DATASET, SELECTED_DATASET_CANDIDATES
 
 
 def check_project(url: str) -> tuple[bool, dict]:
@@ -115,7 +115,8 @@ def main():
                 result["URL"] = url
                 output.append(result)
     # 結果をJSONファイルとして保存
-    with open(project_root / "dest/selected_projects.json", "w") as f:
+    Path(SELECTED_DATASET_CANDIDATES).parent.mkdir(parents=True, exist_ok=True)
+    with open(SELECTED_DATASET_CANDIDATES, "w") as f:
         json.dump(output, f, indent=4)
 
 

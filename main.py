@@ -25,6 +25,7 @@ def main() -> int:
 
     subparsers.add_parser("generate-dataset", help="commands/generate_dataset.py を実行")
     subparsers.add_parser("run-all-steps", help="commands/run_all_step.py を実行")
+    subparsers.add_parser("determine-analyzed-commits", help="commands/determine_analyzed_commits.py を実行")
 
     args, unknown = parser.parse_known_args()
 
@@ -32,6 +33,8 @@ def main() -> int:
         return run_script("generate_dataset.py", unknown)
     if args.command == "run-all-steps":
         return run_script("run_all_step.py", unknown)
+    if args.command == "determine-analyzed-commits":
+        return run_script("determine_analyzed_commits.py", unknown)
 
     parser.print_help()
     return 1

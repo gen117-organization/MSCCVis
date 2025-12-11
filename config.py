@@ -11,9 +11,15 @@ project_root = Path(__file__).parent
 BASED_DATASET = project_root / "dataset/Filtered.csv"
 
 """
-    選別後のデータセット：
+    選別後のデータセット（コミット条件適用前）：
         コードベースを持つサービスが複数あるプロジェクトのみを選別したデータセットに対応しています．
         identify_microservice -> map_file -> select_projectの順番で実行することでも作成できます．
+"""
+SELECTED_DATASET_CANDIDATES = project_root / "dest/selected_projects_candidates.json"
+
+"""
+    コミット条件を適用した最終データセット：
+        determine_analyzed_commits で SELECTED_DATASET_CANDIDATES からフィルタした結果を保存します．
 """
 SELECTED_DATASET = project_root / "dataset/selected_projects.json"
 

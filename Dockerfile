@@ -7,6 +7,9 @@ RUN apt-get update \
         openjdk-21-jre-headless \
         build-essential \
         cargo \
+        ruby-full \
+        libgit2-dev \
+        pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
@@ -17,6 +20,9 @@ WORKDIR /app
 # Python 依存関係を先に解決してキャッシュを効かせる
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# GitHub Linguist (Ruby gem) をインストール
+RUN gem install --no-document github-linguist
 
 # ccfindersw-parser を取得してビルド（バイナリをイメージに同梱）
 ARG CCF_PARSER_REPO=https://github.com/YukiOhta0519/ccfindersw-parser.git
