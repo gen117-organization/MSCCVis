@@ -21,7 +21,7 @@ RUN apt-get update \
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     JAVA_HOME=/usr/lib/jvm/default-java \
-    PATH="$JAVA_HOME/bin:${PATH}"
+    PATH="/usr/lib/jvm/default-java/bin:${PATH}"
 
 WORKDIR /app
 
