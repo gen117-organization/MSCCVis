@@ -11,6 +11,8 @@ RUN apt-get update \
         libgit2-dev \
         pkg-config \
         cmake \
+        libssl-dev \
+        libssh2-1-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
