@@ -52,8 +52,9 @@ ANTLR_LANGUAGE = (
     分析するコミットの決め方を設定します．
     tag: タグがついているコミットを分析する．
     frequency: ANALYSIS_FREQUENCYで設定したコミット区切りで分析する．
+    merge_commit: デフォルトブランチのマージコミットを分析する．
 """
-ANALYSIS_METHOD = "tag"
+ANALYSIS_METHOD = "merge_commit"
 
 # 何コミット区切りで分析するか
 ANALYSIS_FREQUENCY = 50
