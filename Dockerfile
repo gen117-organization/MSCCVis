@@ -10,6 +10,7 @@ RUN apt-get update \
         ruby-full \
         libgit2-dev \
         pkg-config \
+        cmake \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
