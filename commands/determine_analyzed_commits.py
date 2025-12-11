@@ -1,6 +1,6 @@
+import json
 import sys
 from pathlib import Path
-import json
 
 import git
 
@@ -12,54 +12,71 @@ import modules.clone_repo
 
 
 def determine_by_frequency(workdir: Path) -> list[str]:
+    """Pick commits at a fixed frequency walking back from HEAD."""
     git_repo = git.Repo(str(workdir))
     head_commit = git_repo.head.commit
-    target_commits = []
     queue = [head_commit]
-    target_commits = []
-    finished_commits = []
+    target_commits: list[str] = []
+    visited_hexsha: set[str] = set()
     count = 0
     while len(queue) > 0 and (SEARCH_DEPTH == -1 or count <= SEARCH_DEPTH):
         commit = queue.pop(0)
-        if commit.hexsha in finished_commits:
+        if commit.hexsha in visited_hexsha:
             continue
         if count % ANALYSIS_FREQUENCY == 0:
             target_commits.append(commit.hexsha)
         for parent in commit.parents:
             queue.append(parent)
         count += 1
-        finished_commits.append(commit.hexsha)
+        visited_hexsha.add(commit.hexsha)
     return target_commits
 
 
 def determine_by_tag(workdir: Path) -> list[str]:
+    """Pick commits corresponding to the newest tags."""
     git_repo = git.Repo(str(workdir))
     tags = git_repo.tags
-    target_commits = []
-    count = 0
-    tag_list = []
-    for tag in tags:
-        commit = tag.commit
-        tag_list.append({
+    tag_list = [
+        {
             "tag": tag.name,
-            "sha": commit.hexsha,
-            "date": commit.committed_datetime
-        })
-    # コミット日時の新しい順（降順）にソート
-    tag_list.sort(key=lambda x: x["date"], reverse=True)
-    for tag in tag_list:
+            "sha": tag.commit.hexsha,
+            "date": tag.commit.committed_datetime,
+        }
+        for tag in tags
+    ]
+    tag_list.sort(key=lambda tag: tag["date"], reverse=True)
+
+    target_commits: list[str] = []
+    for count, tag in enumerate(tag_list):
         if count >= SEARCH_DEPTH:
             break
         target_commits.append(tag["sha"])
-        count += 1
     return target_commits
+
+
+def determine_analyzed_commits_by_mergecommits(workdir: Path) -> list[str]:
+    """Pick newest merge commits from the remote default branch."""
+    git_repo = git.Repo(str(workdir))
+    remote_name = "origin"
+    if remote_name not in git_repo.remotes:
+        return []
+    try:
+        head_ref = git_repo.refs[f"{remote_name}/HEAD"]   # 例: origin/HEAD
+        target = head_ref.reference    # 例: origin/main
+        merge_commits_newest_first = [
+            commit for commit in git_repo.iter_commits(target)
+            if len(commit.parents) >= 2
+        ][:5]
+        return [commit.hexsha for commit in merge_commits_newest_first]
+    except (IndexError, AttributeError, KeyError):
+        return []
 
 
 if __name__ == "__main__":
     with open(SELECTED_DATASET, "r") as f:
         dataset = json.load(f)
-    dest_dir = project_root / "dest/analyzed_commits"
-    dest_dir.mkdir(parents=True, exist_ok=True)
+    analyzed_commits_dir = project_root / "dest/analyzed_commits"
+    analyzed_commits_dir.mkdir(parents=True, exist_ok=True)
     target_projects = []
     for project in dataset:
         url = project["URL"]
@@ -70,11 +87,14 @@ if __name__ == "__main__":
             target_commits = determine_by_frequency(workdir)
         elif ANALYSIS_METHOD == "tag":
             target_commits = determine_by_tag(workdir)
+        elif ANALYSIS_METHOD == "merge_commit":
+            target_commits = determine_analyzed_commits_by_mergecommits(workdir)
         if len(target_commits) >= SEARCH_DEPTH:
             target_projects.append(project)
-            with open(dest_dir / f"{name}.json", "w") as f:
+            with open(analyzed_commits_dir / f"{name}.json", "w") as f:
                 json.dump(target_commits, f)
-    dest_dir = project_root / "dest"
-    with open(dest_dir / "selected_projects.json", "w") as f:
+
+    selected_projects_path = project_root / "dest" / "selected_projects.json"
+    with open(selected_projects_path, "w") as f:
         json.dump(target_projects, f)
     print(f"選択されたプロジェクト数: {len(target_projects)}")
