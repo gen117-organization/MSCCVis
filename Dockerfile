@@ -4,20 +4,17 @@ FROM python:3.12-slim
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         git \
-        openjdk-21-jre-headless \
-        build-essential \
-        cargo \
-        ruby-full \
+        ruby \
         ruby-dev \
-        libgit2-dev \
         pkg-config \
         cmake \
+        libcurl4-openssl-dev \
+        libgit2-dev \
         libssl-dev \
-        libssh2-1-dev \
         zlib1g-dev \
         libicu-dev \
-        libmagic-dev \
-        shared-mime-info \
+        build-essential \
+        cargo \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1 \
@@ -29,8 +26,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# GitHub Linguist (Ruby gem) をインストール（libgit2 を同梱ビルド）
-RUN RUGGED_USE_SYSTEM_LIBGIT2=OFF gem install --no-document github-linguist
+# GitHub Linguist
+RUN gem install --no-document github-linguist
 
 # ccfindersw-parser を取得してビルド（バイナリをイメージに同梱）
 ARG CCF_PARSER_REPO=https://github.com/YukiOhta0519/ccfindersw-parser.git
