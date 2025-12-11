@@ -32,6 +32,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # GitHub Linguist
 RUN gem install --no-document github-linguist
 
+# ソースコード一式を配置
+COPY . .
+
 # ccfindersw-parser を取得してビルド（バイナリをイメージに同梱）
 ARG CCF_PARSER_REPO=https://github.com/YukiOhta0519/ccfindersw-parser.git
 RUN set -eux; \
@@ -42,9 +45,6 @@ RUN set -eux; \
     mkdir -p /app/lib/ccfindersw-parser/target/release; \
     cp target/release/ccfindersw-parser /app/lib/ccfindersw-parser/target/release/; \
     rm -rf /tmp/ccfindersw-parser
-
-# ソースコード一式を配置
-COPY . .
 
 # 実行時に成果物を出力するディレクトリ
 RUN mkdir -p /app/dest
