@@ -1,6 +1,6 @@
+import json
 import sys
 from pathlib import Path
-import json
 
 import git
 
@@ -10,6 +10,8 @@ from modules.util import FileMapper
 
 
 class CorrespondedLines:
+    """行対応を提供するヘルパー。"""
+
     def __init__(self, hunks: list[dict], child_filemap: FileMapper, parent_filemap: FileMapper):
         self.corresponded_lines = self._correspond_lines(hunks, child_filemap, parent_filemap)
         self.hunks = hunks
@@ -123,13 +125,12 @@ class CorrespondedLines:
 
 
 def get_clone_map(clonesets: list[dict], filemap: FileMapper) -> dict[str, list[dict]]:
+    """ファイルパスごとにクローンフラグメントを束ねたマップを返す。"""
     clone_map: dict[str, list[dict]] = {}
     for clone_set in clonesets:
         for index, fragment in enumerate(clone_set["fragments"]):
             fragment_path = filemap.get_file_path(fragment["file_id"])
-            if fragment_path not in clone_map.keys():
-                clone_map[fragment_path] = []
-            clone_map[fragment_path].append({
+            clone_map.setdefault(fragment_path, []).append({
                 "clone_id": clone_set["clone_id"],
                 "index": index,
                 "file_id": fragment["file_id"],
@@ -140,6 +141,7 @@ def get_clone_map(clonesets: list[dict], filemap: FileMapper) -> dict[str, list[
 
 
 def correspond_code_fragments(corresponded_lines: CorrespondedLines, child_clonesets: list[dict], parent_clonesets: list[dict], child_filemap: FileMapper, parent_filemap: FileMapper):
+    """子クローンフラグメントと親フラグメントの対応を決定する。"""
     corresponded_fragments = {}
     
     # 親側のフラグメントを path ごとにまとめる
@@ -252,6 +254,7 @@ def correspond_clonesets(
     child_filemap: FileMapper,
     parent_filemap: FileMapper
 ):
+    """クローンセット間の差分をまとめて返す。"""
     """
     出力: modified_clones = [
       {
@@ -385,6 +388,7 @@ def correspond_clonesets(
 
 
 def analyze_commit(name: str, language: str, commit: git.Commit, prev: git.Commit) -> bool:
+    """単一コミット間でクローン差分を算出し保存する。"""
     workdir = project_root / "dest/projects" / name
     print(f"{commit.hexsha}-{prev.hexsha}")
     # childのCCFinderSWファイルの読み込み
@@ -431,6 +435,7 @@ def analyze_commit(name: str, language: str, commit: git.Commit, prev: git.Commi
         
 
 def analyze_repo(project: dict):
+    """対象リポジトリの全対象コミットに対してクローン差分分析を行う。"""
     url = project["URL"]
     name = url.split("/")[-2] + "." + url.split("/")[-1]
     languages = project["languages"].keys()

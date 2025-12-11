@@ -6,3 +6,5 @@
 /modules/CLAIM/__pycache__/
 /lib/CLAIM/src/__pycache__/
 /lib/CLAIM/src/utils/__pycache__/
+sketch/
+.DS_Store

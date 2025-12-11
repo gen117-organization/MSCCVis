@@ -4,28 +4,33 @@ import subprocess
 import git
 import traceback
 import json
+from typing import Optional, Tuple
 
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-from modules.github_linguist import get_exts, run_github_linguist
+from modules.github_linguist import get_exts
 from config import ANTLR_LANGUAGE, CCFINDERSW_JAR, CCFINDERSWPARSER
 
 
-def parse_diff_str(diff: str):
+def parse_diff_str(diff: str) -> Optional[Tuple[list[str], int, int]]:
+    """diff 文字列からハンク行と開始行番号を抽出する。"""
     diff_at_split = diff.split("@@")
+    if len(diff_at_split) < 3:
+        return None
     try:
         hunk_range_split = diff_at_split[1].replace("+", "").replace("-", "").split(" ")
-        hunk = diff_at_split[2].split("\n")
         hunk_range_old = hunk_range_split[1]
         hunk_range_new = hunk_range_split[2]
         old_line_count = int(hunk_range_old.split(",")[0])
         new_line_count = int(hunk_range_new.split(",")[0])
-    except:
+    except (IndexError, ValueError):
         return None
-    return hunk, old_line_count, new_line_count
+    hunk_lines = diff_at_split[2].split("\n")
+    return hunk_lines, old_line_count, new_line_count
 
 
 def find_moving_lines(commit: git.Commit, prev: git.Commit, name: str):
+    """2 つのコミット間で追加・削除・変更された行を収集して保存する。"""
     diff_hunks = prev.diff(commit, create_patch=True)
     output_result = []
     for diff_hunk in diff_hunks:
@@ -41,8 +46,8 @@ def find_moving_lines(commit: git.Commit, prev: git.Commit, name: str):
                 print(diff_hunk.diff)
                 continue
             hunk, old_file_line_count, new_file_line_count = result
-            potential_inserted_lines = []
-            potential_deleted_lines = []
+            potential_inserted_lines: list[int] = []
+            potential_deleted_lines: list[int] = []
             for line in hunk:
                 if line.startswith("+"):
                     potential_inserted_lines.append(new_file_line_count)
@@ -64,22 +69,24 @@ def find_moving_lines(commit: git.Commit, prev: git.Commit, name: str):
             for deleted_line in potential_deleted_lines:
                 if deleted_line not in potential_inserted_lines:
                     deleted_lines.append(deleted_line)
-            output_result.append({
-                "child_path": child_path,
-                "parent_path": parent_path,
-                "inserted_lines": inserted_lines,
-                "deleted_lines": deleted_lines,
-                "modified_lines": modified_lines
-            })
-    if len(output_result) > 0:
+            output_result.append(
+                {
+                    "child_path": child_path,
+                    "parent_path": parent_path,
+                    "inserted_lines": inserted_lines,
+                    "deleted_lines": deleted_lines,
+                    "modified_lines": modified_lines,
+                }
+            )
+    if output_result:
         dest_dir = project_root / "dest/moving_lines" / name
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest_file = dest_dir / f"{commit.hexsha}-{prev.hexsha}.json"
         with open(dest_file, "w") as f:
             json.dump(output_result, f)
-                
 
-def convert_language_for_ccfindersw(language: str):
+
+def convert_language_for_ccfindersw(language: str) -> str:
     match language:
         case "C++":
             return "cpp"
@@ -90,14 +97,20 @@ def convert_language_for_ccfindersw(language: str):
 
 
 def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: tuple[str]):
+    """対象言語とコミットで CC-Finder SW を実行し、結果を保存する。"""
     try:
         dest_dir = project_root / "dest/temp/ccfswtxt" / name / commit_hash
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest_file = dest_dir / language
+        language_arg = convert_language_for_ccfindersw(language)
+        base_cmd = [
+            "java", "-jar", "-Xmx20G", "-Xss128m", str(CCFINDERSW_JAR), "D",
+            "-d", str(project), "-l", language_arg, "-o", str(dest_file)
+        ]
         if language in ANTLR_LANGUAGE:
-            cmd = ["java", "-jar", "-Xmx20G", "-Xss128m", str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-antlr", "|".join(exts), "-w", "2", "-ccfsw", "set"]
+            cmd = [*base_cmd, "-antlr", "|".join(exts), "-w", "2", "-ccfsw", "set"]
         else:
-            cmd = ["java", "-jar" , "-Xmx20G" , "-Xss128m", str(CCFINDERSW_JAR), "D", "-d", str(project), "-l", convert_language_for_ccfindersw(language), "-o", str(dest_file), "-w", "2", "-ccfsw", "set"]
+            cmd = [*base_cmd, "-w", "2", "-ccfsw", "set"]
         subprocess.run(cmd, check=True)
         
         json_dest_dir = project_root / "dest/clones_json" / name / commit_hash
@@ -111,7 +124,7 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
 
 
 def collect_datas_of_repo(project: dict):
-    languages = project["languages"].keys()
+    """対象コミットに対してコードクローンと変更行情報を収集する。"""
     url = project["URL"]
     # リポジトリの識別子とプロジェクトディレクトリの設定
     name = url.split('/')[-2] + '.' + url.split('/')[-1]
@@ -119,11 +132,14 @@ def collect_datas_of_repo(project: dict):
     print(name)
     print("--------------------------------")
     project_dir = project_root / "dest/projects" / name
+    analyzed_commits_path = project_root / "dest/analyzed_commits" / f"{name}.json"
+
     # 言語ごとの拡張子一覧の取得
     exts = get_exts(project_dir)
+    languages = project["languages"].keys()
     # GitPythonのインスタンスの作成(分析に便利!)
     git_repo = git.Repo(str(project_dir))
-    with open(project_root / "dest/analyzed_commits" / f"{name}.json", "r") as f:
+    with open(analyzed_commits_path, "r") as f:
         analyzed_commit_hashes = json.load(f)
     hcommit = git_repo.commit(analyzed_commit_hashes[0])
     try:
