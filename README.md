@@ -17,7 +17,6 @@ docker build -t msccatools .
 docker run --rm -it \
   -v "$(pwd)/dest:/app/dest" \
   -v "$(pwd)/dataset:/app/dataset" \
-  -v "$(pwd)/lib/ccfindersw-parser/target/release:/app/lib/ccfindersw-parser/target/release" \
   msccatools run-all-steps
 ```
 他のサブコマンドを使う場合は `run-all-steps` を適宜置き換えてください。
