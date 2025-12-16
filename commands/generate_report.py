@@ -65,10 +65,11 @@ def classify_clones(rows_by_clone: Dict[str, List[dict]], codebases: dict) -> di
     return clonesets
 
 
-def compute_clone_ratios(clonesets: dict, workdir: Path) -> Dict[str, Optional[float]]:
-    """Calculate clone ratios per mode using fragment line ranges."""
+def compute_clone_ratios(clonesets: dict, workdir: Path) -> tuple[Dict[str, Optional[float]], Optional[float]]:
+    """Calculate clone ratios per mode and overall using fragment line ranges."""
     ratios: dict[str, float] = {}
     loc_cache: dict[str, int] = {}
+    overall_line_flags_by_file: Dict[str, List[bool]] = {}
 
     for mode, clone_map in clonesets.items():
         line_flags_by_file: Dict[str, List[bool]] = {}
@@ -87,11 +88,14 @@ def compute_clone_ratios(clonesets: dict, workdir: Path) -> Dict[str, Optional[f
 
                 if file_path not in line_flags_by_file:
                     line_flags_by_file[file_path] = [False] * loc_cache[file_path]
+                if file_path not in overall_line_flags_by_file:
+                    overall_line_flags_by_file[file_path] = [False] * loc_cache[file_path]
 
                 start = max(int(fragment["start_line"]) - 1, 0)
                 end = min(int(fragment["end_line"]), loc_cache[file_path])
                 for idx in range(start, end):
                     line_flags_by_file[file_path][idx] = True
+                    overall_line_flags_by_file[file_path][idx] = True
 
         if not line_flags_by_file:
             ratios[mode] = None
@@ -101,25 +105,36 @@ def compute_clone_ratios(clonesets: dict, workdir: Path) -> Dict[str, Optional[f
         clones = sum(sum(flags) for flags in line_flags_by_file.values())
         ratios[mode] = clones / total if total else None
 
-    return ratios
+    overall_ratio: Optional[float]
+    if not overall_line_flags_by_file:
+        overall_ratio = None
+    else:
+        total = sum(len(flags) for flags in overall_line_flags_by_file.values())
+        clones = sum(sum(flags) for flags in overall_line_flags_by_file.values())
+        overall_ratio = clones / total if total else None
+
+    return ratios, overall_ratio
 
 
-def compute_comodification(clonesets: dict) -> dict[str, dict[str, int]]:
-    """Calculate comodification counts per mode."""
-    comodification = {}
+def compute_comodification(clonesets: dict) -> tuple[dict[str, dict[str, int]], dict[str, int]]:
+    """Calculate comodification counts per mode and overall."""
+    comodification: dict[str, dict[str, int]] = {}
+    overall = {"count": 0, "comodification_count": 0}
     for mode, clone_map in clonesets.items():
         count = 0
         comodified = 0
         for fragments in clone_map.values():
             count += 1
+            overall["count"] += 1
             modifications = defaultdict(list)
             for fragment in fragments:
                 for entry in json.loads(fragment["modification"]):
                     modifications[entry.get("commit")].append(entry.get("type"))
             if any(types.count("modified") >= 2 for types in modifications.values()):
                 comodified += 1
+                overall["comodification_count"] += 1
         comodification[mode] = {"count": count, "comodification_count": comodified}
-    return comodification
+    return comodification, overall
 
 
 def summarize(values: List[float]) -> Dict[str, Optional[float]]:
@@ -188,14 +203,15 @@ def main():
             if any(clonesets[key] for key in ("across-testing", "across-production", "across-utility")):
                 projects_with_across.add(name)
 
-            clone_ratios = compute_clone_ratios(clonesets, workdir)
-            clone_ratio_values.extend([v for v in clone_ratios.values() if v is not None])
+            _mode_clone_ratios, overall_clone_ratio = compute_clone_ratios(clonesets, workdir)
+            if overall_clone_ratio is not None:
+                clone_ratio_values.append(overall_clone_ratio)
 
-            comodification = compute_comodification(clonesets)
-            for data in comodification.values():
-                if data["count"] == 0:
-                    continue
-                comodification_rates.append(data["comodification_count"] / data["count"])
+            _comodification_by_mode, overall_comodification = compute_comodification(clonesets)
+            if overall_comodification["count"] > 0:
+                comodification_rates.append(
+                    overall_comodification["comodification_count"] / overall_comodification["count"]
+                )
 
     clone_ratio_stats = summarize(clone_ratio_values)
     comodification_stats = summarize(comodification_rates)
