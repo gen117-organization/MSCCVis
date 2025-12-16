@@ -152,10 +152,10 @@ def summarize(values: List[float]) -> Dict[str, Optional[float]]:
 
 def main():
     dataset = load_dataset()
-    total_projects = len(dataset)
+    total_project_languages = sum(len(project["languages"]) for project in dataset)
 
-    projects_with_clones = set()
-    projects_with_across = set()
+    project_languages_with_clones = set()
+    project_languages_with_across = set()
     missing_csv = []
 
     fragment_total = 0
@@ -180,6 +180,7 @@ def main():
 
             rows_by_clone: dict[str, list[dict]] = defaultdict(list)
             modified_clone_ids = set()
+            project_language_key = f"{name}-{language}"
 
             with open(csv_path, "r") as f:
                 reader = csv.DictReader(f, delimiter=";")
@@ -194,14 +195,14 @@ def main():
                         modified_clone_ids.add(clone_id)
 
             if rows_by_clone:
-                projects_with_clones.add(name)
+                project_languages_with_clones.add(project_language_key)
 
             cloneset_total += len(rows_by_clone)
             cloneset_with_modified += len(modified_clone_ids)
 
             clonesets = classify_clones(rows_by_clone, project["languages"][language])
             if any(clonesets[key] for key in ("across-testing", "across-production", "across-utility")):
-                projects_with_across.add(name)
+                project_languages_with_across.add(project_language_key)
 
             _mode_clone_ratios, overall_clone_ratio = compute_clone_ratios(clonesets, workdir)
             if overall_clone_ratio is not None:
@@ -217,9 +218,15 @@ def main():
     comodification_stats = summarize(comodification_rates)
 
     print("# Report")
-    print(f"- Total projects: {total_projects}")
-    print(f"- Projects with clones: {len(projects_with_clones)} ({len(projects_with_clones) / total_projects * 100:.2f}%)")
-    print(f"- Projects with across-service clones: {len(projects_with_across)} ({len(projects_with_across) / total_projects * 100:.2f}%)")
+    print(f"- Total project-language pairs: {total_project_languages}")
+    print(
+        f"- Project-language pairs with clones: {len(project_languages_with_clones)} "
+        f"({(len(project_languages_with_clones) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
+    )
+    print(
+        f"- Project-language pairs with across-service clones: {len(project_languages_with_across)} "
+        f"({(len(project_languages_with_across) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
+    )
     print(f"- Clone fragments: {fragment_total:,}; modified fragments: {fragment_modified:,} ({(fragment_modified / fragment_total * 100) if fragment_total else 0:.2f}%)")
     print(f"- Clone sets: {cloneset_total:,}; sets with modified fragments: {cloneset_with_modified:,} ({(cloneset_with_modified / cloneset_total * 100) if cloneset_total else 0:.2f}%)")
     print()
