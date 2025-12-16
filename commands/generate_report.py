@@ -12,6 +12,15 @@ sys.path.append(str(project_root))
 from config import SELECTED_DATASET  # noqa: E402
 from modules.util import calculate_loc  # noqa: E402
 
+MODES = [
+    "within-testing",
+    "within-production",
+    "within-mixed",
+    "inter-testing",
+    "inter-production",
+    "inter-mixed",
+]
+
 
 def load_dataset() -> List[dict]:
     with open(SELECTED_DATASET, "r") as f:
@@ -23,10 +32,10 @@ def classify_clones(rows_by_clone: Dict[str, List[dict]], codebases: dict) -> di
     clonesets = {
         "within-testing": {},
         "within-production": {},
-        "within-utility": {},
-        "across-testing": {},
-        "across-production": {},
-        "across-utility": {},
+        "within-mixed": {},
+        "inter-testing": {},
+        "inter-production": {},
+        "inter-mixed": {},
     }
 
     for clone_id, fragments in rows_by_clone.items():
@@ -48,7 +57,7 @@ def classify_clones(rows_by_clone: Dict[str, List[dict]], codebases: dict) -> di
         if len(service_set) == 1:
             range_name = "within"
         elif len(service_set) >= 2:
-            range_name = "across"
+            range_name = "inter"
         else:
             continue
 
@@ -57,7 +66,7 @@ def classify_clones(rows_by_clone: Dict[str, List[dict]], codebases: dict) -> di
         elif is_production and not is_testing:
             code_type = "production"
         else:
-            code_type = "utility"
+            code_type = "mixed"
 
         key = f"{range_name}-{code_type}"
         clonesets[key][clone_id] = service_fragments
@@ -155,7 +164,7 @@ def main():
     total_project_languages = sum(len(project["languages"]) for project in dataset)
 
     project_languages_with_clones = set()
-    project_languages_with_across = set()
+    project_languages_with_inter = set()
     missing_csv = []
 
     fragment_total = 0
@@ -165,7 +174,9 @@ def main():
     cloneset_with_modified = 0
 
     clone_ratio_values = []
+    clone_ratio_values_by_mode = {mode: [] for mode in MODES}
     comodification_rates = []
+    comodification_rates_by_mode = {mode: [] for mode in MODES}
 
     for project in dataset:
         url = project["URL"]
@@ -201,21 +212,32 @@ def main():
             cloneset_with_modified += len(modified_clone_ids)
 
             clonesets = classify_clones(rows_by_clone, project["languages"][language])
-            if any(clonesets[key] for key in ("across-testing", "across-production", "across-utility")):
-                project_languages_with_across.add(project_language_key)
+            if any(clonesets[key] for key in ("inter-testing", "inter-production", "inter-mixed")):
+                project_languages_with_inter.add(project_language_key)
 
-            _mode_clone_ratios, overall_clone_ratio = compute_clone_ratios(clonesets, workdir)
+            mode_clone_ratios, overall_clone_ratio = compute_clone_ratios(clonesets, workdir)
             if overall_clone_ratio is not None:
                 clone_ratio_values.append(overall_clone_ratio)
+            for mode, value in mode_clone_ratios.items():
+                if value is not None:
+                    clone_ratio_values_by_mode.setdefault(mode, []).append(value)
 
-            _comodification_by_mode, overall_comodification = compute_comodification(clonesets)
+            comodification_by_mode, overall_comodification = compute_comodification(clonesets)
             if overall_comodification["count"] > 0:
                 comodification_rates.append(
                     overall_comodification["comodification_count"] / overall_comodification["count"]
                 )
+            for mode, data in comodification_by_mode.items():
+                if data["count"] > 0:
+                    rate = data["comodification_count"] / data["count"]
+                    comodification_rates_by_mode.setdefault(mode, []).append(rate)
 
     clone_ratio_stats = summarize(clone_ratio_values)
+    clone_ratio_stats_by_mode = {mode: summarize(values) for mode, values in clone_ratio_values_by_mode.items()}
     comodification_stats = summarize(comodification_rates)
+    comodification_stats_by_mode = {
+        mode: summarize(values) for mode, values in comodification_rates_by_mode.items()
+    }
 
     print("# Report")
     print(f"- Total project-language pairs: {total_project_languages}")
@@ -224,8 +246,8 @@ def main():
         f"({(len(project_languages_with_clones) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
     )
     print(
-        f"- Project-language pairs with across-service clones: {len(project_languages_with_across)} "
-        f"({(len(project_languages_with_across) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
+        f"- Project-language pairs with inter-service clones: {len(project_languages_with_inter)} "
+        f"({(len(project_languages_with_inter) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
     )
     print(f"- Clone fragments: {fragment_total:,}; modified fragments: {fragment_modified:,} ({(fragment_modified / fragment_total * 100) if fragment_total else 0:.2f}%)")
     print(f"- Clone sets: {cloneset_total:,}; sets with modified fragments: {cloneset_with_modified:,} ({(cloneset_with_modified / cloneset_total * 100) if cloneset_total else 0:.2f}%)")
@@ -238,6 +260,11 @@ def main():
     print(f"- min: {clone_ratio_stats['min']}")
     print(f"- max: {clone_ratio_stats['max']}")
     print()
+    print("## Clone ratio stats by category")
+    for mode in MODES:
+        stats = clone_ratio_stats_by_mode.get(mode, {"n": 0, "mean": None, "variance": None, "median": None, "min": None, "max": None})
+        print(f"- {mode}: count={stats['n']}, mean={stats['mean']}, variance={stats['variance']}, median={stats['median']}, min={stats['min']}, max={stats['max']}")
+    print()
     print("## Comodification rate stats")
     print(f"- count: {comodification_stats['n']}")
     print(f"- mean: {comodification_stats['mean']}")
@@ -245,6 +272,11 @@ def main():
     print(f"- median: {comodification_stats['median']}")
     print(f"- min: {comodification_stats['min']}")
     print(f"- max: {comodification_stats['max']}")
+    print()
+    print("## Comodification rate stats by category")
+    for mode in MODES:
+        stats = comodification_stats_by_mode.get(mode, {"n": 0, "mean": None, "variance": None, "median": None, "min": None, "max": None})
+        print(f"- {mode}: count={stats['n']}, mean={stats['mean']}, variance={stats['variance']}, median={stats['median']}, min={stats['min']}, max={stats['max']}")
 
     if missing_csv:
         print("\n## Missing CSV files")
