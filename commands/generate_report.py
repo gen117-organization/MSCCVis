@@ -162,6 +162,8 @@ def summarize(values: List[float]) -> Dict[str, Optional[float]]:
 def main():
     dataset = load_dataset()
     total_project_languages = sum(len(project["languages"]) for project in dataset)
+    total_projects = len(dataset)
+    projects_by_language: dict[str, set[str]] = defaultdict(set)
 
     project_languages_with_clones = set()
     project_languages_with_inter = set()
@@ -184,6 +186,8 @@ def main():
         url = project["URL"]
         name = url.split("/")[-2] + "." + url.split("/")[-1]
         workdir = project_root / "dest/projects" / name
+        for language in project["languages"]:
+            projects_by_language[language].add(name)
 
         for language in project["languages"]:
             csv_path = project_root / "dest/csv" / name / f"{language}.csv"
@@ -300,6 +304,11 @@ def main():
         print("\n## Missing CSV files")
         for path in missing_csv:
             print(f"- {path}")
+
+    print("\n## Projects per language in dataset")
+    print(f"- total projects: {total_projects}")
+    for language, projects in sorted(projects_by_language.items(), key=lambda x: (-len(x[1]), x[0].lower())):
+        print(f"- {language}: {len(projects)}")
 
 
 if __name__ == "__main__":
