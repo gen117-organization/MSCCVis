@@ -162,10 +162,16 @@ def save_boxplot(values: List[float], mode: str, output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     plt.rcParams["font.family"] = "DejaVu Sans"
 
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.boxplot(values, patch_artist=True, boxprops=dict(facecolor="#9ecae1", alpha=0.8))
-    ax.set_title(f"Clone Ratio Distribution - {MODE_LABELS[mode]}")
-    ax.set_ylabel("Clone Ratio")
+    fig, ax = plt.subplots(figsize=(4, 6))
+    ax.boxplot(
+        values,
+        patch_artist=True,
+        boxprops=dict(facecolor="white", edgecolor="black"),
+        medianprops=dict(color="black"),
+        whiskerprops=dict(color="black"),
+        capprops=dict(color="black"),
+        flierprops=dict(marker="o", markerfacecolor="white", markeredgecolor="black", markersize=4),
+    )
     ax.set_ylim(0, 1)
     ax.grid(True, axis="y", alpha=0.3)
 
