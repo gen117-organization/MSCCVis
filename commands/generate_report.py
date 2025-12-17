@@ -165,8 +165,8 @@ def main():
 
     project_languages_with_clones = set()
     project_languages_with_inter = set()
-    project_languages_with_modified = set()
-    project_languages_with_comodification = set()
+    project_languages_with_inter_modified = set()
+    project_languages_with_inter_comodification = set()
     missing_csv = []
 
     fragment_total = 0
@@ -209,8 +209,6 @@ def main():
 
             if rows_by_clone:
                 project_languages_with_clones.add(project_language_key)
-            if modified_clone_ids:
-                project_languages_with_modified.add(project_language_key)
 
             cloneset_total += len(rows_by_clone)
             cloneset_with_modified += len(modified_clone_ids)
@@ -218,6 +216,11 @@ def main():
             clonesets = classify_clones(rows_by_clone, project["languages"][language])
             if any(clonesets[key] for key in ("inter-testing", "inter-production", "inter-mixed")):
                 project_languages_with_inter.add(project_language_key)
+            inter_clone_ids = set()
+            for key in ("inter-testing", "inter-production", "inter-mixed"):
+                inter_clone_ids.update(clonesets[key].keys())
+            if inter_clone_ids & modified_clone_ids:
+                project_languages_with_inter_modified.add(project_language_key)
 
             mode_clone_ratios, overall_clone_ratio = compute_clone_ratios(clonesets, workdir)
             if overall_clone_ratio is not None:
@@ -231,12 +234,12 @@ def main():
                 comodification_rates.append(
                     overall_comodification["comodification_count"] / overall_comodification["count"]
                 )
-                if overall_comodification["comodification_count"] > 0:
-                    project_languages_with_comodification.add(project_language_key)
             for mode, data in comodification_by_mode.items():
                 if data["count"] > 0:
                     rate = data["comodification_count"] / data["count"]
                     comodification_rates_by_mode.setdefault(mode, []).append(rate)
+                if mode.startswith("inter-") and data["comodification_count"] > 0:
+                    project_languages_with_inter_comodification.add(project_language_key)
 
     clone_ratio_stats = summarize(clone_ratio_values)
     clone_ratio_stats_by_mode = {mode: summarize(values) for mode, values in clone_ratio_values_by_mode.items()}
@@ -256,12 +259,12 @@ def main():
         f"({(len(project_languages_with_inter) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
     )
     print(
-        f"- Project-language entries with modified clones: {len(project_languages_with_modified)} "
-        f"({(len(project_languages_with_modified) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
+        f"- Project-language entries with modified inter-service clone sets: {len(project_languages_with_inter_modified)} "
+        f"({(len(project_languages_with_inter_modified) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
     )
     print(
-        f"- Project-language entries with co-modified clone sets: {len(project_languages_with_comodification)} "
-        f"({(len(project_languages_with_comodification) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
+        f"- Project-language entries with co-modified inter-service clone sets: {len(project_languages_with_inter_comodification)} "
+        f"({(len(project_languages_with_inter_comodification) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
     )
     print("- Aggregation unit for clone metrics: clone sets (clone_id groups)")
     print(f"- Clone fragments: {fragment_total:,}; modified fragments: {fragment_modified:,} ({(fragment_modified / fragment_total * 100) if fragment_total else 0:.2f}%)")
