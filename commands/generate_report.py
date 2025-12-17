@@ -240,15 +240,16 @@ def main():
     }
 
     print("# Report")
-    print(f"- Total project-language pairs: {total_project_languages}")
+    print(f"- Total project-language entries: {total_project_languages}")
     print(
-        f"- Project-language pairs with clones: {len(project_languages_with_clones)} "
+        f"- Project-language entries with clones: {len(project_languages_with_clones)} "
         f"({(len(project_languages_with_clones) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
     )
     print(
-        f"- Project-language pairs with inter-service clones: {len(project_languages_with_inter)} "
+        f"- Project-language entries with inter-service clones: {len(project_languages_with_inter)} "
         f"({(len(project_languages_with_inter) / total_project_languages * 100) if total_project_languages else 0:.2f}%)"
     )
+    print("- Aggregation unit for clone metrics: clone sets (clone_id groups)")
     print(f"- Clone fragments: {fragment_total:,}; modified fragments: {fragment_modified:,} ({(fragment_modified / fragment_total * 100) if fragment_total else 0:.2f}%)")
     print(f"- Clone sets: {cloneset_total:,}; sets with modified fragments: {cloneset_with_modified:,} ({(cloneset_with_modified / cloneset_total * 100) if cloneset_total else 0:.2f}%)")
     print()
