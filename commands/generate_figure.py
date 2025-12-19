@@ -32,6 +32,12 @@ MODE_LABELS = {
     "inter-mixed": "Inter Mixed",
 }
 
+INTER_MODES = [
+    "inter-testing",
+    "inter-production",
+    "inter-mixed",
+]
+
 
 def load_dataset() -> List[dict]:
     with open(SELECTED_DATASET, "r") as f:
@@ -181,6 +187,41 @@ def save_boxplot(values: List[float], mode: str, output_dir: Path) -> Path:
     return output_path
 
 
+def save_inter_service_panel(ratios_by_mode: dict[str, List[float]], output_dir: Path) -> Optional[Path]:
+    """Save a side-by-side boxplot of inter-service clone ratios."""
+    inter_values = []
+    for mode in INTER_MODES:
+        values = ratios_by_mode.get(mode, [])
+        if not values:
+            print(f"[skip] No inter-service clone ratio data for {mode}")
+            return None
+        inter_values.append(values)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    plt.rcParams["font.family"] = "DejaVu Sans"
+
+    fig, axes = plt.subplots(1, 3, figsize=(10, 3.6), sharey=True, constrained_layout=True)
+    for ax, mode, values in zip(axes, INTER_MODES, inter_values):
+        ax.boxplot(
+            values,
+            patch_artist=True,
+            boxprops=dict(facecolor="white", edgecolor="black"),
+            medianprops=dict(color="black"),
+            whiskerprops=dict(color="black"),
+            capprops=dict(color="black"),
+            flierprops=dict(marker="o", markerfacecolor="white", markeredgecolor="black", markersize=4),
+        )
+        ax.set_title(MODE_LABELS[mode], fontsize=11)
+        ax.set_ylim(0, 1)
+        ax.grid(True, axis="y", alpha=0.3)
+        ax.set_xticks([])
+
+    output_path = output_dir / "clone_ratio_boxplot_inter_services.pdf"
+    fig.savefig(output_path, bbox_inches="tight")
+    plt.close(fig)
+    return output_path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate clone ratio boxplots by category.")
     parser.add_argument(
@@ -203,6 +244,11 @@ def main() -> int:
         output_path = save_boxplot(values, mode, args.output_dir)
         generated.append(output_path)
         print(f"[ok] Saved: {output_path}")
+
+    panel_path = save_inter_service_panel(ratios_by_mode, args.output_dir)
+    if panel_path:
+        generated.append(panel_path)
+        print(f"[ok] Saved inter-service panel: {panel_path}")
 
     if missing_csv:
         print("\n[warn] Missing CSV files:")
