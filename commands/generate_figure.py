@@ -200,7 +200,7 @@ def save_inter_service_panel(ratios_by_mode: dict[str, List[float]], output_dir:
     output_dir.mkdir(parents=True, exist_ok=True)
     plt.rcParams["font.family"] = "DejaVu Sans"
 
-    fig, axes = plt.subplots(1, 3, figsize=(8.2, 3.4), sharey=True, constrained_layout=True)
+    fig, axes = plt.subplots(1, 3, figsize=(7.2, 3.2), sharey=True, constrained_layout=True)
     for ax, mode, values in zip(axes, INTER_MODES, inter_values):
         ax.boxplot(
             values,
