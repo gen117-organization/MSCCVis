@@ -21,10 +21,10 @@ docker run --rm -it \
 ```
 他のサブコマンドを使う場合は `run-all-steps` を適宜置き換えてください。
 - 主なサブコマンド例
-  - `generate-dataset`: `commands/generate_dataset.py` を実行
-  - `determine-analyzed-commits`: `commands/determine_analyzed_commits.py` を実行
-  - `generate-report`: 生成済みの CSV から集計レポートを出力（`dest/csv` 配下が必要）
-  - `generate-figure`: クローン率を6分類（within/inter × testing/production/mixed）で集計し、分類ごとの箱ひげ図PDFを `dest/figures/` に出力（`dest/csv` 配下が必要）
+  - `generate-dataset`: `src/commands/pipeline/generate_dataset.py` を実行
+  - `determine-analyzed-commits`: `src/commands/pipeline/determine_analyzed_commits.py` を実行
+  - `summarize-csv`: 生成済みの CSV から集計レポートを出力（`dest/csv` 配下が必要）
+  - `csv-boxplot`: クローン率を6分類（within/inter × testing/production/mixed）で集計し、分類ごとの箱ひげ図PDFを `dest/figures/` に出力（`dest/csv` 配下が必要）
 
 ### ccfindersw-parser バイナリについて
 - Docker ビルド時に自動で clone & build され、イメージ内の `/usr/local/bin/ccfindersw-parser` および `/app/lib/ccfindersw-parser/target/release/ccfindersw-parser` に配置されます。
