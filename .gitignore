@@ -8,3 +8,4 @@
 /lib/CLAIM/src/utils/__pycache__/
 sketch/
 .DS_Store
+.pyre/
