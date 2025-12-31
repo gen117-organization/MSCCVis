@@ -1,8 +1,11 @@
 from pathlib import Path
+import ast
 import csv
 import json
 import sys
 import os
+
+import git
 
 def _find_repo_root(start: Path) -> Path:
     for parent in [start] + list(start.parents):
@@ -18,11 +21,44 @@ sys.path.append(str(project_root / "src"))
 from config import TARGET_PROGRAMING_LANGUAGES, BASED_DATASET
 import modules.claim_parser
 
-def map_files(url: str) -> dict:
+
+def _find_commit_index(workdir: Path, target_commit: str) -> int | None:
+    git_repo = git.Repo(workdir)
+    for index, commit in enumerate(git_repo.iter_commits(), start=1):
+        if commit.hexsha == target_commit:
+            return index
+    return None
+
+
+def _select_chunk(rows: list[dict], target_commit: str | None, workdir: Path) -> dict:
+    if not rows:
+        raise FileNotFoundError("dest/ms_detection に有効な行がありません。")
+    if target_commit is None:
+        return rows[0]
+
+    target_index = _find_commit_index(workdir, target_commit)
+    if target_index is None:
+        print(f"[warn] commit not found in repo history: {target_commit}")
+        return rows[0]
+
+    for row in rows:
+        try:
+            chunks = ast.literal_eval(row["CHUNKS_N"])
+        except (SyntaxError, ValueError):
+            continue
+        for start, end in chunks:
+            if start <= target_index <= end:
+                return row
+
+    print(f"[warn] commit not covered by chunks: {target_commit}")
+    return rows[0]
+
+
+def map_files(url: str, target_commit: str | None = None) -> dict:
     """
     指定されたURLに対応するリポジトリのファイルマッピングを作成します。
     マイクロサービスとコンテナの情報を解析し、各マイクロサービスに関連するファイルを言語ごとに分類します。
-    最新のコミットのみを分析します。
+    target_commit が指定されている場合は、そのコミットに対応する結果を利用します。
     
     Args:
         url: GitHubリポジトリのURL
@@ -37,6 +73,9 @@ def map_files(url: str) -> dict:
     """
     # URLからリポジトリ名を抽出
     name = url.split('/')[-2] + '.' + url.split('/')[-1]
+    workdir = project_root / "dest/projects" / name
+    if target_commit is not None and not workdir.exists():
+        raise FileNotFoundError(f"Repository not found: {workdir}")
     # マイクロサービス検出結果のファイルパス
     target = project_root / "dest/ms_detection" / f"{name}.csv"
 
@@ -44,7 +83,8 @@ def map_files(url: str) -> dict:
         # マイクロサービスとコンテナの情報を読み込む
         with open(target, "r") as f:
             reader = csv.DictReader(f)
-            row = next(reader)
+            rows = list(reader)
+            row = _select_chunk(rows, target_commit, workdir)
             uSs = modules.claim_parser.parse_uSs(row["uSs"])
             containers = modules.claim_parser.parse_containers(row["CONTAINERS"])
 

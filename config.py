@@ -60,10 +60,10 @@ ANTLR_LANGUAGE = (
     frequency: ANALYSIS_FREQUENCYで設定したコミット区切りで分析する．
     merge_commit: デフォルトブランチのマージコミットを分析する．
 """
-ANALYSIS_METHOD = "merge_commit"
+ANALYSIS_METHOD = "frequency"
 
 # 何コミット区切りで分析するか
-ANALYSIS_FREQUENCY = 50
+ANALYSIS_FREQUENCY = 1
 
 # リポジトリマイニングするコミット数
-SEARCH_DEPTH = 5
+SEARCH_DEPTH = -1

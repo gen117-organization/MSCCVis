@@ -29,6 +29,10 @@ def main() -> int:
         "determine-analyzed-commits",
         help="src/commands/pipeline/determine_analyzed_commits.py を実行",
     )
+    subparsers.add_parser(
+        "refresh-service-map",
+        help="src/commands/pipeline/refresh_service_map.py を実行",
+    )
     subparsers.add_parser("summarize-csv", help="src/commands/csv_analysis/generate_report.py を実行")
     subparsers.add_parser("csv-boxplot", help="src/commands/csv_analysis/generate_figure.py を実行")
 
@@ -40,6 +44,8 @@ def main() -> int:
         return run_script("csv_build/run_all_step.py", unknown)
     if args.command == "determine-analyzed-commits":
         return run_script("pipeline/determine_analyzed_commits.py", unknown)
+    if args.command == "refresh-service-map":
+        return run_script("pipeline/refresh_service_map.py", unknown)
     if args.command == "summarize-csv":
         return run_script("csv_analysis/generate_report.py", unknown)
     if args.command == "csv-boxplot":
