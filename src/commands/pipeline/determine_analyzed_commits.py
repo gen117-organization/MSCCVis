@@ -25,24 +25,28 @@ from config import (
 import modules.clone_repo
 
 
+def _get_remote_default_ref(git_repo: git.Repo, remote_name: str = "origin") -> git.Reference | None:
+    """Return the remote default branch ref (e.g. origin/main)."""
+    if remote_name not in git_repo.remotes:
+        return None
+    try:
+        head_ref = git_repo.refs[f"{remote_name}/HEAD"]
+        return head_ref.reference
+    except (IndexError, AttributeError, KeyError):
+        return None
+
+
 def determine_by_frequency(workdir: Path) -> list[str]:
-    """Pick commits at a fixed frequency walking back from HEAD."""
+    """Pick commits at a fixed frequency from the remote default branch."""
     git_repo = git.Repo(str(workdir))
-    head_commit = git_repo.head.commit
-    queue = [head_commit]
     target_commits: list[str] = []
-    visited_hexsha: set[str] = set()
-    count = 0
-    while len(queue) > 0 and (SEARCH_DEPTH == -1 or count <= SEARCH_DEPTH):
-        commit = queue.pop(0)
-        if commit.hexsha in visited_hexsha:
-            continue
+    target_ref = _get_remote_default_ref(git_repo)
+    commits = list(git_repo.iter_commits(target_ref)) if target_ref else list(git_repo.iter_commits())
+    for count, commit in enumerate(commits):
+        if SEARCH_DEPTH != -1 and count > SEARCH_DEPTH:
+            break
         if count % ANALYSIS_FREQUENCY == 0:
             target_commits.append(commit.hexsha)
-        for parent in commit.parents:
-            queue.append(parent)
-        count += 1
-        visited_hexsha.add(commit.hexsha)
     return target_commits
 
 
@@ -71,16 +75,16 @@ def determine_by_tag(workdir: Path) -> list[str]:
 def determine_analyzed_commits_by_mergecommits(workdir: Path) -> list[str]:
     """Pick newest merge commits from the remote default branch."""
     git_repo = git.Repo(str(workdir))
-    remote_name = "origin"
-    if remote_name not in git_repo.remotes:
-        return []
     try:
-        head_ref = git_repo.refs[f"{remote_name}/HEAD"]   # 例: origin/HEAD
-        target = head_ref.reference    # 例: origin/main
+        target = _get_remote_default_ref(git_repo)
+        if target is None:
+            return []
         merge_commits_newest_first = [
             commit for commit in git_repo.iter_commits(target)
             if len(commit.parents) >= 2
-        ][:5]
+        ]
+        if SEARCH_DEPTH != -1:
+            merge_commits_newest_first = merge_commits_newest_first[:SEARCH_DEPTH]
         return [commit.hexsha for commit in merge_commits_newest_first]
     except (IndexError, AttributeError, KeyError):
         return []
