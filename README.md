@@ -24,8 +24,22 @@ docker run --rm -it \
   - `generate-dataset`: `src/commands/pipeline/generate_dataset.py` を実行
   - `determine-analyzed-commits`: `src/commands/pipeline/determine_analyzed_commits.py` を実行
   - `refresh-service-map`: 対象コミットに合わせてサービス情報とマッピングを再生成
+  - `check-run-all-steps`: `run-all-steps` の進捗を確認（`dest/csv` の生成状況をチェック）
   - `summarize-csv`: 生成済みの CSV から集計レポートを出力（`dest/csv` 配下が必要）
   - `csv-boxplot`: クローン率を6分類（within/inter × testing/production/mixed）で集計し、分類ごとの箱ひげ図PDFを `dest/figures/` に出力（`dest/csv` 配下が必要）
+
+### run-all-steps の再開実行
+`run-all-steps` は途中から再開できる引数を受け付けます（`--` 以降は `run_all_step.py` に渡されます）。
+```bash
+docker run --rm -it \
+  -v "$(pwd)/dest:/app/dest" \
+  -v "$(pwd)/dataset:/app/dataset" \
+  msccatools run-all-steps -- --start-number 10
+```
+- `--start-index`: 0-based の開始位置
+- `--start-number`: 1-based の開始位置
+- `--start-url`: dataset 内の URL で開始位置を指定
+- `--from-step`: `collect` / `analyze-cc` / `analyze-modification` のいずれか
 
 ### ccfindersw-parser バイナリについて
 - Docker ビルド時に自動で clone & build され、イメージ内の `/usr/local/bin/ccfindersw-parser` および `/app/lib/ccfindersw-parser/target/release/ccfindersw-parser` に配置されます。
