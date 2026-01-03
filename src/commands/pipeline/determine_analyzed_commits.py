@@ -1,6 +1,7 @@
 import json
 import sys
 from pathlib import Path
+from datetime import datetime, timezone, timedelta
 
 import git
 
@@ -21,8 +22,31 @@ from config import (
     ANALYSIS_FREQUENCY,
     SEARCH_DEPTH,
     ANALYSIS_METHOD,
+    ANALYSIS_UNTIL,
 )
 import modules.clone_repo
+
+
+JST = timezone(timedelta(hours=9))
+
+
+def _parse_cutoff_datetime(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value)
+        if parsed.tzinfo is None:
+            return parsed.replace(tzinfo=JST)
+        return parsed.astimezone(JST)
+    except ValueError:
+        raise ValueError("ANALYSIS_UNTIL must be ISO-like, e.g. '2024-03-31 23:59:59'")
+
+
+def _is_before_cutoff(commit: git.Commit, cutoff: datetime | None) -> bool:
+    if cutoff is None:
+        return True
+    committed_jst = commit.committed_datetime.astimezone(JST)
+    return committed_jst <= cutoff
 
 
 def _get_remote_default_ref(git_repo: git.Repo, remote_name: str = "origin") -> git.Reference | None:
@@ -40,9 +64,11 @@ def determine_by_frequency(workdir: Path) -> list[str]:
     """Pick commits at a fixed frequency from the remote default branch."""
     git_repo = git.Repo(str(workdir))
     target_commits: list[str] = []
+    cutoff = _parse_cutoff_datetime(ANALYSIS_UNTIL)
     target_ref = _get_remote_default_ref(git_repo)
     commits = list(git_repo.iter_commits(target_ref)) if target_ref else list(git_repo.iter_commits())
-    for count, commit in enumerate(commits):
+    filtered_commits = [commit for commit in commits if _is_before_cutoff(commit, cutoff)]
+    for count, commit in enumerate(filtered_commits):
         if SEARCH_DEPTH != -1 and count > SEARCH_DEPTH:
             break
         if count % ANALYSIS_FREQUENCY == 0:
@@ -53,15 +79,18 @@ def determine_by_frequency(workdir: Path) -> list[str]:
 def determine_by_tag(workdir: Path) -> list[str]:
     """Pick commits corresponding to the newest tags."""
     git_repo = git.Repo(str(workdir))
+    cutoff = _parse_cutoff_datetime(ANALYSIS_UNTIL)
     tags = git_repo.tags
     tag_list = [
         {
             "tag": tag.name,
             "sha": tag.commit.hexsha,
             "date": tag.commit.committed_datetime,
+            "commit": tag.commit,
         }
         for tag in tags
     ]
+    tag_list = [tag for tag in tag_list if _is_before_cutoff(tag["commit"], cutoff)]
     tag_list.sort(key=lambda tag: tag["date"], reverse=True)
 
     target_commits: list[str] = []
@@ -75,13 +104,14 @@ def determine_by_tag(workdir: Path) -> list[str]:
 def determine_analyzed_commits_by_mergecommits(workdir: Path) -> list[str]:
     """Pick newest merge commits from the remote default branch."""
     git_repo = git.Repo(str(workdir))
+    cutoff = _parse_cutoff_datetime(ANALYSIS_UNTIL)
     try:
         target = _get_remote_default_ref(git_repo)
         if target is None:
             return []
         merge_commits_newest_first = [
             commit for commit in git_repo.iter_commits(target)
-            if len(commit.parents) >= 2
+            if len(commit.parents) >= 2 and _is_before_cutoff(commit, cutoff)
         ]
         if SEARCH_DEPTH != -1:
             merge_commits_newest_first = merge_commits_newest_first[:SEARCH_DEPTH]
