@@ -23,6 +23,7 @@ from config import (
     SEARCH_DEPTH,
     ANALYSIS_METHOD,
     ANALYSIS_UNTIL,
+    MAX_ANALYZED_COMMITS,
 )
 import modules.clone_repo
 
@@ -60,6 +61,12 @@ def _get_remote_default_ref(git_repo: git.Repo, remote_name: str = "origin") -> 
         return None
 
 
+def _apply_max_commits(commits: list[str]) -> list[str]:
+    if MAX_ANALYZED_COMMITS is None or MAX_ANALYZED_COMMITS == -1:
+        return commits
+    return commits[:MAX_ANALYZED_COMMITS]
+
+
 def determine_by_frequency(workdir: Path) -> list[str]:
     """Pick commits at a fixed frequency from the remote default branch."""
     git_repo = git.Repo(str(workdir))
@@ -73,7 +80,7 @@ def determine_by_frequency(workdir: Path) -> list[str]:
             break
         if count % ANALYSIS_FREQUENCY == 0:
             target_commits.append(commit.hexsha)
-    return target_commits
+    return _apply_max_commits(target_commits)
 
 
 def determine_by_tag(workdir: Path) -> list[str]:
@@ -98,7 +105,7 @@ def determine_by_tag(workdir: Path) -> list[str]:
         if count >= SEARCH_DEPTH:
             break
         target_commits.append(tag["sha"])
-    return target_commits
+    return _apply_max_commits(target_commits)
 
 
 def determine_analyzed_commits_by_mergecommits(workdir: Path) -> list[str]:
@@ -115,7 +122,7 @@ def determine_analyzed_commits_by_mergecommits(workdir: Path) -> list[str]:
         ]
         if SEARCH_DEPTH != -1:
             merge_commits_newest_first = merge_commits_newest_first[:SEARCH_DEPTH]
-        return [commit.hexsha for commit in merge_commits_newest_first]
+        return _apply_max_commits([commit.hexsha for commit in merge_commits_newest_first])
     except (IndexError, AttributeError, KeyError):
         return []
 
