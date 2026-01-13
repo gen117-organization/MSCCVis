@@ -60,7 +60,7 @@ ANTLR_LANGUAGE = (
     frequency: ANALYSIS_FREQUENCYで設定したコミット区切りで分析する．
     merge_commit: デフォルトブランチのマージコミットを分析する．
 """
-ANALYSIS_METHOD = "frequency"
+ANALYSIS_METHOD = "merge_commit"
 
 # 何コミット区切りで分析するか
 ANALYSIS_FREQUENCY = 1
@@ -70,7 +70,7 @@ SEARCH_DEPTH = -1
 
 # 分析対象に含めるコミット数の最大値（-1 の場合は無制限）
 # SEARCH_DEPTHとは独立した上限として適用されます。
-MAX_ANALYZED_COMMITS = 300
+MAX_ANALYZED_COMMITS = -1
 
 # 分析対象のコミット上限日時（JST）。None の場合は制限なし。
 # 例: "2024-03-31 23:59:59"
