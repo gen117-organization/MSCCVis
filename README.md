@@ -6,6 +6,16 @@ MSCCATools を Docker で実行するためのセットアップ手順です。
 - GitHub からリポジトリを clone する処理を行うため、Docker ビルド・実行時ともにネットワークアクセスが必要です。
 - GitHub Linguist は Docker ビルド時に gem としてインストールされます（`github-linguist` コマンドが利用可能）。
 
+## データセットの取得（Filtered 版）
+公開リポジトリにはデータセットを含めていないため、以下から Filtered 版を取得して配置してください。
+- 取得元: `https://github.com/darioamorosodaragona-tuni/Microservices-Dataset`
+- 配置先: `dataset/Filtered.csv`
+
+例（手動ダウンロード後に配置）:
+```bash
+cp /path/to/Filtered.csv dataset/Filtered.csv
+```
+
 ## イメージのビルド
 ```bash
 docker build -t msccatools .

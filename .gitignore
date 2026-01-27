@@ -9,3 +9,7 @@
 sketch/
 .DS_Store
 .pyre/
+
+# Ignore dataset contents (users will download separately)
+dataset/**
+!dataset/.gitkeep
