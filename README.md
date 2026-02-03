@@ -49,6 +49,9 @@ docker run --rm -it \
 - `--start-index`: 0-based の開始位置
 - `--start-number`: 1-based の開始位置
 - `--start-url`: dataset 内の URL で開始位置を指定
+- `--only-index`: 0-based の1件だけを実行
+- `--only-number`: 1-based の1件だけを実行
+- `--only-url`: dataset 内の URL に一致する1件だけを実行
 - `--from-step`: `collect` / `analyze-cc` / `analyze-modification` のいずれか
 
 ### ccfindersw-parser バイナリについて

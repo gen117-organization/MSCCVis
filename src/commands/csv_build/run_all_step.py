@@ -48,6 +48,23 @@ def _parse_args() -> argparse.Namespace:
         help="Project URL to start from (matches dataset entries' URL).",
     )
     parser.add_argument(
+        "--only-url",
+        default=None,
+        help="Run only the project that matches this URL (matches dataset entries' URL).",
+    )
+    parser.add_argument(
+        "--only-index",
+        type=int,
+        default=None,
+        help="Run only the project at this 0-based index in the dataset list.",
+    )
+    parser.add_argument(
+        "--only-number",
+        type=int,
+        default=None,
+        help="Run only the project at this 1-based position in the dataset list.",
+    )
+    parser.add_argument(
         "--from-step",
         choices=STEP_ORDER,
         default="collect",
@@ -57,6 +74,14 @@ def _parse_args() -> argparse.Namespace:
 
 
 def _resolve_start_index(args: argparse.Namespace, dataset: list[dict]) -> int:
+    if args.only_url and (args.start_number is not None or args.start_index != 0 or args.start_url):
+        raise ValueError("Do not combine --only-url with --start-index/--start-number/--start-url.")
+    if args.only_index is not None and args.only_number is not None:
+        raise ValueError("Use only one of --only-index or --only-number.")
+    if (args.only_index is not None or args.only_number is not None) and (
+        args.start_number is not None or args.start_index != 0 or args.start_url
+    ):
+        raise ValueError("Do not combine --only-index/--only-number with --start-index/--start-number/--start-url.")
     if args.start_number is not None and args.start_index != 0:
         raise ValueError("Use only one of --start-index or --start-number.")
     if args.start_number is not None:
@@ -86,6 +111,21 @@ if __name__ == "__main__":
     args = _parse_args()
     with open(args.dataset, "r") as f:
         dataset = json.load(f)
+    if args.only_url:
+        dataset = [project for project in dataset if project.get("URL") == args.only_url]
+        if not dataset:
+            raise SystemExit(f"URL not found in dataset: {args.only_url}")
+    if args.only_number is not None:
+        if args.only_number <= 0:
+            raise SystemExit("--only-number must be 1 or greater.")
+        index = args.only_number - 1
+        if index < 0 or index >= len(dataset):
+            raise SystemExit(f"only-number out of range: {args.only_number}")
+        dataset = [dataset[index]]
+    if args.only_index is not None:
+        if args.only_index < 0 or args.only_index >= len(dataset):
+            raise SystemExit(f"only-index out of range: {args.only_index}")
+        dataset = [dataset[args.only_index]]
     start_index = _resolve_start_index(args, dataset)
     if start_index < 0 or start_index >= len(dataset):
         raise SystemExit(f"start index out of range: {start_index}")
