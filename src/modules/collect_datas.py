@@ -17,7 +17,13 @@ project_root = _find_repo_root(Path(__file__).resolve())
 sys.path.append(str(project_root))
 sys.path.append(str(project_root / "src"))
 from modules.github_linguist import get_exts
-from config import ANTLR_LANGUAGE, CCFINDERSW_JAR, CCFINDERSWPARSER
+from config import (
+    ANTLR_LANGUAGE,
+    CCFINDERSW_JAR,
+    CCFINDERSWPARSER,
+    CCFINDERSW_JAVA_XMX,
+    CCFINDERSW_JAVA_XSS,
+)
 
 
 def parse_diff_str(diff: str) -> Optional[Tuple[list[str], int, int]]:
@@ -112,8 +118,18 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
         dest_file = dest_dir / language
         language_arg = convert_language_for_ccfindersw(language)
         base_cmd = [
-            "java", "-jar", "-Xmx16G", "-Xss256m", str(CCFINDERSW_JAR), "D",
-            "-d", str(project), "-l", language_arg, "-o", str(dest_file)
+            "java",
+            f"-Xmx{CCFINDERSW_JAVA_XMX}",
+            f"-Xss{CCFINDERSW_JAVA_XSS}",
+            "-jar",
+            str(CCFINDERSW_JAR),
+            "D",
+            "-d",
+            str(project),
+            "-l",
+            language_arg,
+            "-o",
+            str(dest_file),
         ]
         if language in ANTLR_LANGUAGE:
             cmd = [*base_cmd, "-antlr", "|".join(exts), "-w", "2", "-ccfsw", "set"]

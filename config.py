@@ -1,6 +1,7 @@
 # プロジェクトルートのPathを作成する．
 # 設定ファイルではないので触らない．
 from pathlib import Path
+
 project_root = Path(__file__).parent
 
 """
@@ -27,7 +28,14 @@ SELECTED_DATASET = project_root / "dataset/selected_projects.json"
 CCFINDERSW_JAR = project_root / "lib/CCFinderSW-1.0/lib/CCFinderSW-1.0.jar"
 
 # CCFinderSW Parserのパス
-CCFINDERSWPARSER = project_root / "lib/ccfindersw-parser/target/release/ccfindersw-parser"
+CCFINDERSWPARSER = (
+    project_root / "lib/ccfindersw-parser/target/release/ccfindersw-parser"
+)
+
+# CCFinderSWのJava実行設定
+# 例: "16G", "8G", "1024M"
+CCFINDERSW_JAVA_XMX = "20G"
+CCFINDERSW_JAVA_XSS = "512m"
 
 # 対象のプログラミング言語
 TARGET_PROGRAMING_LANGUAGES = (
@@ -46,13 +54,7 @@ TARGET_PROGRAMING_LANGUAGES = (
 )
 
 # ANTRLから構文定義記述を抽出してCodeCloneを検出する言語
-ANTLR_LANGUAGE = (
-    "JavaScript",
-    "TypeScript",
-    "Rust",
-    "C++",
-    "C"
-)
+ANTLR_LANGUAGE = ("JavaScript", "TypeScript", "Rust", "C++", "C")
 
 """
     分析するコミットの決め方を設定します．
