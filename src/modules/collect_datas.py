@@ -170,15 +170,25 @@ def collect_datas_of_repo(project: dict):
     try:
         prev_commit = hcommit
         for commit_hash in analyzed_commit_hashes:
-            print(f"checkout to {commit_hash}...")
-            git_repo.git.checkout(commit_hash)
+            missing_languages = []
             for language in languages:
-                detect_cc(project_dir, name, language, commit_hash, exts[language])
+                clones_json = project_root / "dest/clones_json" / name / commit_hash / f"{language}.json"
+                if not clones_json.exists():
+                    missing_languages.append(language)
+            if missing_languages:
+                print(f"checkout to {commit_hash}...")
+                git_repo.git.checkout(commit_hash)
+                for language in missing_languages:
+                    detect_cc(project_dir, name, language, commit_hash, exts[language])
+            else:
+                print(f"skip clone detection for {commit_hash} (already detected)")
             if commit_hash == hcommit.hexsha:
                 continue
             commit = git_repo.commit(commit_hash)
-            # 修正を保存
-            find_moving_lines(commit, prev_commit, name)
+            moving_lines_file = project_root / "dest/moving_lines" / name / f"{commit.hexsha}-{prev_commit.hexsha}.json"
+            if not moving_lines_file.exists():
+                # 修正を保存
+                find_moving_lines(commit, prev_commit, name)
             prev_commit = commit
     except Exception as e:
         print(traceback.format_exc())
