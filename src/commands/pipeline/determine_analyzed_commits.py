@@ -144,10 +144,12 @@ if __name__ == "__main__":
             target_commits = determine_by_tag(workdir)
         elif ANALYSIS_METHOD == "merge_commit":
             target_commits = determine_analyzed_commits_by_mergecommits(workdir)
-        if len(target_commits) >= SEARCH_DEPTH:
-            target_projects.append(project)
-            with open(analyzed_commits_dir / f"{name}.json", "w") as f:
-                json.dump(target_commits, f)
+        # Drop projects that have no target commits (e.g., default branch not found).
+        if not target_commits:
+            continue
+        target_projects.append(project)
+        with open(analyzed_commits_dir / f"{name}.json", "w") as f:
+            json.dump(target_commits, f)
 
     Path(SELECTED_DATASET).parent.mkdir(parents=True, exist_ok=True)
     with open(SELECTED_DATASET, "w") as f:
