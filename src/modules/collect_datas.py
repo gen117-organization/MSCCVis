@@ -178,6 +178,10 @@ def collect_datas_of_repo(project: dict):
             if missing_languages:
                 print(f"checkout to {commit_hash}...")
                 git_repo.git.checkout(commit_hash)
+
+                # import行フィルタの適用
+                apply_filter(project_dir, languages, exts)
+
                 for language in missing_languages:
                     detect_cc(project_dir, name, language, commit_hash, exts[language])
             else:

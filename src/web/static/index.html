@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MSCCATools – Clone Detection Settings</title>
+  <style>
+    :root {
+      --primary: #f5a623;
+      --primary-dark: #e09100;
+      --bg: #fafafa;
+      --card-bg: #ffffff;
+      --text: #333;
+      --text-light: #777;
+      --border: #e0e0e0;
+      --input-bg: #fff;
+      --disabled-bg: #f5f5f5;
+      --disabled-text: #bbb;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .field {
+      margin-bottom: 22px;
+      position: relative;
+    }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-light);
+      margin-bottom: 4px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .field input[type="text"],
+    .field input[type="number"],
+    .field select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      border-radius: 0;
+    }
+    .field input:focus,
+    .field select:focus {
+      border-bottom-color: var(--primary);
+    }
+
+    .field input:disabled,
+    .field select:disabled {
+      background: var(--disabled-bg);
+      color: var(--disabled-text);
+      cursor: not-allowed;
+    }
+
+    .field .hint {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      float: right;
+      margin-top: -26px;
+    }
+    .hint-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+      position: relative;
+    }
+    .hint-icon .tooltip {
+      display: none;
+      position: absolute;
+      bottom: 28px;
+      right: -8px;
+      background: #555;
+      color: #fff;
+      font-size: 0.78rem;
+      padding: 6px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 10;
+      line-height: 1.4;
+    }
+    .hint-icon:hover .tooltip {
+      display: block;
+    }
+
+    /* Toggle switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+    .toggle-row .toggle-label {
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #ccc;
+      border-radius: 24px;
+      transition: 0.3s;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .switch input:checked + .slider {
+      background: var(--primary);
+    }
+    .switch input:checked + .slider::before {
+      transform: translateX(20px);
+    }
+
+    /* Badge for unimplemented items */
+    .badge-wip {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      background: #eee;
+      color: #999;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.03em;
+    }
+
+    /* Conditional field (shown when frequency is selected) */
+    .conditional { display: none; }
+    .conditional.visible { display: block; }
+
+    /* Run button */
+    .btn-run {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .btn-run:hover { background: var(--primary-dark); }
+    .btn-run:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Log panel */
+    .log-panel {
+      display: none;
+      margin-top: 20px;
+    }
+    .log-panel.visible { display: block; }
+    .log-panel h2 { border-bottom-color: #555; }
+
+    .log-box {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
+      font-size: 0.82rem;
+      padding: 16px;
+      border-radius: var(--radius);
+      height: 360px;
+      overflow-y: auto;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .log-box .log-step { color: #569cd6; }
+    .log-box .log-error { color: #f44747; }
+    .log-box .log-job { color: #4ec9b0; }
+    .log-box .log-normal { color: #d4d4d4; }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+    }
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .status-done { color: #4caf50; font-weight: 600; }
+    .status-error { color: #f44747; font-weight: 600; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { margin: 16px auto; }
+      .card { padding: 16px 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>MSCCATools</h1>
+  <p style="color: var(--text-light); margin-bottom: 8px; font-size: 0.9rem;">
+    Clone Detection &amp; Co-modification Analysis
+  </p>
+
+  <!-- ===== Repository ===== -->
+  <h2>Repository</h2>
+  <div class="card">
+    <div class="field">
+      <label>Repository URL</label>
+      <input type="text" id="url" placeholder="https://github.com/owner/repo" />
+    </div>
+  </div>
+
+  <!-- ===== Detector ===== -->
+  <h2>Detector</h2>
+  <div class="card">
+    <div class="field">
+      <label>Clone Detection Method</label>
+      <select id="detection_method">
+        <option value="normal" selected>Normal (CCFinderSW)</option>
+        <option value="tks" disabled>TKS（未実装）</option>
+        <option value="rnr" disabled>RNR（未実装）</option>
+      </select>
+    </div>
+
+    <!-- TKS params (disabled) -->
+    <div class="field conditional" id="tks-params">
+      <label>TKS – トークンの種類数 <span class="badge-wip">未実装</span></label>
+      <input type="number" value="12" disabled />
+      <div class="hint">
+        <span class="hint-icon">?
+          <span class="tooltip">トークンの種類数（Token Kind Size）</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- RNR params (disabled) -->
+    <div class="field conditional" id="rnr-params">
+      <label>RNR – トークンの種類の非繰り返し度 <span class="badge-wip">未実装</span></label>
+      <input type="number" step="0.1" value="0.5" disabled />
+      <div class="hint">
+        <span class="hint-icon">?
+          <span class="tooltip">Ratio of Non-Repeated token kinds</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Minimum Matching Tokens (CCFinderSW -w)</label>
+      <input type="number" id="min_tokens" value="50" min="1" />
+      <div class="hint">
+        <span class="hint-icon">?
+          <span class="tooltip">CCFinderSWの最小一致トークン数。デフォルトは50です。</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="toggle-row">
+        <span class="toggle-label">Import行のフィルタリング</span>
+        <label class="switch">
+          <input type="checkbox" id="import_filter" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">
+        有効にすると、クローン検出前にimport/include行をコメントアウトします。
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Co-modification Analysis ===== -->
+  <h2>Parameters</h2>
+  <div class="card">
+    <div class="field">
+      <label>Co-modification Analysis Method</label>
+      <select id="comod_method">
+        <option value="clone_set" selected>クローンセット</option>
+        <option value="clone_pair" disabled>クローンペア（未実装）</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Commit Selection Method</label>
+      <select id="analysis_method">
+        <option value="merge_commit" selected>Merge Commit</option>
+        <option value="tag">Tag</option>
+        <option value="frequency">Frequency</option>
+      </select>
+      <div class="hint">
+        <span class="hint-icon">?
+          <span class="tooltip">分析対象とするコミットの選定基準</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- frequency-only field -->
+    <div class="field conditional" id="frequency-params">
+      <label>Analysis Frequency（コミット間隔）</label>
+      <input type="number" id="analysis_frequency" value="1" min="1" />
+      <div class="hint">
+        <span class="hint-icon">?
+          <span class="tooltip">最新コミットから数えて N コミットごとに分析対象として抽出します。</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Search Depth</label>
+      <input type="number" id="search_depth" value="-1" />
+      <div class="hint">
+        <span class="hint-icon">?
+          <span class="tooltip">リポジトリから遡って探索するコミット数。-1 で無制限。</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Max Analysed Commits</label>
+      <input type="number" id="max_analyzed_commits" value="-1" />
+      <div class="hint">
+        <span class="hint-icon">?
+          <span class="tooltip">実際に分析するコミット数の上限。SEARCH_DEPTHとは独立。-1 で無制限。</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Run ===== -->
+  <button class="btn-run" id="btn-run" onclick="startAnalysis()">分析を実行</button>
+
+  <!-- ===== Log Panel ===== -->
+  <div class="log-panel" id="log-panel">
+    <h2>Execution Log</h2>
+    <div class="log-box" id="log-box"></div>
+    <div class="status-bar" id="status-bar">
+      <div class="spinner" id="spinner"></div>
+      <span id="status-text">実行中...</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Show/hide conditional fields
+  const methodSelect = document.getElementById("analysis_method");
+  const freqParams = document.getElementById("frequency-params");
+  const detectionSelect = document.getElementById("detection_method");
+  const tksParams = document.getElementById("tks-params");
+  const rnrParams = document.getElementById("rnr-params");
+
+  methodSelect.addEventListener("change", () => {
+    freqParams.classList.toggle("visible", methodSelect.value === "frequency");
+  });
+  detectionSelect.addEventListener("change", () => {
+    tksParams.classList.toggle("visible", detectionSelect.value === "tks");
+    rnrParams.classList.toggle("visible", detectionSelect.value === "rnr");
+  });
+
+  // Log helpers
+  function classifyLine(text) {
+    if (text.startsWith("[step")) return "log-step";
+    if (text.startsWith("[error")) return "log-error";
+    if (text.startsWith("[job")) return "log-job";
+    return "log-normal";
+  }
+
+  function appendLog(text) {
+    const box = document.getElementById("log-box");
+    const span = document.createElement("span");
+    span.className = classifyLine(text);
+    span.textContent = text + "\n";
+    box.appendChild(span);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // Start analysis
+  async function startAnalysis() {
+    const url = document.getElementById("url").value.trim();
+    if (!url) { alert("Repository URLを入力してください。"); return; }
+
+    const btn = document.getElementById("btn-run");
+    btn.disabled = true;
+    btn.textContent = "実行中...";
+
+    const logPanel = document.getElementById("log-panel");
+    const logBox = document.getElementById("log-box");
+    logBox.innerHTML = "";
+    logPanel.classList.add("visible");
+    document.getElementById("spinner").style.display = "block";
+    document.getElementById("status-text").textContent = "実行中...";
+    document.getElementById("status-text").className = "";
+
+    const params = {
+      url,
+      detection_method: document.getElementById("detection_method").value,
+      min_tokens: parseInt(document.getElementById("min_tokens").value, 10),
+      import_filter: document.getElementById("import_filter").checked,
+      comod_method: document.getElementById("comod_method").value,
+      analysis_method: document.getElementById("analysis_method").value,
+      analysis_frequency: parseInt(document.getElementById("analysis_frequency").value, 10),
+      search_depth: parseInt(document.getElementById("search_depth").value, 10),
+      max_analyzed_commits: parseInt(document.getElementById("max_analyzed_commits").value, 10),
+    };
+
+    try {
+      const resp = await fetch("/api/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      });
+      const data = await resp.json();
+      const jobId = data.job_id;
+
+      // Connect to WebSocket for live logs
+      const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+      const ws = new WebSocket(`${protocol}//${location.host}/ws/logs/${jobId}`);
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === "log") {
+          appendLog(msg.line);
+        } else if (msg.type === "status") {
+          document.getElementById("spinner").style.display = "none";
+          if (msg.status === "completed") {
+            document.getElementById("status-text").textContent = "完了しました";
+            document.getElementById("status-text").className = "status-done";
+          } else {
+            document.getElementById("status-text").textContent = "エラーが発生しました";
+            document.getElementById("status-text").className = "status-error";
+          }
+          btn.disabled = false;
+          btn.textContent = "分析を実行";
+          ws.close();
+        }
+      };
+
+      ws.onerror = () => {
+        appendLog("[error] WebSocket connection failed.");
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("status-text").textContent = "接続エラー";
+        document.getElementById("status-text").className = "status-error";
+        btn.disabled = false;
+        btn.textContent = "分析を実行";
+      };
+    } catch (err) {
+      appendLog("[error] " + err.message);
+      document.getElementById("spinner").style.display = "none";
+      document.getElementById("status-text").textContent = "エラー";
+      document.getElementById("status-text").className = "status-error";
+      btn.disabled = false;
+      btn.textContent = "分析を実行";
+    }
+  }
+</script>
+</body>
+</html>

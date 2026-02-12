@@ -1,0 +1,292 @@
+"""Web UI for MSCCATools clone-detection settings."""
+
+import asyncio
+import json
+import sys
+import threading
+import uuid
+from pathlib import Path
+
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+
+# ---------------------------------------------------------------------------
+# Path setup (same pattern as the rest of the project)
+# ---------------------------------------------------------------------------
+
+def _find_repo_root(start: Path) -> Path:
+    for parent in [start] + list(start.parents):
+        if (parent / "pyproject.toml").exists():
+            return parent
+    return start
+
+
+project_root = _find_repo_root(Path(__file__).resolve())
+sys.path.append(str(project_root))
+sys.path.append(str(project_root / "src"))
+
+import modules.clone_repo
+import modules.collect_datas
+import modules.analyze_cc
+import modules.analyze_modification
+from modules.source_filter import apply_filter as _original_apply_filter
+from commands.pipeline import determine_analyzed_commits as dac
+
+# ---------------------------------------------------------------------------
+# App
+# ---------------------------------------------------------------------------
+
+app = FastAPI(title="MSCCATools Web UI")
+app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
+
+# Store running job logs keyed by job_id
+_jobs: dict[str, dict] = {}
+
+
+@app.get("/", response_class=HTMLResponse)
+async def index():
+    html_path = Path(__file__).parent / "static" / "index.html"
+    return html_path.read_text(encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------
+# Job execution (runs in a background thread)
+# ---------------------------------------------------------------------------
+
+class _LogCapture:
+    """Redirect print() to an in-memory buffer that the WebSocket can read."""
+
+    def __init__(self, job_id: str):
+        self.job_id = job_id
+        self.lines: list[str] = []
+
+    def write(self, text: str):
+        if text.strip():
+            self.lines.append(text.rstrip("\n"))
+        sys.__stdout__.write(text)
+
+    def flush(self):
+        sys.__stdout__.flush()
+
+
+def _build_languages_dict(workdir: Path) -> dict:
+    """run_github_linguist で取得した言語情報を project['languages'] 形式に変換する。"""
+    from modules.github_linguist import run_github_linguist
+    from config import TARGET_PROGRAMING_LANGUAGES
+    raw = run_github_linguist(str(workdir))
+    return {lang: data for lang, data in raw.items() if lang in TARGET_PROGRAMING_LANGUAGES}
+
+
+def _run_job(job_id: str, params: dict):
+    """Execute the full pipeline for a single repo URL with given params."""
+    job = _jobs[job_id]
+    log = _LogCapture(job_id)
+    old_stdout = sys.stdout
+    sys.stdout = log  # type: ignore[assignment]
+    job["log"] = log
+    try:
+        url: str = params["url"]
+        job["status"] = "running"
+        log.write(f"[job] Starting analysis for {url}\n")
+
+        # ------------------------------------------------------------------
+        # 1. Clone repository
+        # ------------------------------------------------------------------
+        log.write("[step 1/5] Cloning repository...\n")
+        modules.clone_repo.clone_repo(url)
+        name = url.split("/")[-2] + "." + url.split("/")[-1]
+        workdir = project_root / "dest/projects" / name
+
+        # ------------------------------------------------------------------
+        # 2. Determine analysed commits  (overriding config values at runtime)
+        # ------------------------------------------------------------------
+        log.write("[step 2/5] Determining analysed commits...\n")
+        analysis_method: str = params.get("analysis_method", "merge_commit")
+        search_depth: int = int(params.get("search_depth", -1))
+        max_commits: int = int(params.get("max_analyzed_commits", -1))
+        frequency: int = int(params.get("analysis_frequency", 1))
+
+        # Temporarily patch the config values used by determine_analyzed_commits
+        import config as _cfg
+        _orig_method = _cfg.ANALYSIS_METHOD
+        _orig_depth = _cfg.SEARCH_DEPTH
+        _orig_max = _cfg.MAX_ANALYZED_COMMITS
+        _orig_freq = _cfg.ANALYSIS_FREQUENCY
+        _cfg.ANALYSIS_METHOD = analysis_method
+        _cfg.SEARCH_DEPTH = search_depth
+        _cfg.MAX_ANALYZED_COMMITS = max_commits
+        _cfg.ANALYSIS_FREQUENCY = frequency
+        # Also patch the module that already imported them
+        dac.ANALYSIS_METHOD = analysis_method
+        dac.SEARCH_DEPTH = search_depth
+        dac.MAX_ANALYZED_COMMITS = max_commits
+        dac.ANALYSIS_FREQUENCY = frequency
+
+        try:
+            if analysis_method == "merge_commit":
+                target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
+            elif analysis_method == "tag":
+                target_commits = dac.determine_by_tag(workdir)
+            elif analysis_method == "frequency":
+                target_commits = dac.determine_by_frequency(workdir)
+            else:
+                target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
+        finally:
+            _cfg.ANALYSIS_METHOD = _orig_method
+            _cfg.SEARCH_DEPTH = _orig_depth
+            _cfg.MAX_ANALYZED_COMMITS = _orig_max
+            _cfg.ANALYSIS_FREQUENCY = _orig_freq
+
+        if not target_commits:
+            log.write("[error] No target commits found.\n")
+            job["status"] = "error"
+            return
+
+        log.write(f"  Found {len(target_commits)} target commits.\n")
+        analyzed_commits_dir = project_root / "dest/analyzed_commits"
+        analyzed_commits_dir.mkdir(parents=True, exist_ok=True)
+        with open(analyzed_commits_dir / f"{name}.json", "w") as f:
+            json.dump(target_commits, f)
+
+        # Build a project dict compatible with existing modules
+        languages = _build_languages_dict(workdir)
+        project = {"URL": url, "languages": languages}
+
+        # ------------------------------------------------------------------
+        # 3. Collect data (clone detection + moving lines)
+        # ------------------------------------------------------------------
+        log.write("[step 3/5] Collecting clone data...\n")
+
+        # Optionally patch minimum-token param (CCFinderSW -w flag)
+        min_tokens: int = int(params.get("min_tokens", 50))
+        _orig_detect_cc = modules.collect_datas.detect_cc
+
+        # Wrap detect_cc to inject min_tokens
+        use_import_filter: bool = params.get("import_filter", True)
+
+        def _patched_detect_cc(project_path, repo_name, language, commit_hash, exts):
+            """detect_cc with runtime min_tokens override."""
+            import subprocess, traceback
+            from config import (
+                CCFINDERSW_JAR,
+                CCFINDERSW_JAVA_XMX,
+                CCFINDERSW_JAVA_XSS,
+                ANTLR_LANGUAGE,
+            )
+            from modules.collect_datas import convert_language_for_ccfindersw
+            from config import CCFINDERSWPARSER
+            try:
+                dest_dir = project_root / "dest/temp/ccfswtxt" / repo_name / commit_hash
+                dest_dir.mkdir(parents=True, exist_ok=True)
+                dest_file = dest_dir / language
+                language_arg = convert_language_for_ccfindersw(language)
+                base_cmd = [
+                    "java",
+                    f"-Xmx{CCFINDERSW_JAVA_XMX}",
+                    f"-Xss{CCFINDERSW_JAVA_XSS}",
+                    "-jar",
+                    str(CCFINDERSW_JAR),
+                    "D",
+                    "-d",
+                    str(project_path),
+                    "-l",
+                    language_arg,
+                    "-o",
+                    str(dest_file),
+                ]
+                token_str = str(min_tokens)
+                if language in ANTLR_LANGUAGE:
+                    cmd = [*base_cmd, "-antlr", "|".join(exts), "-w", token_str, "-ccfsw", "set"]
+                else:
+                    cmd = [*base_cmd, "-w", token_str, "-ccfsw", "set"]
+                subprocess.run(cmd, check=True)
+
+                json_dest_dir = project_root / "dest/clones_json" / repo_name / commit_hash
+                json_dest_dir.mkdir(parents=True, exist_ok=True)
+                json_dest_file = json_dest_dir / f"{language}.json"
+                ccfsw_parser = _cfg.CCFINDERSWPARSER
+                cmd = [str(ccfsw_parser), "-i", str(f"{dest_file}_ccfsw.txt"), "-o", str(json_dest_file)]
+                subprocess.run(cmd, check=True)
+            except Exception as e:
+                print("CCFinderの実行に失敗しました．")
+                print(traceback.format_exc())
+                raise e
+
+        # Monkey-patch for this run
+        modules.collect_datas.detect_cc = _patched_detect_cc
+
+        # Handle import filter: patch apply_filter in collect_datas module
+        _had_apply_filter = hasattr(modules.collect_datas, "apply_filter")
+        if not use_import_filter:
+            modules.collect_datas.apply_filter = lambda *a, **kw: None  # type: ignore[attr-defined]
+        elif not _had_apply_filter:
+            # Ensure apply_filter is available (it's referenced but may not be imported)
+            modules.collect_datas.apply_filter = _original_apply_filter  # type: ignore[attr-defined]
+
+        try:
+            modules.collect_datas.collect_datas_of_repo(project)
+        finally:
+            modules.collect_datas.detect_cc = _orig_detect_cc
+
+        # ------------------------------------------------------------------
+        # 4. Analyse code clones
+        # ------------------------------------------------------------------
+        log.write("[step 4/5] Analysing code clones...\n")
+        modules.analyze_cc.analyze_repo(project)
+
+        # ------------------------------------------------------------------
+        # 5. Analyse co-modification
+        # ------------------------------------------------------------------
+        log.write("[step 5/5] Analysing co-modification...\n")
+        modules.analyze_modification.analyze_repo(project)
+
+        log.write("[job] All steps completed successfully.\n")
+        job["status"] = "completed"
+
+    except Exception as exc:
+        import traceback
+        log.write(f"[error] {exc}\n")
+        log.write(traceback.format_exc() + "\n")
+        job["status"] = "error"
+    finally:
+        sys.stdout = old_stdout
+
+
+# ---------------------------------------------------------------------------
+# REST / WebSocket endpoints
+# ---------------------------------------------------------------------------
+
+@app.post("/api/run")
+async def start_job(params: dict):
+    """Start a new analysis job."""
+    job_id = str(uuid.uuid4())[:8]
+    _jobs[job_id] = {"status": "queued", "log": None}
+    thread = threading.Thread(target=_run_job, args=(job_id, params), daemon=True)
+    thread.start()
+    return {"job_id": job_id}
+
+
+@app.websocket("/ws/logs/{job_id}")
+async def stream_logs(websocket: WebSocket, job_id: str):
+    """Stream log lines for a running job."""
+    await websocket.accept()
+    sent = 0
+    try:
+        while True:
+            job = _jobs.get(job_id)
+            if not job:
+                await websocket.send_json({"type": "error", "message": "Job not found"})
+                break
+            log: _LogCapture | None = job.get("log")
+            if log:
+                while sent < len(log.lines):
+                    await websocket.send_json({"type": "log", "line": log.lines[sent]})
+                    sent += 1
+            status = job.get("status", "queued")
+            if status in ("completed", "error"):
+                await websocket.send_json({"type": "status", "status": status})
+                break
+            await asyncio.sleep(0.3)
+    except WebSocketDisconnect:
+        pass

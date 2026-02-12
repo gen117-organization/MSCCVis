@@ -40,6 +40,9 @@ def main() -> int:
     subparsers.add_parser("check-run-all-steps", help="run-all-steps の進捗を確認")
     subparsers.add_parser("summarize-csv", help="src/commands/csv_analysis/generate_report.py を実行")
     subparsers.add_parser("csv-boxplot", help="src/commands/csv_analysis/generate_figure.py を実行")
+    web_parser = subparsers.add_parser("web-ui", help="Web UI を起動")
+    web_parser.add_argument("--host", default="127.0.0.1", help="Bind host (default: 127.0.0.1)")
+    web_parser.add_argument("--port", type=int, default=8000, help="Bind port (default: 8000)")
 
     args, unknown = parser.parse_known_args()
 
@@ -57,6 +60,15 @@ def main() -> int:
         return run_script("csv_analysis/generate_report.py", unknown)
     if args.command == "csv-boxplot":
         return run_script("csv_analysis/generate_figure.py", unknown)
+    if args.command == "web-ui":
+        import uvicorn
+        uvicorn.run(
+            "src.web.app:app",
+            host=args.host,
+            port=args.port,
+            reload=False,
+        )
+        return 0
 
     parser.print_help()
     return 1
