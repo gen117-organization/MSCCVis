@@ -202,7 +202,7 @@ def _run_job(job_id: str, params: dict):
 
         def _patched_detect_cc(project_path, repo_name, language, commit_hash, exts):
             """detect_cc with runtime min_tokens override."""
-            import subprocess, traceback
+            import subprocess
             from config import (
                 CCFINDERSW_JAR,
                 CCFINDERSW_JAVA_XMX,
@@ -235,18 +235,31 @@ def _run_job(job_id: str, params: dict):
                     cmd = [*base_cmd, "-antlr", "|".join(exts), "-w", token_str, "-ccfsw", "set"]
                 else:
                     cmd = [*base_cmd, "-w", token_str, "-ccfsw", "set"]
-                subprocess.run(cmd, check=True)
+                result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+                if result.stdout:
+                    log.write(result.stdout)
+                if result.stderr:
+                    log.write(result.stderr)
 
                 json_dest_dir = project_root / "dest/clones_json" / repo_name / commit_hash
                 json_dest_dir.mkdir(parents=True, exist_ok=True)
                 json_dest_file = json_dest_dir / f"{language}.json"
                 ccfsw_parser = _cfg.CCFINDERSWPARSER
                 cmd = [str(ccfsw_parser), "-i", str(f"{dest_file}_ccfsw.txt"), "-o", str(json_dest_file)]
-                subprocess.run(cmd, check=True)
-            except Exception as e:
-                print("CCFinderの実行に失敗しました．")
-                print(traceback.format_exc())
-                raise e
+                result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+                if result.stdout:
+                    log.write(result.stdout)
+                if result.stderr:
+                    log.write(result.stderr)
+            except subprocess.CalledProcessError as e:
+                if e.stdout:
+                    log.write(e.stdout)
+                if e.stderr:
+                    log.write(e.stderr)
+                log.write("[error] CCFinderSW failed.\n")
+                raise RuntimeError(
+                    f"CCFinderSW failed for {repo_name} {commit_hash} {language}"
+                ) from e
 
         # Monkey-patch for this run
         modules.collect_datas.detect_cc = _patched_detect_cc

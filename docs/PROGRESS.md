@@ -6,21 +6,26 @@
 
 - src/web/app.py — web ui 入力の検証と 再計算時の 既存結果クリア を追加
 - src/web/static/index.html — 再計算トグルを追加し api パラメータに反映
-- src/modules/collect_datas.py — import フィルタ適用のため apply_filter を明示 import
+- src/modules/collect_datas.py — import フィルタ適用のため apply_filter を明示 import, logging 化と 例外伝播 を追加
 - docs/PROGRESS.md — 本エントリを更新
 
 ### テスト結果
 
 - C:/Users/genko/Documents/MSCCATools-Public/.venv/Scripts/python.exe -m pytest -q , 失敗 No module named pytest
+- python -m pytest -q , 失敗 no tests ran in 0.06s
+- python -m pytest -q , 中断 Ctrl+C
 
 ### 判断メモ
 
 - web ui の 入力値が 既存結果で無効化されないよう 再計算時に成果物を削除する方針にした
 - 未実装の検出方式と comod 方式は エラー扱いで 明示的に入力を反映するようにした
+- CCFinderSW の 失敗原因を ログで見えるよう stderr を 捕捉して 表示する方針にした
 
 ### 残課題
 
 - TODO(gen): pytest を導入して テストを再実行する
+- TODO(gen): web ui で 実際の repo を指定して フィルタ反映を確認する
+- TODO(gen): docker build して web ui で 失敗ログを 再確認する
 
 ## 2026-02-13: Web UI Docker 対応とドキュメント整備
 
