@@ -8,8 +8,11 @@
 - src/web/static/index.html — 再計算トグルを追加し api パラメータに反映
 - src/modules/collect_datas.py — import フィルタの条件分岐を追加し 引数で制御可能にした
 - src/web/app.py — import フィルタの有無を 引数で渡すように変更
+- src/web/app.py — CCFinderSW の min token 引数を -w から -t に修正
+- src/web/static/index.html — min token の説明を -t に修正
 - config.py — CLI の import 行フィルタ設定を追加
 - README.md — CLI の import 行フィルタ設定を追記
+- src/modules/collect_datas.py — commit 切替時と終了時を `git checkout -f` に変更
 - docs/PROGRESS.md — 本エントリを更新
 
 ### テスト結果
@@ -27,6 +30,8 @@
 - CCFinderSW の 失敗原因を ログで見えるよう stderr を 捕捉して 表示する方針にした
 - import 行フィルタは 引数で制御し 既存のモンキーパッチ依存を避ける方針にした
 - CLI 側は config で既定値を切り替えられるようにした
+- CCFinderSW の Range mode Error は -w に 50 を渡していたことが原因で, -w は 0..2 なので -t に分離した
+- `apply_filter` で作業ツリーが変更されるため, 次コミットへの checkout は `-f` で強制切替する方針にした
 
 ### 残課題
 

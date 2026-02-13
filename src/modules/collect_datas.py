@@ -206,7 +206,7 @@ def collect_datas_of_repo(
                     missing_languages.append(language)
             if missing_languages:
                 logger.info("checkout to %s...", commit_hash)
-                git_repo.git.checkout(commit_hash)
+                git_repo.git.checkout("-f", commit_hash)
 
                 if apply_import_filter:
                     # import行フィルタの適用
@@ -236,4 +236,4 @@ def collect_datas_of_repo(
         raise RuntimeError(f"collect_datas_of_repo failed for {name}") from e
     finally:
         logger.info("checkout to latest commit...")
-        git_repo.git.checkout(hcommit.hexsha)
+        git_repo.git.checkout("-f", hcommit.hexsha)

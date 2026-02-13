@@ -246,12 +246,14 @@ def _run_job(job_id: str, params: dict):
                         "-antlr",
                         "|".join(exts),
                         "-w",
+                        "2",
+                        "-t",
                         token_str,
                         "-ccfsw",
                         "set",
                     ]
                 else:
-                    cmd = [*base_cmd, "-w", token_str, "-ccfsw", "set"]
+                    cmd = [*base_cmd, "-w", "2", "-t", token_str, "-ccfsw", "set"]
                 result = subprocess.run(cmd, check=True, capture_output=True, text=True)
                 if result.stdout:
                     log.write(result.stdout)
