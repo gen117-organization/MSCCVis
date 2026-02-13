@@ -6,7 +6,10 @@
 
 - src/web/app.py — web ui 入力の検証と 再計算時の 既存結果クリア を追加
 - src/web/static/index.html — 再計算トグルを追加し api パラメータに反映
-- src/modules/collect_datas.py — import フィルタ適用のため apply_filter を明示 import, logging 化と 例外伝播 を追加
+- src/modules/collect_datas.py — import フィルタの条件分岐を追加し 引数で制御可能にした
+- src/web/app.py — import フィルタの有無を 引数で渡すように変更
+- config.py — CLI の import 行フィルタ設定を追加
+- README.md — CLI の import 行フィルタ設定を追記
 - docs/PROGRESS.md — 本エントリを更新
 
 ### テスト結果
@@ -14,18 +17,24 @@
 - C:/Users/genko/Documents/MSCCATools-Public/.venv/Scripts/python.exe -m pytest -q , 失敗 No module named pytest
 - python -m pytest -q , 失敗 no tests ran in 0.06s
 - python -m pytest -q , 中断 Ctrl+C
+- python -m pytest -q , docker の ログが出力され 中断
+- python -m pytest -q , 失敗 dest/projects 配下の外部リポジトリ tests 収集で NameError
 
 ### 判断メモ
 
 - web ui の 入力値が 既存結果で無効化されないよう 再計算時に成果物を削除する方針にした
 - 未実装の検出方式と comod 方式は エラー扱いで 明示的に入力を反映するようにした
 - CCFinderSW の 失敗原因を ログで見えるよう stderr を 捕捉して 表示する方針にした
+- import 行フィルタは 引数で制御し 既存のモンキーパッチ依存を避ける方針にした
+- CLI 側は config で既定値を切り替えられるようにした
 
 ### 残課題
 
 - TODO(gen): pytest を導入して テストを再実行する
 - TODO(gen): web ui で 実際の repo を指定して フィルタ反映を確認する
 - TODO(gen): docker build して web ui で 失敗ログを 再確認する
+- TODO(gen): python -m pytest -q を 再実行して 結果を確認する
+- TODO(gen): pytest の 対象から dest/projects を 除外するか, 実行前にクリーンする
 
 ## 2026-02-13: Web UI Docker 対応とドキュメント整備
 

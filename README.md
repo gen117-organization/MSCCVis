@@ -6,6 +6,7 @@ MSCCATools を Docker で実行するためのセットアップ手順です。
 - GitHub からリポジトリを clone する処理を行うため、Docker ビルド・実行時ともにネットワークアクセスが必要です。
 - GitHub Linguist は Docker ビルド時に gem としてインストールされます（`github-linguist` コマンドが利用可能）。
 - CCFinderSW の Java メモリ設定は `config.py` の `CCFINDERSW_JAVA_XMX` / `CCFINDERSW_JAVA_XSS` で調整できます。
+- CLI で import 行フィルタを切り替える場合は `config.py` の `APPLY_IMPORT_FILTER` を設定します。
 
 ## データセットの取得（Filtered 版）
 公開リポジトリにはデータセットを含めていないため、以下から Filtered 版を取得して配置してください。

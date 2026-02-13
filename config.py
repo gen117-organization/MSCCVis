@@ -77,3 +77,6 @@ MAX_ANALYZED_COMMITS = -1
 # 分析対象のコミット上限日時（JST）。None の場合は制限なし。
 # 例: "2024-03-31 23:59:59"
 ANALYSIS_UNTIL = "2026-01-01 00:00:00"
+
+# import 行フィルタを有効にするか
+APPLY_IMPORT_FILTER = True

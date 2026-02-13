@@ -7,6 +7,7 @@ import json
 import logging
 from typing import Optional, Tuple
 
+
 def _find_repo_root(start: Path) -> Path:
     for parent in [start] + list(start.parents):
         if (parent / "pyproject.toml").exists():
@@ -25,6 +26,7 @@ from config import (
     CCFINDERSWPARSER,
     CCFINDERSW_JAVA_XMX,
     CCFINDERSW_JAVA_XSS,
+    APPLY_IMPORT_FILTER,
 )
 
 logger = logging.getLogger(__name__)
@@ -119,7 +121,9 @@ def convert_language_for_ccfindersw(language: str) -> str:
             return language.lower()
 
 
-def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: tuple[str]):
+def detect_cc(
+    project: Path, name: str, language: str, commit_hash: str, exts: tuple[str]
+):
     """対象言語とコミットで CC-Finder SW を実行し、結果を保存する。"""
     try:
         dest_dir = project_root / "dest/temp/ccfswtxt" / name / commit_hash
@@ -145,11 +149,17 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
         else:
             cmd = [*base_cmd, "-w", "2", "-ccfsw", "set"]
         subprocess.run(cmd, check=True)
-        
+
         json_dest_dir = project_root / "dest/clones_json" / name / commit_hash
         json_dest_dir.mkdir(parents=True, exist_ok=True)
         json_dest_file = json_dest_dir / f"{language}.json"
-        cmd = [str(CCFINDERSWPARSER), "-i", str(f"{dest_file}_ccfsw.txt"), "-o", str(json_dest_file)]
+        cmd = [
+            str(CCFINDERSWPARSER),
+            "-i",
+            str(f"{dest_file}_ccfsw.txt"),
+            "-o",
+            str(json_dest_file),
+        ]
         subprocess.run(cmd, check=True)
     except Exception as e:
         logger.exception("CCFinderの実行に失敗しました．")
@@ -158,11 +168,14 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
         ) from e
 
 
-def collect_datas_of_repo(project: dict) -> None:
+def collect_datas_of_repo(
+    project: dict,
+    apply_import_filter: bool = APPLY_IMPORT_FILTER,
+) -> None:
     """対象コミットに対してコードクローンと変更行情報を収集する。"""
     url = project["URL"]
     # リポジトリの識別子とプロジェクトディレクトリの設定
-    name = url.split('/')[-2] + '.' + url.split('/')[-1]
+    name = url.split("/")[-2] + "." + url.split("/")[-1]
     logger.info("--------------------------------")
     logger.info(name)
     logger.info("--------------------------------")
@@ -182,33 +195,45 @@ def collect_datas_of_repo(project: dict) -> None:
         for commit_hash in analyzed_commit_hashes:
             missing_languages = []
             for language in languages:
-                clones_json = project_root / "dest/clones_json" / name / commit_hash / f"{language}.json"
+                clones_json = (
+                    project_root
+                    / "dest/clones_json"
+                    / name
+                    / commit_hash
+                    / f"{language}.json"
+                )
                 if not clones_json.exists():
                     missing_languages.append(language)
             if missing_languages:
                 logger.info("checkout to %s...", commit_hash)
                 git_repo.git.checkout(commit_hash)
 
-                # import行フィルタの適用
-                apply_filter(project_dir, languages, exts)
+                if apply_import_filter:
+                    # import行フィルタの適用
+                    apply_filter(project_dir, languages, exts)
 
                 for language in missing_languages:
                     detect_cc(project_dir, name, language, commit_hash, exts[language])
             else:
-                logger.info("skip clone detection for %s (already detected)", commit_hash)
+                logger.info(
+                    "skip clone detection for %s (already detected)", commit_hash
+                )
             if commit_hash == hcommit.hexsha:
                 continue
             commit = git_repo.commit(commit_hash)
-            moving_lines_file = project_root / "dest/moving_lines" / name / f"{commit.hexsha}-{prev_commit.hexsha}.json"
+            moving_lines_file = (
+                project_root
+                / "dest/moving_lines"
+                / name
+                / f"{commit.hexsha}-{prev_commit.hexsha}.json"
+            )
             if not moving_lines_file.exists():
                 # 修正を保存
                 find_moving_lines(commit, prev_commit, name)
             prev_commit = commit
     except Exception as e:
         logger.exception("collect_datas_of_repo failed for %s", name)
-        raise RuntimeError(
-            f"collect_datas_of_repo failed for {name}"
-        ) from e
+        raise RuntimeError(f"collect_datas_of_repo failed for {name}") from e
     finally:
         logger.info("checkout to latest commit...")
         git_repo.git.checkout(hcommit.hexsha)

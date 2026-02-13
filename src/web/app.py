@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 # Path setup (same pattern as the rest of the project)
 # ---------------------------------------------------------------------------
 
+
 def _find_repo_root(start: Path) -> Path:
     for parent in [start] + list(start.parents):
         if (parent / "pyproject.toml").exists():
@@ -39,7 +40,9 @@ from commands.pipeline import determine_analyzed_commits as dac
 # ---------------------------------------------------------------------------
 
 app = FastAPI(title="MSCCATools Web UI")
-app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
+app.mount(
+    "/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static"
+)
 
 # Store running job logs keyed by job_id
 _jobs: dict[str, dict] = {}
@@ -54,6 +57,7 @@ async def index():
 # ---------------------------------------------------------------------------
 # Job execution (runs in a background thread)
 # ---------------------------------------------------------------------------
+
 
 class _LogCapture:
     """Redirect print() to an in-memory buffer that the WebSocket can read."""
@@ -75,8 +79,11 @@ def _build_languages_dict(workdir: Path) -> dict:
     """run_github_linguist で取得した言語情報を project['languages'] 形式に変換する。"""
     from modules.github_linguist import run_github_linguist
     from config import TARGET_PROGRAMING_LANGUAGES
+
     raw = run_github_linguist(str(workdir))
-    return {lang: data for lang, data in raw.items() if lang in TARGET_PROGRAMING_LANGUAGES}
+    return {
+        lang: data for lang, data in raw.items() if lang in TARGET_PROGRAMING_LANGUAGES
+    }
 
 
 def _clear_previous_results(repo_name: str) -> None:
@@ -144,6 +151,7 @@ def _run_job(job_id: str, params: dict):
 
         # Temporarily patch the config values used by determine_analyzed_commits
         import config as _cfg
+
         _orig_method = _cfg.ANALYSIS_METHOD
         _orig_depth = _cfg.SEARCH_DEPTH
         _orig_max = _cfg.MAX_ANALYZED_COMMITS
@@ -211,6 +219,7 @@ def _run_job(job_id: str, params: dict):
             )
             from modules.collect_datas import convert_language_for_ccfindersw
             from config import CCFINDERSWPARSER
+
             try:
                 dest_dir = project_root / "dest/temp/ccfswtxt" / repo_name / commit_hash
                 dest_dir.mkdir(parents=True, exist_ok=True)
@@ -232,7 +241,15 @@ def _run_job(job_id: str, params: dict):
                 ]
                 token_str = str(min_tokens)
                 if language in ANTLR_LANGUAGE:
-                    cmd = [*base_cmd, "-antlr", "|".join(exts), "-w", token_str, "-ccfsw", "set"]
+                    cmd = [
+                        *base_cmd,
+                        "-antlr",
+                        "|".join(exts),
+                        "-w",
+                        token_str,
+                        "-ccfsw",
+                        "set",
+                    ]
                 else:
                     cmd = [*base_cmd, "-w", token_str, "-ccfsw", "set"]
                 result = subprocess.run(cmd, check=True, capture_output=True, text=True)
@@ -241,11 +258,19 @@ def _run_job(job_id: str, params: dict):
                 if result.stderr:
                     log.write(result.stderr)
 
-                json_dest_dir = project_root / "dest/clones_json" / repo_name / commit_hash
+                json_dest_dir = (
+                    project_root / "dest/clones_json" / repo_name / commit_hash
+                )
                 json_dest_dir.mkdir(parents=True, exist_ok=True)
                 json_dest_file = json_dest_dir / f"{language}.json"
                 ccfsw_parser = _cfg.CCFINDERSWPARSER
-                cmd = [str(ccfsw_parser), "-i", str(f"{dest_file}_ccfsw.txt"), "-o", str(json_dest_file)]
+                cmd = [
+                    str(ccfsw_parser),
+                    "-i",
+                    str(f"{dest_file}_ccfsw.txt"),
+                    "-o",
+                    str(json_dest_file),
+                ]
                 result = subprocess.run(cmd, check=True, capture_output=True, text=True)
                 if result.stdout:
                     log.write(result.stdout)
@@ -264,16 +289,11 @@ def _run_job(job_id: str, params: dict):
         # Monkey-patch for this run
         modules.collect_datas.detect_cc = _patched_detect_cc
 
-        # Handle import filter: patch apply_filter in collect_datas module
-        _had_apply_filter = hasattr(modules.collect_datas, "apply_filter")
-        if not use_import_filter:
-            modules.collect_datas.apply_filter = lambda *a, **kw: None  # type: ignore[attr-defined]
-        elif not _had_apply_filter:
-            # Ensure apply_filter is available (it's referenced but may not be imported)
-            modules.collect_datas.apply_filter = _original_apply_filter  # type: ignore[attr-defined]
-
         try:
-            modules.collect_datas.collect_datas_of_repo(project)
+            modules.collect_datas.collect_datas_of_repo(
+                project,
+                apply_import_filter=use_import_filter,
+            )
         finally:
             modules.collect_datas.detect_cc = _orig_detect_cc
 
@@ -294,6 +314,7 @@ def _run_job(job_id: str, params: dict):
 
     except Exception as exc:
         import traceback
+
         log.write(f"[error] {exc}\n")
         log.write(traceback.format_exc() + "\n")
         job["status"] = "error"
@@ -304,6 +325,7 @@ def _run_job(job_id: str, params: dict):
 # ---------------------------------------------------------------------------
 # REST / WebSocket endpoints
 # ---------------------------------------------------------------------------
+
 
 @app.post("/api/run")
 async def start_job(params: dict):
