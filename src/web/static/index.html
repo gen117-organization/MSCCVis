@@ -33,6 +33,24 @@
       padding: 0 20px;
     }
 
+    .lang-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .lang-bar select {
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+
     h1 {
       font-size: 1.6rem;
       font-weight: 600;
@@ -292,39 +310,46 @@
 </head>
 <body>
 <div class="container">
+  <div class="lang-bar">
+    <span id="lang-label">Language</span>
+    <select id="lang_select">
+      <option value="en" selected>English</option>
+      <option value="ja">日本語</option>
+    </select>
+  </div>
   <h1>MSCCATools</h1>
-  <p style="color: var(--text-light); margin-bottom: 8px; font-size: 0.9rem;">
+  <p id="subtitle" style="color: var(--text-light); margin-bottom: 8px; font-size: 0.9rem;">
     Clone Detection &amp; Co-modification Analysis
   </p>
 
   <!-- ===== Repository ===== -->
-  <h2>Repository</h2>
+  <h2 id="section-repository">Repository</h2>
   <div class="card">
     <div class="field">
-      <label>Repository URL</label>
+      <label id="label-repo-url">Repository URL</label>
       <input type="text" id="url" placeholder="https://github.com/owner/repo" />
     </div>
   </div>
 
   <!-- ===== Detector ===== -->
-  <h2>Detector</h2>
+  <h2 id="section-detector">Detector</h2>
   <div class="card">
     <div class="field">
-      <label>Clone Detection Method</label>
+      <label id="label-detection-method">Clone Detection Method</label>
       <select id="detection_method">
-        <option value="normal" selected>Normal (CCFinderSW)</option>
-        <option value="tks" disabled>TKS（未実装）</option>
-        <option value="rnr" disabled>RNR（未実装）</option>
+        <option value="normal" id="opt-detection-normal" selected>Normal (CCFinderSW)</option>
+        <option value="tks" id="opt-detection-tks" disabled>TKS (Not implemented)</option>
+        <option value="rnr" id="opt-detection-rnr" disabled>RNR (Not implemented)</option>
       </select>
     </div>
 
     <!-- TKS params (disabled) -->
     <div class="field conditional" id="tks-params">
       <div class="label-row">
-        <label>TKS – トークンの種類数 <span class="badge-wip">未実装</span></label>
+        <label><span id="label-tks">TKS - Token Kind Size</span> <span class="badge-wip" id="badge-tks">Not implemented</span></label>
         <div class="hint">
           <span class="hint-icon">?
-            <span class="tooltip">トークンの種類数（Token Kind Size）</span>
+            <span class="tooltip" id="tooltip-tks">Token Kind Size</span>
           </span>
         </div>
       </div>
@@ -334,10 +359,10 @@
     <!-- RNR params (disabled) -->
     <div class="field conditional" id="rnr-params">
       <div class="label-row">
-        <label>RNR – トークンの種類の非繰り返し度 <span class="badge-wip">未実装</span></label>
+        <label><span id="label-rnr">RNR - Ratio of Non-Repeated token kinds</span> <span class="badge-wip" id="badge-rnr">Not implemented</span></label>
         <div class="hint">
           <span class="hint-icon">?
-            <span class="tooltip">Ratio of Non-Repeated token kinds</span>
+            <span class="tooltip" id="tooltip-rnr">Ratio of Non-Repeated token kinds</span>
           </span>
         </div>
       </div>
@@ -346,10 +371,10 @@
 
     <div class="field">
       <div class="label-row">
-        <label>Minimum Matching Tokens</label>
+        <label id="label-min-tokens">Minimum Matching Tokens</label>
         <div class="hint">
           <span class="hint-icon">?
-            <span class="tooltip">CCFinderSWの最小一致トークン数．デフォルトは50です。</span>
+            <span class="tooltip" id="tooltip-min-tokens">CCFinderSW minimum token threshold. Default is 50.</span>
           </span>
         </div>
       </div>
@@ -358,48 +383,48 @@
 
     <div class="field">
       <div class="toggle-row">
-        <span class="toggle-label">Import行のフィルタリング</span>
+        <span class="toggle-label" id="label-import-filter">Import line filtering</span>
         <label class="switch">
           <input type="checkbox" id="import_filter" checked />
           <span class="slider"></span>
         </label>
       </div>
-      <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">
-        有効にすると、クローン検出前にimport/include行をコメントアウトします。
+      <div id="desc-import-filter" style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">
+        When enabled, import/include lines are commented out before clone detection.
       </div>
     </div>
 
     <div class="field">
       <div class="toggle-row">
-        <span class="toggle-label">既存結果を削除して再計算</span>
+        <span class="toggle-label" id="label-force-recompute">Recompute after clearing previous results</span>
         <label class="switch">
           <input type="checkbox" id="force_recompute" checked />
           <span class="slider"></span>
         </label>
       </div>
-      <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">
-        フィルタやパラメータを変更した場合に、以前の結果を無視して再実行します。
+      <div id="desc-force-recompute" style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">
+        If filters or parameters changed, ignore previous outputs and rerun.
       </div>
     </div>
   </div>
 
   <!-- ===== Co-modification Analysis ===== -->
-  <h2>Parameters</h2>
+  <h2 id="section-parameters">Parameters</h2>
   <div class="card">
     <div class="field">
-      <label>Co-modification Analysis Method</label>
+      <label id="label-comod-method">Co-modification Analysis Method</label>
       <select id="comod_method">
-        <option value="clone_set" selected>クローンセット</option>
-        <option value="clone_pair" disabled>クローンペア（未実装）</option>
+        <option value="clone_set" id="opt-comod-set" selected>Clone set</option>
+        <option value="clone_pair" id="opt-comod-pair" disabled>Clone pair (Not implemented)</option>
       </select>
     </div>
 
     <div class="field">
       <div class="label-row">
-        <label>Commit Selection Method</label>
+        <label id="label-analysis-method">Commit Selection Method</label>
         <div class="hint">
           <span class="hint-icon">?
-            <span class="tooltip">分析対象とするコミットの選定基準</span>
+            <span class="tooltip" id="tooltip-analysis-method">How target commits are selected.</span>
           </span>
         </div>
       </div>
@@ -413,10 +438,10 @@
     <!-- frequency-only field -->
     <div class="field conditional" id="frequency-params">
       <div class="label-row">
-        <label>Analysis Frequency（コミット間隔）</label>
+        <label id="label-analysis-frequency">Analysis Frequency (commit interval)</label>
         <div class="hint">
           <span class="hint-icon">?
-            <span class="tooltip">最新コミットから数えて N コミットごとに分析対象として抽出します。</span>
+            <span class="tooltip" id="tooltip-analysis-frequency">Select every Nth commit from the latest commit.</span>
           </span>
         </div>
       </div>
@@ -425,10 +450,10 @@
 
     <div class="field">
       <div class="label-row">
-        <label>Search Depth</label>
+        <label id="label-search-depth">Search Depth</label>
         <div class="hint">
           <span class="hint-icon">?
-            <span class="tooltip">リポジトリから遡って探索するコミット数。-1 で無制限。</span>
+            <span class="tooltip" id="tooltip-search-depth">Maximum commits to inspect while searching, -1 means unlimited.</span>
           </span>
         </div>
       </div>
@@ -437,10 +462,10 @@
 
     <div class="field">
       <div class="label-row">
-        <label>Max Analysed Commits</label>
+        <label id="label-max-commits">Max Analysed Commits</label>
         <div class="hint">
           <span class="hint-icon">?
-            <span class="tooltip">実際に分析するコミット数の上限。SEARCH_DEPTHとは独立。-1 で無制限。</span>
+            <span class="tooltip" id="tooltip-max-commits">Maximum commits to analyze, independent from SEARCH_DEPTH, -1 means unlimited.</span>
           </span>
         </div>
       </div>
@@ -449,15 +474,15 @@
   </div>
 
   <!-- ===== Run ===== -->
-  <button class="btn-run" id="btn-run" onclick="startAnalysis()">分析を実行</button>
+  <button class="btn-run" id="btn-run" onclick="startAnalysis()">Run Analysis</button>
 
   <!-- ===== Log Panel ===== -->
   <div class="log-panel" id="log-panel">
-    <h2>Execution Log</h2>
+    <h2 id="execution-log-title">Execution Log</h2>
     <div class="log-box" id="log-box"></div>
     <div class="status-bar" id="status-bar">
       <div class="spinner" id="spinner"></div>
-      <span id="status-text">実行中...</span>
+      <span id="status-text">Running...</span>
     </div>
   </div>
 </div>
@@ -469,6 +494,191 @@
   const detectionSelect = document.getElementById("detection_method");
   const tksParams = document.getElementById("tks-params");
   const rnrParams = document.getElementById("rnr-params");
+  const langSelect = document.getElementById("lang_select");
+  let currentLang = "en";
+
+  const I18N = {
+    en: {
+      langLabel: "Language",
+      subtitle: "Clone Detection & Co-modification Analysis",
+      sectionRepository: "Repository",
+      labelRepoUrl: "Repository URL",
+      sectionDetector: "Detector",
+      labelDetectionMethod: "Clone Detection Method",
+      optDetectionNormal: "Normal (CCFinderSW)",
+      optDetectionTks: "TKS (Not implemented)",
+      optDetectionRnr: "RNR (Not implemented)",
+      labelTks: "TKS - Token Kind Size",
+      labelRnr: "RNR - Ratio of Non-Repeated token kinds",
+      badgeNotImplemented: "Not implemented",
+      tooltipTks: "Token Kind Size",
+      tooltipRnr: "Ratio of Non-Repeated token kinds",
+      labelMinTokens: "Minimum Matching Tokens",
+      tooltipMinTokens: "CCFinderSW minimum token threshold. Default is 50.",
+      labelImportFilter: "Import line filtering",
+      descImportFilter: "When enabled, import/include lines are commented out before clone detection.",
+      labelForceRecompute: "Recompute after clearing previous results",
+      descForceRecompute: "If filters or parameters changed, ignore previous outputs and rerun.",
+      sectionParameters: "Parameters",
+      labelComodMethod: "Co-modification Analysis Method",
+      optComodSet: "Clone set",
+      optComodPair: "Clone pair (Not implemented)",
+      labelAnalysisMethod: "Commit Selection Method",
+      tooltipAnalysisMethod: "How target commits are selected.",
+      labelAnalysisFrequency: "Analysis Frequency (commit interval)",
+      tooltipAnalysisFrequency: "Select every Nth commit from the latest commit.",
+      labelSearchDepth: "Search Depth",
+      tooltipSearchDepth: "Maximum commits to inspect while searching, -1 means unlimited.",
+      labelMaxCommits: "Max Analysed Commits",
+      tooltipMaxCommits: "Maximum commits to analyze, independent from SEARCH_DEPTH, -1 means unlimited.",
+      runButton: "Run Analysis",
+      executionLog: "Execution Log",
+      statusRunning: "Running...",
+      statusInputError: "Input Error",
+      statusCompleted: "Completed",
+      statusError: "Error occurred",
+      statusConnectionError: "Connection Error",
+      alertRequiredUrl: "Repository URL is required",
+      errorRequiredUrl: "Repository URL is required",
+      errorInvalidUrl: "Repository URL must be a GitHub repository URL",
+      errorDetectionMethod: "Detection method must be one of normal,tks,rnr",
+      errorDetectionNotImpl: "TKS and RNR are not implemented",
+      errorTks: "TKS must be an integer greater than 0",
+      errorRnr: "RNR must satisfy 0 < RNR <= 1",
+      errorMinTokens: "Minimum matching tokens must be an integer greater than 0",
+      errorImportFilter: "Import filtering must be true/false",
+      errorComodMethod: "Co-modification method must be one of clone_set,clone_pair",
+      errorComodNotImpl: "clone_pair is not implemented",
+      errorAnalysisMethod: "Analysis method must be one of merge_commit,tag,frequency",
+      errorAnalysisFrequency: "ANALYSIS_FREQUENCY must be an integer greater than 0",
+      errorSearchDepth: "SEARCH_DEPTH must be an integer >= -1",
+      errorMaxAnalyzed: "MAX_ANALYZED_COMMITS must be an integer >= -1",
+      errorForceRecompute: "force_recompute must be true/false",
+      errorApiValidation: "API validation error",
+      errorWebSocket: "[error] WebSocket connection failed.",
+      errorGeneric: "Error",
+    },
+    ja: {
+      langLabel: "言語",
+      subtitle: "クローン検出と同時修正分析",
+      sectionRepository: "リポジトリ",
+      labelRepoUrl: "リポジトリURL",
+      sectionDetector: "クローン検出",
+      labelDetectionMethod: "検出手法",
+      optDetectionNormal: "通常 (CCFinderSW)",
+      optDetectionTks: "TKS（未実装）",
+      optDetectionRnr: "RNR（未実装）",
+      labelTks: "TKS - トークンの種類数",
+      labelRnr: "RNR - トークンの種類の非繰り返し度",
+      badgeNotImplemented: "未実装",
+      tooltipTks: "トークンの種類数（Token Kind Size）",
+      tooltipRnr: "トークンの種類の非繰り返し度",
+      labelMinTokens: "最小一致トークン数",
+      tooltipMinTokens: "CCFinderSWの最小一致トークン数です。デフォルトは50です。",
+      labelImportFilter: "import行のフィルタリング",
+      descImportFilter: "有効にすると, クローン検出前に import/include 行をコメントアウトします。",
+      labelForceRecompute: "既存結果を削除して再計算",
+      descForceRecompute: "フィルタやパラメータを変更した場合に, 以前の結果を無視して再実行します。",
+      sectionParameters: "同時修正",
+      labelComodMethod: "判定手法",
+      optComodSet: "クローンセット",
+      optComodPair: "クローンペア（未実装）",
+      labelAnalysisMethod: "分析コミット方式",
+      tooltipAnalysisMethod: "分析対象とするコミットの選定基準です。",
+      labelAnalysisFrequency: "ANALYSIS_FREQUENCY（コミット間隔）",
+      tooltipAnalysisFrequency: "最新コミットから数えて N コミットごとに抽出します。",
+      labelSearchDepth: "SEARCH_DEPTH",
+      tooltipSearchDepth: "探索するコミット数の上限です, -1 で無制限。",
+      labelMaxCommits: "MAX_ANALYZED_COMMITS",
+      tooltipMaxCommits: "実際に分析するコミット数の上限です, -1 で無制限。",
+      runButton: "分析を実行",
+      executionLog: "実行ログ",
+      statusRunning: "実行中...",
+      statusInputError: "入力エラー",
+      statusCompleted: "完了しました",
+      statusError: "エラーが発生しました",
+      statusConnectionError: "接続エラー",
+      alertRequiredUrl: "Repository URLを入力してください。",
+      errorRequiredUrl: "Repository URL は必須です",
+      errorInvalidUrl: "Repository URL は GitHub リポジトリ URL を指定してください",
+      errorDetectionMethod: "検出手法は normal,tks,rnr のいずれかです",
+      errorDetectionNotImpl: "TKS と RNR は未実装です",
+      errorTks: "TKS は 0 より大きい整数が必要です",
+      errorRnr: "RNR は 0 より大きく 1 以下で指定してください",
+      errorMinTokens: "最小一致トークン数は 0 より大きい整数が必要です",
+      errorImportFilter: "import行フィルタリングは true/false で指定してください",
+      errorComodMethod: "同時修正の判定手法は clone_set,clone_pair のいずれかです",
+      errorComodNotImpl: "clone_pair は未実装です",
+      errorAnalysisMethod: "分析コミット方式は merge_commit,tag,frequency のいずれかです",
+      errorAnalysisFrequency: "ANALYSIS_FREQUENCY は 0 より大きい整数が必要です",
+      errorSearchDepth: "SEARCH_DEPTH は -1 以上の整数が必要です",
+      errorMaxAnalyzed: "MAX_ANALYZED_COMMITS は -1 以上の整数が必要です",
+      errorForceRecompute: "force_recompute は true/false で指定してください",
+      errorApiValidation: "API バリデーションエラー",
+      errorWebSocket: "[error] WebSocket connection failed.",
+      errorGeneric: "エラー",
+    },
+  };
+
+  function t(key) {
+    return I18N[currentLang][key] || key;
+  }
+
+  function setText(id, key) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = t(key);
+    }
+  }
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    setText("lang-label", "langLabel");
+    setText("subtitle", "subtitle");
+    setText("section-repository", "sectionRepository");
+    setText("label-repo-url", "labelRepoUrl");
+    setText("section-detector", "sectionDetector");
+    setText("label-detection-method", "labelDetectionMethod");
+    setText("opt-detection-normal", "optDetectionNormal");
+    setText("opt-detection-tks", "optDetectionTks");
+    setText("opt-detection-rnr", "optDetectionRnr");
+    setText("label-tks", "labelTks");
+    setText("label-rnr", "labelRnr");
+    setText("badge-tks", "badgeNotImplemented");
+    setText("badge-rnr", "badgeNotImplemented");
+    setText("tooltip-tks", "tooltipTks");
+    setText("tooltip-rnr", "tooltipRnr");
+    setText("label-min-tokens", "labelMinTokens");
+    setText("tooltip-min-tokens", "tooltipMinTokens");
+    setText("label-import-filter", "labelImportFilter");
+    setText("desc-import-filter", "descImportFilter");
+    setText("label-force-recompute", "labelForceRecompute");
+    setText("desc-force-recompute", "descForceRecompute");
+    setText("section-parameters", "sectionParameters");
+    setText("label-comod-method", "labelComodMethod");
+    setText("opt-comod-set", "optComodSet");
+    setText("opt-comod-pair", "optComodPair");
+    setText("label-analysis-method", "labelAnalysisMethod");
+    setText("tooltip-analysis-method", "tooltipAnalysisMethod");
+    setText("label-analysis-frequency", "labelAnalysisFrequency");
+    setText("tooltip-analysis-frequency", "tooltipAnalysisFrequency");
+    setText("label-search-depth", "labelSearchDepth");
+    setText("tooltip-search-depth", "tooltipSearchDepth");
+    setText("label-max-commits", "labelMaxCommits");
+    setText("tooltip-max-commits", "tooltipMaxCommits");
+    setText("btn-run", "runButton");
+    setText("execution-log-title", "executionLog");
+    if (!document.getElementById("status-text").className) {
+      setText("status-text", "statusRunning");
+    }
+  }
+
+  langSelect.addEventListener("change", () => {
+    applyLanguage(langSelect.value);
+  });
+
+  applyLanguage("en");
 
   methodSelect.addEventListener("change", () => {
     freqParams.classList.toggle("visible", methodSelect.value === "frequency");
@@ -503,58 +713,58 @@
     const errors = [];
 
     if (!params.url) {
-      errors.push("Repository URL は必須です");
+      errors.push(t("errorRequiredUrl"));
     } else if (!/^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/?$/.test(params.url)) {
-      errors.push("Repository URL は GitHub リポジトリ URL を指定してください");
+      errors.push(t("errorInvalidUrl"));
     }
 
     if (!["normal", "tks", "rnr"].includes(params.detection_method)) {
-      errors.push("検出手法は normal,tks,rnr のいずれかです");
+      errors.push(t("errorDetectionMethod"));
     }
     if (params.detection_method !== "normal") {
-      errors.push("TKS と RNR は未実装です");
+      errors.push(t("errorDetectionNotImpl"));
     }
 
     if (!isInteger(params.tks) || params.tks <= 0) {
-      errors.push("TKS は 0 より大きい整数が必要です");
+      errors.push(t("errorTks"));
     }
     if (!(params.rnr > 0 && params.rnr <= 1)) {
-      errors.push("RNR は 0 より大きく 1 以下で指定してください");
+      errors.push(t("errorRnr"));
     }
 
     if (!isInteger(params.min_tokens) || params.min_tokens <= 0) {
-      errors.push("最小一致トークン数は 0 より大きい整数が必要です");
+      errors.push(t("errorMinTokens"));
     }
 
     if (typeof params.import_filter !== "boolean") {
-      errors.push("import行フィルタリングは true/false で指定してください");
+      errors.push(t("errorImportFilter"));
     }
 
     if (!["clone_set", "clone_pair"].includes(params.comod_method)) {
-      errors.push("同時修正の判定手法は clone_set,clone_pair のいずれかです");
+      errors.push(t("errorComodMethod"));
     }
     if (params.comod_method !== "clone_set") {
-      errors.push("clone_pair は未実装です");
+      errors.push(t("errorComodNotImpl"));
     }
 
     if (!["merge_commit", "tag", "frequency"].includes(params.analysis_method)) {
-      errors.push("分析コミット方式は merge_commit,tag,frequency のいずれかです");
+      errors.push(t("errorAnalysisMethod"));
     }
 
     if (!isInteger(params.analysis_frequency) || params.analysis_frequency <= 0) {
-      errors.push("ANALYSIS_FREQUENCY は 0 より大きい整数が必要です");
+      errors.push(t("errorAnalysisFrequency"));
     }
 
     if (!isInteger(params.search_depth) || params.search_depth < -1) {
-      errors.push("SEARCH_DEPTH は -1 以上の整数が必要です");
+      errors.push(t("errorSearchDepth"));
     }
 
     if (!isInteger(params.max_analyzed_commits) || params.max_analyzed_commits < -1) {
-      errors.push("MAX_ANALYZED_COMMITS は -1 以上の整数が必要です");
+      errors.push(t("errorMaxAnalyzed"));
     }
 
     if (typeof params.force_recompute !== "boolean") {
-      errors.push("force_recompute は true/false で指定してください");
+      errors.push(t("errorForceRecompute"));
     }
 
     return errors;
@@ -563,18 +773,18 @@
   // Start analysis
   async function startAnalysis() {
     const url = document.getElementById("url").value.trim();
-    if (!url) { alert("Repository URLを入力してください。"); return; }
+    if (!url) { alert(t("alertRequiredUrl")); return; }
 
     const btn = document.getElementById("btn-run");
     btn.disabled = true;
-    btn.textContent = "実行中...";
+    btn.textContent = t("statusRunning");
 
     const logPanel = document.getElementById("log-panel");
     const logBox = document.getElementById("log-box");
     logBox.innerHTML = "";
     logPanel.classList.add("visible");
     document.getElementById("spinner").style.display = "block";
-    document.getElementById("status-text").textContent = "実行中...";
+    document.getElementById("status-text").textContent = t("statusRunning");
     document.getElementById("status-text").className = "";
 
     const params = {
@@ -596,10 +806,10 @@
     if (errors.length > 0) {
       alert(errors.join("\n"));
       document.getElementById("spinner").style.display = "none";
-      document.getElementById("status-text").textContent = "入力エラー";
+      document.getElementById("status-text").textContent = t("statusInputError");
       document.getElementById("status-text").className = "status-error";
       btn.disabled = false;
-      btn.textContent = "分析を実行";
+      btn.textContent = t("runButton");
       return;
     }
 
@@ -611,7 +821,7 @@
       });
       if (!resp.ok) {
         const errData = await resp.json();
-        throw new Error(errData.detail || "API validation error");
+        throw new Error(errData.detail || t("errorApiValidation"));
       }
       const data = await resp.json();
       const jobId = data.job_id;
@@ -627,33 +837,33 @@
         } else if (msg.type === "status") {
           document.getElementById("spinner").style.display = "none";
           if (msg.status === "completed") {
-            document.getElementById("status-text").textContent = "完了しました";
+            document.getElementById("status-text").textContent = t("statusCompleted");
             document.getElementById("status-text").className = "status-done";
           } else {
-            document.getElementById("status-text").textContent = "エラーが発生しました";
+            document.getElementById("status-text").textContent = t("statusError");
             document.getElementById("status-text").className = "status-error";
           }
           btn.disabled = false;
-          btn.textContent = "分析を実行";
+          btn.textContent = t("runButton");
           ws.close();
         }
       };
 
       ws.onerror = () => {
-        appendLog("[error] WebSocket connection failed.");
+        appendLog(t("errorWebSocket"));
         document.getElementById("spinner").style.display = "none";
-        document.getElementById("status-text").textContent = "接続エラー";
+        document.getElementById("status-text").textContent = t("statusConnectionError");
         document.getElementById("status-text").className = "status-error";
         btn.disabled = false;
-        btn.textContent = "分析を実行";
+        btn.textContent = t("runButton");
       };
     } catch (err) {
       appendLog("[error] " + err.message);
       document.getElementById("spinner").style.display = "none";
-      document.getElementById("status-text").textContent = "エラー";
+      document.getElementById("status-text").textContent = t("errorGeneric");
       document.getElementById("status-text").className = "status-error";
       btn.disabled = false;
-      btn.textContent = "分析を実行";
+      btn.textContent = t("runButton");
     }
   }
 </script>

@@ -17,6 +17,7 @@
 - src/web/static/index.html — UI 側で全入力項目のバリデーションを追加
 - src/web/static/index.html — ? アイコンとトグルの重なりを解消
 - pyproject.toml — pytest 収集から `dest` を除外する設定を追加
+- src/web/static/index.html — 日本語/英語切替を追加し, 英語をデフォルトに設定
 - docs/PROGRESS.md — 本エントリを更新
 
 ### テスト結果
@@ -28,6 +29,7 @@
 - python -m pytest -q , 失敗 dest/projects 配下の外部リポジトリ tests 収集で NameError
 - python -m pytest -q , 失敗 dest/projects 配下の外部リポジトリ tests 収集で 11 件エラー
 - python -m pytest -q , no tests ran in 0.09s
+- python -m pytest -q , no tests ran in 0.10s
 
 ### 判断メモ
 
@@ -40,6 +42,7 @@
 - `apply_filter` で作業ツリーが変更されるため, 次コミットへの checkout は `-f` で強制切替する方針にした
 - 入力異常は API 前に UI で検出し, さらに API 側でも同じ制約を検証する二重防御にした
 - 外部クローン済みリポジトリの test 収集を避けるため `norecursedirs = ["dest"]` を採用した
+- UI 文言は辞書ベースで切替し, デフォルト言語は英語に固定した
 
 ### 残課題
 
