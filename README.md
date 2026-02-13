@@ -38,6 +38,32 @@ docker run --rm -it \
   - `check-run-all-steps`: `run-all-steps` の進捗を確認（`dest/csv` の生成状況をチェック）
   - `summarize-csv`: 生成済みの CSV から集計レポートを出力（`dest/csv` 配下が必要）
   - `csv-boxplot`: クローン率を6分類（within/inter × testing/production/mixed）で集計し、分類ごとの箱ひげ図PDFを `dest/figures/` に出力（`dest/csv` 配下が必要）
+  - `web-ui`: 解析実行のためのUIを起動
+
+### Web UI (設定画面)
+クローン検出のパラメーター設定や実行を行うための Web 画面を提供しています.
+
+> **注意**: クローン検出の実行には Java, CCFinderSW, ccfindersw-parser, github-linguist が必要です.
+> これらは Docker イメージ内にのみ同梱されるため, **Docker コンテナ内での起動を推奨**します.
+> ローカル起動では画面の表示は可能ですが, 分析実行時にエラーになります.
+
+#### 起動方法 (Docker — 推奨)
+ポート 8000 を公開して起動します. コンテナ外のブラウザからアクセスするため `--host 0.0.0.0` を指定します.
+```bash
+docker run --rm -it -p 8000:8000 \
+  -v "$(pwd)/dest:/app/dest" \
+  -v "$(pwd)/dataset:/app/dataset" \
+  msccatools web-ui --host 0.0.0.0
+```
+起動後, ブラウザで `http://localhost:8000` にアクセスしてください.
+
+#### 起動方法 (Local — 画面確認のみ)
+外部ツールが揃っていないため分析の実行はできませんが, UI の確認は可能です.
+```bash
+pip install -r requirements.txt
+python main.py web-ui
+```
+起動後, ブラウザで `http://127.0.0.1:8000` にアクセスしてください.
 
 ### run-all-steps の再開実行
 `run-all-steps` は途中から再開できる引数を受け付けます。

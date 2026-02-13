@@ -49,5 +49,8 @@ RUN set -eux; \
 # 実行時に成果物を出力するディレクトリ
 RUN mkdir -p /app/dest
 
+# Web UI 用のポート（web-ui サブコマンド利用時）
+EXPOSE 8000
+
 ENTRYPOINT ["python", "main.py"]
 CMD ["--help"]

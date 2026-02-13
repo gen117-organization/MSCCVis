@@ -17,6 +17,7 @@ project_root = _find_repo_root(Path(__file__).resolve())
 sys.path.append(str(project_root))
 sys.path.append(str(project_root / "src"))
 from modules.github_linguist import get_exts
+from modules.source_filter import apply_filter
 from config import (
     ANTLR_LANGUAGE,
     CCFINDERSW_JAR,
@@ -148,7 +149,7 @@ def detect_cc(project: Path, name: str, language: str, commit_hash: str, exts: t
         raise e
 
 
-def collect_datas_of_repo(project: dict):
+def collect_datas_of_repo(project: dict) -> None:
     """対象コミットに対してコードクローンと変更行情報を収集する。"""
     url = project["URL"]
     # リポジトリの識別子とプロジェクトディレクトリの設定

@@ -341,6 +341,19 @@
         有効にすると、クローン検出前にimport/include行をコメントアウトします。
       </div>
     </div>
+
+    <div class="field">
+      <div class="toggle-row">
+        <span class="toggle-label">既存結果を削除して再計算</span>
+        <label class="switch">
+          <input type="checkbox" id="force_recompute" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">
+        フィルタやパラメータを変更した場合に、以前の結果を無視して再実行します。
+      </div>
+    </div>
   </div>
 
   <!-- ===== Co-modification Analysis ===== -->
@@ -469,6 +482,7 @@
       detection_method: document.getElementById("detection_method").value,
       min_tokens: parseInt(document.getElementById("min_tokens").value, 10),
       import_filter: document.getElementById("import_filter").checked,
+      force_recompute: document.getElementById("force_recompute").checked,
       comod_method: document.getElementById("comod_method").value,
       analysis_method: document.getElementById("analysis_method").value,
       analysis_frequency: parseInt(document.getElementById("analysis_frequency").value, 10),

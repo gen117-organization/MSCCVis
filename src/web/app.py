@@ -6,6 +6,7 @@ import sys
 import threading
 import uuid
 from pathlib import Path
+import shutil
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
@@ -78,6 +79,23 @@ def _build_languages_dict(workdir: Path) -> dict:
     return {lang: data for lang, data in raw.items() if lang in TARGET_PROGRAMING_LANGUAGES}
 
 
+def _clear_previous_results(repo_name: str) -> None:
+    """Remove previous analysis outputs for the repository."""
+    targets = [
+        project_root / "dest/clones_json" / repo_name,
+        project_root / "dest/modified_clones" / repo_name,
+        project_root / "dest/moving_lines" / repo_name,
+        project_root / "dest/csv" / repo_name,
+        project_root / "dest/temp/ccfswtxt" / repo_name,
+    ]
+    for target in targets:
+        if target.exists():
+            shutil.rmtree(target, ignore_errors=True)
+    analyzed_file = project_root / "dest/analyzed_commits" / f"{repo_name}.json"
+    if analyzed_file.exists():
+        analyzed_file.unlink()
+
+
 def _run_job(job_id: str, params: dict):
     """Execute the full pipeline for a single repo URL with given params."""
     job = _jobs[job_id]
@@ -87,15 +105,32 @@ def _run_job(job_id: str, params: dict):
     job["log"] = log
     try:
         url: str = params["url"]
+        name = url.split("/")[-2] + "." + url.split("/")[-1]
         job["status"] = "running"
         log.write(f"[job] Starting analysis for {url}\n")
+
+        detection_method: str = params.get("detection_method", "normal")
+        if detection_method != "normal":
+            log.write(f"[error] Unsupported detection_method: {detection_method}\n")
+            job["status"] = "error"
+            return
+
+        comod_method: str = params.get("comod_method", "clone_set")
+        if comod_method != "clone_set":
+            log.write(f"[error] Unsupported comod_method: {comod_method}\n")
+            job["status"] = "error"
+            return
+
+        force_recompute = bool(params.get("force_recompute", True))
+        if force_recompute:
+            log.write("[job] Clearing previous results to apply selected filters.\n")
+            _clear_previous_results(name)
 
         # ------------------------------------------------------------------
         # 1. Clone repository
         # ------------------------------------------------------------------
         log.write("[step 1/5] Cloning repository...\n")
         modules.clone_repo.clone_repo(url)
-        name = url.split("/")[-2] + "." + url.split("/")[-1]
         workdir = project_root / "dest/projects" / name
 
         # ------------------------------------------------------------------
