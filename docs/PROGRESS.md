@@ -13,6 +13,10 @@
 - config.py — CLI の import 行フィルタ設定を追加
 - README.md — CLI の import 行フィルタ設定を追記
 - src/modules/collect_datas.py — commit 切替時と終了時を `git checkout -f` に変更
+- src/web/app.py — API 側で全入力項目のバリデーションを追加
+- src/web/static/index.html — UI 側で全入力項目のバリデーションを追加
+- src/web/static/index.html — ? アイコンとトグルの重なりを解消
+- pyproject.toml — pytest 収集から `dest` を除外する設定を追加
 - docs/PROGRESS.md — 本エントリを更新
 
 ### テスト結果
@@ -22,6 +26,8 @@
 - python -m pytest -q , 中断 Ctrl+C
 - python -m pytest -q , docker の ログが出力され 中断
 - python -m pytest -q , 失敗 dest/projects 配下の外部リポジトリ tests 収集で NameError
+- python -m pytest -q , 失敗 dest/projects 配下の外部リポジトリ tests 収集で 11 件エラー
+- python -m pytest -q , no tests ran in 0.09s
 
 ### 判断メモ
 
@@ -32,6 +38,8 @@
 - CLI 側は config で既定値を切り替えられるようにした
 - CCFinderSW の Range mode Error は -w に 50 を渡していたことが原因で, -w は 0..2 なので -t に分離した
 - `apply_filter` で作業ツリーが変更されるため, 次コミットへの checkout は `-f` で強制切替する方針にした
+- 入力異常は API 前に UI で検出し, さらに API 側でも同じ制約を検証する二重防御にした
+- 外部クローン済みリポジトリの test 収集を避けるため `norecursedirs = ["dest"]` を採用した
 
 ### 残課題
 

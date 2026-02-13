@@ -59,6 +59,11 @@
       margin-bottom: 22px;
       position: relative;
     }
+    .field::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
     .field:last-child { margin-bottom: 0; }
 
     .field label {
@@ -68,6 +73,18 @@
       margin-bottom: 4px;
       font-weight: 500;
       letter-spacing: 0.02em;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .label-row label {
+      margin-bottom: 0;
     }
 
     .field input[type="text"],
@@ -101,8 +118,11 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      float: right;
-      margin-top: -26px;
+      float: none;
+      margin-top: 0;
+      justify-content: flex-end;
+      width: auto;
+      flex-shrink: 0;
     }
     .hint-icon {
       width: 20px;
@@ -141,6 +161,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 6px 0;
+      gap: 12px;
     }
     .toggle-row .toggle-label {
       font-size: 0.95rem;
@@ -299,34 +320,40 @@
 
     <!-- TKS params (disabled) -->
     <div class="field conditional" id="tks-params">
-      <label>TKS – トークンの種類数 <span class="badge-wip">未実装</span></label>
-      <input type="number" value="12" disabled />
-      <div class="hint">
-        <span class="hint-icon">?
-          <span class="tooltip">トークンの種類数（Token Kind Size）</span>
-        </span>
+      <div class="label-row">
+        <label>TKS – トークンの種類数 <span class="badge-wip">未実装</span></label>
+        <div class="hint">
+          <span class="hint-icon">?
+            <span class="tooltip">トークンの種類数（Token Kind Size）</span>
+          </span>
+        </div>
       </div>
+      <input type="number" id="tks" value="12" min="1" disabled />
     </div>
 
     <!-- RNR params (disabled) -->
     <div class="field conditional" id="rnr-params">
-      <label>RNR – トークンの種類の非繰り返し度 <span class="badge-wip">未実装</span></label>
-      <input type="number" step="0.1" value="0.5" disabled />
-      <div class="hint">
-        <span class="hint-icon">?
-          <span class="tooltip">Ratio of Non-Repeated token kinds</span>
-        </span>
+      <div class="label-row">
+        <label>RNR – トークンの種類の非繰り返し度 <span class="badge-wip">未実装</span></label>
+        <div class="hint">
+          <span class="hint-icon">?
+            <span class="tooltip">Ratio of Non-Repeated token kinds</span>
+          </span>
+        </div>
       </div>
+      <input type="number" id="rnr" step="0.1" value="0.5" min="0.1" max="1" disabled />
     </div>
 
     <div class="field">
-      <label>Minimum Matching Tokens</label>
-      <input type="number" id="min_tokens" value="50" min="1" />
-      <div class="hint">
-        <span class="hint-icon">?
-          <span class="tooltip">CCFinderSWの最小一致トークン数．デフォルトは50です。</span>
-        </span>
+      <div class="label-row">
+        <label>Minimum Matching Tokens</label>
+        <div class="hint">
+          <span class="hint-icon">?
+            <span class="tooltip">CCFinderSWの最小一致トークン数．デフォルトは50です。</span>
+          </span>
+        </div>
       </div>
+      <input type="number" id="min_tokens" value="50" min="1" />
     </div>
 
     <div class="field">
@@ -368,48 +395,56 @@
     </div>
 
     <div class="field">
-      <label>Commit Selection Method</label>
+      <div class="label-row">
+        <label>Commit Selection Method</label>
+        <div class="hint">
+          <span class="hint-icon">?
+            <span class="tooltip">分析対象とするコミットの選定基準</span>
+          </span>
+        </div>
+      </div>
       <select id="analysis_method">
         <option value="merge_commit" selected>Merge Commit</option>
         <option value="tag">Tag</option>
         <option value="frequency">Frequency</option>
       </select>
-      <div class="hint">
-        <span class="hint-icon">?
-          <span class="tooltip">分析対象とするコミットの選定基準</span>
-        </span>
-      </div>
     </div>
 
     <!-- frequency-only field -->
     <div class="field conditional" id="frequency-params">
-      <label>Analysis Frequency（コミット間隔）</label>
-      <input type="number" id="analysis_frequency" value="1" min="1" />
-      <div class="hint">
-        <span class="hint-icon">?
-          <span class="tooltip">最新コミットから数えて N コミットごとに分析対象として抽出します。</span>
-        </span>
+      <div class="label-row">
+        <label>Analysis Frequency（コミット間隔）</label>
+        <div class="hint">
+          <span class="hint-icon">?
+            <span class="tooltip">最新コミットから数えて N コミットごとに分析対象として抽出します。</span>
+          </span>
+        </div>
       </div>
+      <input type="number" id="analysis_frequency" value="50" min="1" />
     </div>
 
     <div class="field">
-      <label>Search Depth</label>
+      <div class="label-row">
+        <label>Search Depth</label>
+        <div class="hint">
+          <span class="hint-icon">?
+            <span class="tooltip">リポジトリから遡って探索するコミット数。-1 で無制限。</span>
+          </span>
+        </div>
+      </div>
       <input type="number" id="search_depth" value="-1" />
-      <div class="hint">
-        <span class="hint-icon">?
-          <span class="tooltip">リポジトリから遡って探索するコミット数。-1 で無制限。</span>
-        </span>
-      </div>
     </div>
 
     <div class="field">
-      <label>Max Analysed Commits</label>
-      <input type="number" id="max_analyzed_commits" value="-1" />
-      <div class="hint">
-        <span class="hint-icon">?
-          <span class="tooltip">実際に分析するコミット数の上限。SEARCH_DEPTHとは独立。-1 で無制限。</span>
-        </span>
+      <div class="label-row">
+        <label>Max Analysed Commits</label>
+        <div class="hint">
+          <span class="hint-icon">?
+            <span class="tooltip">実際に分析するコミット数の上限。SEARCH_DEPTHとは独立。-1 で無制限。</span>
+          </span>
+        </div>
       </div>
+      <input type="number" id="max_analyzed_commits" value="-1" />
     </div>
   </div>
 
@@ -460,6 +495,71 @@
     box.scrollTop = box.scrollHeight;
   }
 
+  function isInteger(value) {
+    return Number.isInteger(value);
+  }
+
+  function validateParams(params) {
+    const errors = [];
+
+    if (!params.url) {
+      errors.push("Repository URL は必須です");
+    } else if (!/^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/?$/.test(params.url)) {
+      errors.push("Repository URL は GitHub リポジトリ URL を指定してください");
+    }
+
+    if (!["normal", "tks", "rnr"].includes(params.detection_method)) {
+      errors.push("検出手法は normal,tks,rnr のいずれかです");
+    }
+    if (params.detection_method !== "normal") {
+      errors.push("TKS と RNR は未実装です");
+    }
+
+    if (!isInteger(params.tks) || params.tks <= 0) {
+      errors.push("TKS は 0 より大きい整数が必要です");
+    }
+    if (!(params.rnr > 0 && params.rnr <= 1)) {
+      errors.push("RNR は 0 より大きく 1 以下で指定してください");
+    }
+
+    if (!isInteger(params.min_tokens) || params.min_tokens <= 0) {
+      errors.push("最小一致トークン数は 0 より大きい整数が必要です");
+    }
+
+    if (typeof params.import_filter !== "boolean") {
+      errors.push("import行フィルタリングは true/false で指定してください");
+    }
+
+    if (!["clone_set", "clone_pair"].includes(params.comod_method)) {
+      errors.push("同時修正の判定手法は clone_set,clone_pair のいずれかです");
+    }
+    if (params.comod_method !== "clone_set") {
+      errors.push("clone_pair は未実装です");
+    }
+
+    if (!["merge_commit", "tag", "frequency"].includes(params.analysis_method)) {
+      errors.push("分析コミット方式は merge_commit,tag,frequency のいずれかです");
+    }
+
+    if (!isInteger(params.analysis_frequency) || params.analysis_frequency <= 0) {
+      errors.push("ANALYSIS_FREQUENCY は 0 より大きい整数が必要です");
+    }
+
+    if (!isInteger(params.search_depth) || params.search_depth < -1) {
+      errors.push("SEARCH_DEPTH は -1 以上の整数が必要です");
+    }
+
+    if (!isInteger(params.max_analyzed_commits) || params.max_analyzed_commits < -1) {
+      errors.push("MAX_ANALYZED_COMMITS は -1 以上の整数が必要です");
+    }
+
+    if (typeof params.force_recompute !== "boolean") {
+      errors.push("force_recompute は true/false で指定してください");
+    }
+
+    return errors;
+  }
+
   // Start analysis
   async function startAnalysis() {
     const url = document.getElementById("url").value.trim();
@@ -480,6 +580,8 @@
     const params = {
       url,
       detection_method: document.getElementById("detection_method").value,
+      tks: parseInt(document.getElementById("tks").value, 10),
+      rnr: parseFloat(document.getElementById("rnr").value),
       min_tokens: parseInt(document.getElementById("min_tokens").value, 10),
       import_filter: document.getElementById("import_filter").checked,
       force_recompute: document.getElementById("force_recompute").checked,
@@ -490,12 +592,27 @@
       max_analyzed_commits: parseInt(document.getElementById("max_analyzed_commits").value, 10),
     };
 
+    const errors = validateParams(params);
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+      document.getElementById("spinner").style.display = "none";
+      document.getElementById("status-text").textContent = "入力エラー";
+      document.getElementById("status-text").className = "status-error";
+      btn.disabled = false;
+      btn.textContent = "分析を実行";
+      return;
+    }
+
     try {
       const resp = await fetch("/api/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
       });
+      if (!resp.ok) {
+        const errData = await resp.json();
+        throw new Error(errData.detail || "API validation error");
+      }
       const data = await resp.json();
       const jobId = data.job_id;
 

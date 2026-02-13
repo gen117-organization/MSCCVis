@@ -7,8 +7,9 @@ import threading
 import uuid
 from pathlib import Path
 import shutil
+import re
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -32,7 +33,6 @@ import modules.clone_repo
 import modules.collect_datas
 import modules.analyze_cc
 import modules.analyze_modification
-from modules.source_filter import apply_filter as _original_apply_filter
 from commands.pipeline import determine_analyzed_commits as dac
 
 # ---------------------------------------------------------------------------
@@ -46,6 +46,114 @@ app.mount(
 
 # Store running job logs keyed by job_id
 _jobs: dict[str, dict] = {}
+
+
+def _parse_bool(value: object, name: str) -> bool:
+    if isinstance(value, bool):
+        return value
+    raise ValueError(f"{name} must be boolean")
+
+
+def _parse_int(value: object, name: str) -> int:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be integer")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    if isinstance(value, str) and value.strip() != "":
+        try:
+            return int(value)
+        except ValueError as e:
+            raise ValueError(f"{name} must be integer") from e
+    raise ValueError(f"{name} must be integer")
+
+
+def _parse_float(value: object, name: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"{name} must be number")
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str) and value.strip() != "":
+        try:
+            return float(value)
+        except ValueError as e:
+            raise ValueError(f"{name} must be number") from e
+    raise ValueError(f"{name} must be number")
+
+
+def _validate_run_params(params: dict) -> dict:
+    url = str(params.get("url", "")).strip()
+    if not url:
+        raise ValueError("url is required")
+    if not re.fullmatch(r"https://github\.com/[^/\s]+/[^/\s]+/?", url):
+        raise ValueError("url must be GitHub repository URL")
+
+    detection_method = str(params.get("detection_method", "normal"))
+    if detection_method not in {"normal", "tks", "rnr"}:
+        raise ValueError("detection_method must be one of normal,tks,rnr")
+    if detection_method in {"tks", "rnr"}:
+        raise ValueError("detection_method tks/rnr is not implemented")
+
+    tks = _parse_int(params.get("tks", 12), "tks")
+    if tks <= 0:
+        raise ValueError("tks must be > 0")
+
+    rnr = _parse_float(params.get("rnr", 0.5), "rnr")
+    if not (0 < rnr <= 1):
+        raise ValueError("rnr must satisfy 0 < rnr <= 1")
+
+    min_tokens = _parse_int(params.get("min_tokens", 50), "min_tokens")
+    if min_tokens <= 0:
+        raise ValueError("min_tokens must be > 0")
+
+    import_filter = _parse_bool(params.get("import_filter", True), "import_filter")
+    force_recompute = _parse_bool(
+        params.get("force_recompute", True), "force_recompute"
+    )
+
+    comod_method = str(params.get("comod_method", "clone_set"))
+    if comod_method not in {"clone_set", "clone_pair"}:
+        raise ValueError("comod_method must be one of clone_set,clone_pair")
+    if comod_method == "clone_pair":
+        raise ValueError("comod_method clone_pair is not implemented")
+
+    analysis_method = str(params.get("analysis_method", "merge_commit"))
+    if analysis_method not in {"merge_commit", "tag", "frequency"}:
+        raise ValueError("analysis_method must be one of merge_commit,tag,frequency")
+
+    analysis_frequency = _parse_int(
+        params.get("analysis_frequency", 50),
+        "analysis_frequency",
+    )
+    if analysis_frequency <= 0:
+        raise ValueError("analysis_frequency must be > 0")
+
+    search_depth = _parse_int(params.get("search_depth", -1), "search_depth")
+    if search_depth < -1:
+        raise ValueError("search_depth must be >= -1")
+
+    max_analyzed_commits = _parse_int(
+        params.get("max_analyzed_commits", -1),
+        "max_analyzed_commits",
+    )
+    if max_analyzed_commits < -1:
+        raise ValueError("max_analyzed_commits must be >= -1")
+
+    return {
+        "url": url,
+        "detection_method": detection_method,
+        "tks": tks,
+        "rnr": rnr,
+        "min_tokens": min_tokens,
+        "import_filter": import_filter,
+        "force_recompute": force_recompute,
+        "comod_method": comod_method,
+        "analysis_method": analysis_method,
+        "analysis_frequency": analysis_frequency,
+        "search_depth": search_depth,
+        "max_analyzed_commits": max_analyzed_commits,
+    }
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -332,9 +440,13 @@ def _run_job(job_id: str, params: dict):
 @app.post("/api/run")
 async def start_job(params: dict):
     """Start a new analysis job."""
+    try:
+        validated = _validate_run_params(params)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e)) from e
     job_id = str(uuid.uuid4())[:8]
     _jobs[job_id] = {"status": "queued", "log": None}
-    thread = threading.Thread(target=_run_job, args=(job_id, params), daemon=True)
+    thread = threading.Thread(target=_run_job, args=(job_id, validated), daemon=True)
     thread.start()
     return {"job_id": job_id}
 
