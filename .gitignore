@@ -14,5 +14,4 @@ sketch/
 /.github/
 
 # Ignore dataset contents (users will download separately)
-dataset/**
 !dataset/.gitkeep
