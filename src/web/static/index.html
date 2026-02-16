@@ -714,8 +714,14 @@
 
     if (!params.url) {
       errors.push(t("errorRequiredUrl"));
-    } else if (!/^https:\/\/github\.com\/[^/\s]+\/[^/\s]+\/?$/.test(params.url)) {
-      errors.push(t("errorInvalidUrl"));
+    } else {
+      const normalizedUrl =
+        typeof params.url === "string"
+          ? params.url.trim().replace(/\/+$/, "")
+          : "";
+      if (!/^https:\/\/github\.com\/[^/\s]+\/[^/\s]+$/.test(normalizedUrl)) {
+        errors.push(t("errorInvalidUrl"));
+      }
     }
 
     if (!["normal", "tks", "rnr"].includes(params.detection_method)) {

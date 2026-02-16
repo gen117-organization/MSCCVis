@@ -309,103 +309,15 @@ def _run_job(job_id: str, params: dict):
         # ------------------------------------------------------------------
         log.write("[step 3/5] Collecting clone data...\n")
 
-        # Optionally patch minimum-token param (CCFinderSW -w flag)
+        # Runtime options for collect/detect
         min_tokens: int = int(params.get("min_tokens", 50))
-        _orig_detect_cc = modules.collect_datas.detect_cc
-
-        # Wrap detect_cc to inject min_tokens
         use_import_filter: bool = params.get("import_filter", True)
-
-        def _patched_detect_cc(project_path, repo_name, language, commit_hash, exts):
-            """detect_cc with runtime min_tokens override."""
-            import subprocess
-            from config import (
-                CCFINDERSW_JAR,
-                CCFINDERSW_JAVA_XMX,
-                CCFINDERSW_JAVA_XSS,
-                ANTLR_LANGUAGE,
-            )
-            from modules.collect_datas import convert_language_for_ccfindersw
-            from config import CCFINDERSWPARSER
-
-            try:
-                dest_dir = project_root / "dest/temp/ccfswtxt" / repo_name / commit_hash
-                dest_dir.mkdir(parents=True, exist_ok=True)
-                dest_file = dest_dir / language
-                language_arg = convert_language_for_ccfindersw(language)
-                base_cmd = [
-                    "java",
-                    f"-Xmx{CCFINDERSW_JAVA_XMX}",
-                    f"-Xss{CCFINDERSW_JAVA_XSS}",
-                    "-jar",
-                    str(CCFINDERSW_JAR),
-                    "D",
-                    "-d",
-                    str(project_path),
-                    "-l",
-                    language_arg,
-                    "-o",
-                    str(dest_file),
-                ]
-                token_str = str(min_tokens)
-                if language in ANTLR_LANGUAGE:
-                    cmd = [
-                        *base_cmd,
-                        "-antlr",
-                        "|".join(exts),
-                        "-w",
-                        "2",
-                        "-t",
-                        token_str,
-                        "-ccfsw",
-                        "set",
-                    ]
-                else:
-                    cmd = [*base_cmd, "-w", "2", "-t", token_str, "-ccfsw", "set"]
-                result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-                if result.stdout:
-                    log.write(result.stdout)
-                if result.stderr:
-                    log.write(result.stderr)
-
-                json_dest_dir = (
-                    project_root / "dest/clones_json" / repo_name / commit_hash
-                )
-                json_dest_dir.mkdir(parents=True, exist_ok=True)
-                json_dest_file = json_dest_dir / f"{language}.json"
-                ccfsw_parser = _cfg.CCFINDERSWPARSER
-                cmd = [
-                    str(ccfsw_parser),
-                    "-i",
-                    str(f"{dest_file}_ccfsw.txt"),
-                    "-o",
-                    str(json_dest_file),
-                ]
-                result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-                if result.stdout:
-                    log.write(result.stdout)
-                if result.stderr:
-                    log.write(result.stderr)
-            except subprocess.CalledProcessError as e:
-                if e.stdout:
-                    log.write(e.stdout)
-                if e.stderr:
-                    log.write(e.stderr)
-                log.write("[error] CCFinderSW failed.\n")
-                raise RuntimeError(
-                    f"CCFinderSW failed for {repo_name} {commit_hash} {language}"
-                ) from e
-
-        # Monkey-patch for this run
-        modules.collect_datas.detect_cc = _patched_detect_cc
-
-        try:
-            modules.collect_datas.collect_datas_of_repo(
-                project,
-                apply_import_filter=use_import_filter,
-            )
-        finally:
-            modules.collect_datas.detect_cc = _orig_detect_cc
+        modules.collect_datas.collect_datas_of_repo(
+            project,
+            apply_import_filter=use_import_filter,
+            min_tokens=min_tokens,
+            log=log,
+        )
 
         # ------------------------------------------------------------------
         # 4. Analyse code clones

@@ -1,5 +1,33 @@
 # Progress Log
 
+## 2026-02-16: detect_cc リファクタ後のスモークテスト
+
+### 変更ファイル
+
+- src/modules/collect_datas.py — `detect_cc` に `min_tokens` と `log` 引数を追加し, Web UI 用の重複ロジックを本体へ統合
+- src/modules/collect_datas.py — `collect_datas_of_repo` に `min_tokens` と `log` 引数を追加し, 内部 `detect_cc` 呼び出しへ受け渡し
+- src/web/app.py — `detect_cc` のモンキーパッチを削除し, `collect_datas_of_repo` に実行時オプションを直接渡す実装へ変更
+- docs/PROGRESS.md — 本エントリを開始時, 完了時の内容に更新
+
+### テスト結果
+
+- `pytest -q` , 失敗, command not found
+- `python -m pytest -q` , 失敗, command not found
+- `python3 -m pytest -q` , 失敗, No module named pytest
+- `/home/genko/lab/MSCCATools-Public/.venv/bin/python -m pip install pytest` , 成功
+- `/home/genko/lab/MSCCATools-Public/.venv/bin/python -m pytest -q` , 実行, no tests ran in 0.09s, exit code 5
+- `python3 -m py_compile src/modules/collect_datas.py src/web/app.py` , 成功
+
+### 判断メモ
+
+- `_patched_detect_cc` による重複実装は保守負荷が高いため, 本体関数 `detect_cc` 側で実行時引数を受ける設計に統一した
+- Linux 環境で `pytest` が未導入だったため, 失敗理由を記録しつつ, 代替の最小スモークとして対象ファイルの構文コンパイル確認を実施した
+
+### 残課題
+
+- TODO(gen): `pytest` の exit code 5 対応として最低 1 件のテスト追加か, CI で no tests を許容する方針を決める
+- TODO(gen): Docker 環境で Web UI から 1 件実行し, CCFinderSW の実行ログ出力経路を確認する
+
 ## 2026-02-13: Web UI 入力の適用強化
 
 ### 変更ファイル

@@ -122,7 +122,13 @@ def convert_language_for_ccfindersw(language: str) -> str:
 
 
 def detect_cc(
-    project: Path, name: str, language: str, commit_hash: str, exts: tuple[str]
+    project: Path,
+    name: str,
+    language: str,
+    commit_hash: str,
+    exts: tuple[str],
+    min_tokens: int = 50,
+    log=None,
 ):
     """対象言語とコミットで CC-Finder SW を実行し、結果を保存する。"""
     try:
@@ -144,11 +150,27 @@ def detect_cc(
             "-o",
             str(dest_file),
         ]
+        token_str = str(min_tokens)
         if language in ANTLR_LANGUAGE:
-            cmd = [*base_cmd, "-antlr", "|".join(exts), "-w", "2", "-ccfsw", "set"]
+            cmd = [
+                *base_cmd,
+                "-antlr",
+                "|".join(exts),
+                "-w",
+                "2",
+                "-t",
+                token_str,
+                "-ccfsw",
+                "set",
+            ]
         else:
-            cmd = [*base_cmd, "-w", "2", "-ccfsw", "set"]
-        subprocess.run(cmd, check=True)
+            cmd = [*base_cmd, "-w", "2", "-t", token_str, "-ccfsw", "set"]
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        if log is not None:
+            if result.stdout:
+                log.write(result.stdout)
+            if result.stderr:
+                log.write(result.stderr)
 
         json_dest_dir = project_root / "dest/clones_json" / name / commit_hash
         json_dest_dir.mkdir(parents=True, exist_ok=True)
@@ -160,8 +182,17 @@ def detect_cc(
             "-o",
             str(json_dest_file),
         ]
-        subprocess.run(cmd, check=True)
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        if log is not None:
+            if result.stdout:
+                log.write(result.stdout)
+            if result.stderr:
+                log.write(result.stderr)
     except Exception as e:
+        if log is not None and hasattr(e, "stdout") and e.stdout:
+            log.write(e.stdout)
+        if log is not None and hasattr(e, "stderr") and e.stderr:
+            log.write(e.stderr)
         logger.exception("CCFinderの実行に失敗しました．")
         raise RuntimeError(
             f"CCFinderSW failed for {name} {commit_hash} {language}"
@@ -171,6 +202,8 @@ def detect_cc(
 def collect_datas_of_repo(
     project: dict,
     apply_import_filter: bool = APPLY_IMPORT_FILTER,
+    min_tokens: int = 50,
+    log=None,
 ) -> None:
     """対象コミットに対してコードクローンと変更行情報を収集する。"""
     url = project["URL"]
@@ -213,7 +246,15 @@ def collect_datas_of_repo(
                     apply_filter(project_dir, languages, exts)
 
                 for language in missing_languages:
-                    detect_cc(project_dir, name, language, commit_hash, exts[language])
+                    detect_cc(
+                        project_dir,
+                        name,
+                        language,
+                        commit_hash,
+                        exts[language],
+                        min_tokens=min_tokens,
+                        log=log,
+                    )
             else:
                 logger.info(
                     "skip clone detection for %s (already detected)", commit_hash
