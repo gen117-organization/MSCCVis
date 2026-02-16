@@ -1,5 +1,27 @@
 # Progress Log
 
+## 2026-02-16: Web UI JavaScript の外部ファイル分離
+
+### 変更ファイル
+
+- src/web/static/app.js — `index.html` に埋め込まれていた JavaScript をそのまま移設
+- src/web/static/index.html — inline script を削除し, `/static/app.js` 読み込みに変更
+- devlog/PROGRESS.md — 作業開始エントリを追加
+- docs/PROGRESS.md — 本エントリを追加
+
+### テスト結果
+
+- `/home/genko/lab/MSCCATools-Public/.venv/bin/python -m pytest -q` , 成功, 2 passed in 0.11s
+
+### 判断メモ
+
+- 最小差分を優先し, JavaScript のロジックは変更せずファイル配置だけを変更した
+- `onclick="startAnalysis()"` を維持するため, `app.js` は通常スクリプトとして読み込み, グローバル関数の互換性を保った
+
+### 残課題
+
+- TODO(gen): 必要に応じて `app.js` を `i18n` と実行制御に段階分割する
+
 ## 2026-02-16: Web UI 実装解説ドキュメント作成
 
 ### 変更ファイル
