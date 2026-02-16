@@ -1,5 +1,48 @@
 # Progress Log
 
+## 2026-02-16: Web UI 実装解説ドキュメント作成
+
+### 変更ファイル
+
+- docs/WebUI実装ガイド.md — Web UI の画面構成, API, バックグラウンド実行, WebSocket ログ配信, stdout 分離実装を段階的に解説
+- docs/README.md — ドキュメント一覧に `WebUI実装ガイド.md` を追加
+- docs/PROGRESS.md — 本エントリを開始時, 完了時の内容に更新
+
+### テスト結果
+
+- ドキュメント追加のみのため, コードテストは未実行
+
+### 判断メモ
+
+- 初学者にも追いやすいように, 画面側の `startAnalysis` から API, ジョブ実行, WebSocket ログ受信までを時系列で説明した
+- 直近で変更した stdout スレッド安全化の意図と実装位置も同一文書で参照できるようにした
+
+### 残課題
+
+- TODO(gen): 必要に応じて, Web UI 実行ログのサンプルをドキュメントに追記する
+
+## 2026-02-16: Web UI stdout のスレッド安全化
+
+### 変更ファイル
+
+- src/web/app.py — ジョブごとの `sys.stdout` 差し替えを廃止し, スレッドローカル stdout プロキシ経由でログ捕捉する実装に変更
+- src/web/stdout_proxy.py — スレッドごとに出力先を切り替える `ThreadLocalStdoutProxy` を追加
+- tests/test_stdout_proxy.py — 並列スレッドの出力分離とネストしたリダイレクト復帰のテストを追加
+- docs/PROGRESS.md — 本エントリを開始時, 完了時の内容に更新
+
+### テスト結果
+
+- `/home/genko/lab/MSCCATools-Public/.venv/bin/python -m pytest -q` , 成功, 2 passed in 0.13s
+
+### 判断メモ
+
+- 指摘どおり `sys.stdout` をジョブ実行ごとに差し替えると競合するため, グローバルには 1 回だけプロキシを設定し, 各スレッドはコンテキストで出力先を切り替える方式を採用した
+- `ThreadLocalStdoutProxy` を `src/web/stdout_proxy.py` に分離し, Web 層の実装とテストを疎結合にした
+
+### 残課題
+
+- TODO(gen): Web UI を Docker 上で 2 ジョブ同時実行し, 実運用ログで混線がないことを確認する
+
 ## 2026-02-16: detect_cc リファクタ後のスモークテスト
 
 ### 変更ファイル

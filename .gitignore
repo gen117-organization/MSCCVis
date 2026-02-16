@@ -12,6 +12,8 @@ sketch/
 .DS_Store
 .pyre/
 /.github/
+/tests/
 
 # Ignore dataset contents (users will download separately)
+/dataset/
 !dataset/.gitkeep

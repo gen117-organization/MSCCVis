@@ -12,6 +12,7 @@ import re
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from .stdout_proxy import ThreadLocalStdoutProxy
 
 # ---------------------------------------------------------------------------
 # Path setup (same pattern as the rest of the project)
@@ -46,6 +47,8 @@ app.mount(
 
 # Store running job logs keyed by job_id
 _jobs: dict[str, dict] = {}
+_stdout_proxy = ThreadLocalStdoutProxy(sys.stdout)
+sys.stdout = _stdout_proxy  # type: ignore[assignment]
 
 
 def _parse_bool(value: object, name: str) -> bool:
@@ -215,133 +218,130 @@ def _run_job(job_id: str, params: dict):
     """Execute the full pipeline for a single repo URL with given params."""
     job = _jobs[job_id]
     log = _LogCapture(job_id)
-    old_stdout = sys.stdout
-    sys.stdout = log  # type: ignore[assignment]
     job["log"] = log
-    try:
-        url: str = params["url"]
-        name = url.split("/")[-2] + "." + url.split("/")[-1]
-        job["status"] = "running"
-        log.write(f"[job] Starting analysis for {url}\n")
-
-        detection_method: str = params.get("detection_method", "normal")
-        if detection_method != "normal":
-            log.write(f"[error] Unsupported detection_method: {detection_method}\n")
-            job["status"] = "error"
-            return
-
-        comod_method: str = params.get("comod_method", "clone_set")
-        if comod_method != "clone_set":
-            log.write(f"[error] Unsupported comod_method: {comod_method}\n")
-            job["status"] = "error"
-            return
-
-        force_recompute = bool(params.get("force_recompute", True))
-        if force_recompute:
-            log.write("[job] Clearing previous results to apply selected filters.\n")
-            _clear_previous_results(name)
-
-        # ------------------------------------------------------------------
-        # 1. Clone repository
-        # ------------------------------------------------------------------
-        log.write("[step 1/5] Cloning repository...\n")
-        modules.clone_repo.clone_repo(url)
-        workdir = project_root / "dest/projects" / name
-
-        # ------------------------------------------------------------------
-        # 2. Determine analysed commits  (overriding config values at runtime)
-        # ------------------------------------------------------------------
-        log.write("[step 2/5] Determining analysed commits...\n")
-        analysis_method: str = params.get("analysis_method", "merge_commit")
-        search_depth: int = int(params.get("search_depth", -1))
-        max_commits: int = int(params.get("max_analyzed_commits", -1))
-        frequency: int = int(params.get("analysis_frequency", 1))
-
-        # Temporarily patch the config values used by determine_analyzed_commits
-        import config as _cfg
-
-        _orig_method = _cfg.ANALYSIS_METHOD
-        _orig_depth = _cfg.SEARCH_DEPTH
-        _orig_max = _cfg.MAX_ANALYZED_COMMITS
-        _orig_freq = _cfg.ANALYSIS_FREQUENCY
-        _cfg.ANALYSIS_METHOD = analysis_method
-        _cfg.SEARCH_DEPTH = search_depth
-        _cfg.MAX_ANALYZED_COMMITS = max_commits
-        _cfg.ANALYSIS_FREQUENCY = frequency
-        # Also patch the module that already imported them
-        dac.ANALYSIS_METHOD = analysis_method
-        dac.SEARCH_DEPTH = search_depth
-        dac.MAX_ANALYZED_COMMITS = max_commits
-        dac.ANALYSIS_FREQUENCY = frequency
-
+    with _stdout_proxy.redirect(log):
         try:
-            if analysis_method == "merge_commit":
-                target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
-            elif analysis_method == "tag":
-                target_commits = dac.determine_by_tag(workdir)
-            elif analysis_method == "frequency":
-                target_commits = dac.determine_by_frequency(workdir)
-            else:
-                target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
-        finally:
-            _cfg.ANALYSIS_METHOD = _orig_method
-            _cfg.SEARCH_DEPTH = _orig_depth
-            _cfg.MAX_ANALYZED_COMMITS = _orig_max
-            _cfg.ANALYSIS_FREQUENCY = _orig_freq
+            url: str = params["url"]
+            name = url.split("/")[-2] + "." + url.split("/")[-1]
+            job["status"] = "running"
+            log.write(f"[job] Starting analysis for {url}\n")
 
-        if not target_commits:
-            log.write("[error] No target commits found.\n")
+            detection_method: str = params.get("detection_method", "normal")
+            if detection_method != "normal":
+                log.write(f"[error] Unsupported detection_method: {detection_method}\n")
+                job["status"] = "error"
+                return
+
+            comod_method: str = params.get("comod_method", "clone_set")
+            if comod_method != "clone_set":
+                log.write(f"[error] Unsupported comod_method: {comod_method}\n")
+                job["status"] = "error"
+                return
+
+            force_recompute = bool(params.get("force_recompute", True))
+            if force_recompute:
+                log.write("[job] Clearing previous results to apply selected filters.\n")
+                _clear_previous_results(name)
+
+            # ------------------------------------------------------------------
+            # 1. Clone repository
+            # ------------------------------------------------------------------
+            log.write("[step 1/5] Cloning repository...\n")
+            modules.clone_repo.clone_repo(url)
+            workdir = project_root / "dest/projects" / name
+
+            # ------------------------------------------------------------------
+            # 2. Determine analysed commits  (overriding config values at runtime)
+            # ------------------------------------------------------------------
+            log.write("[step 2/5] Determining analysed commits...\n")
+            analysis_method: str = params.get("analysis_method", "merge_commit")
+            search_depth: int = int(params.get("search_depth", -1))
+            max_commits: int = int(params.get("max_analyzed_commits", -1))
+            frequency: int = int(params.get("analysis_frequency", 1))
+
+            # Temporarily patch the config values used by determine_analyzed_commits
+            import config as _cfg
+
+            _orig_method = _cfg.ANALYSIS_METHOD
+            _orig_depth = _cfg.SEARCH_DEPTH
+            _orig_max = _cfg.MAX_ANALYZED_COMMITS
+            _orig_freq = _cfg.ANALYSIS_FREQUENCY
+            _cfg.ANALYSIS_METHOD = analysis_method
+            _cfg.SEARCH_DEPTH = search_depth
+            _cfg.MAX_ANALYZED_COMMITS = max_commits
+            _cfg.ANALYSIS_FREQUENCY = frequency
+            # Also patch the module that already imported them
+            dac.ANALYSIS_METHOD = analysis_method
+            dac.SEARCH_DEPTH = search_depth
+            dac.MAX_ANALYZED_COMMITS = max_commits
+            dac.ANALYSIS_FREQUENCY = frequency
+
+            try:
+                if analysis_method == "merge_commit":
+                    target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
+                elif analysis_method == "tag":
+                    target_commits = dac.determine_by_tag(workdir)
+                elif analysis_method == "frequency":
+                    target_commits = dac.determine_by_frequency(workdir)
+                else:
+                    target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
+            finally:
+                _cfg.ANALYSIS_METHOD = _orig_method
+                _cfg.SEARCH_DEPTH = _orig_depth
+                _cfg.MAX_ANALYZED_COMMITS = _orig_max
+                _cfg.ANALYSIS_FREQUENCY = _orig_freq
+
+            if not target_commits:
+                log.write("[error] No target commits found.\n")
+                job["status"] = "error"
+                return
+
+            log.write(f"  Found {len(target_commits)} target commits.\n")
+            analyzed_commits_dir = project_root / "dest/analyzed_commits"
+            analyzed_commits_dir.mkdir(parents=True, exist_ok=True)
+            with open(analyzed_commits_dir / f"{name}.json", "w") as f:
+                json.dump(target_commits, f)
+
+            # Build a project dict compatible with existing modules
+            languages = _build_languages_dict(workdir)
+            project = {"URL": url, "languages": languages}
+
+            # ------------------------------------------------------------------
+            # 3. Collect data (clone detection + moving lines)
+            # ------------------------------------------------------------------
+            log.write("[step 3/5] Collecting clone data...\n")
+
+            # Runtime options for collect/detect
+            min_tokens: int = int(params.get("min_tokens", 50))
+            use_import_filter: bool = params.get("import_filter", True)
+            modules.collect_datas.collect_datas_of_repo(
+                project,
+                apply_import_filter=use_import_filter,
+                min_tokens=min_tokens,
+                log=log,
+            )
+
+            # ------------------------------------------------------------------
+            # 4. Analyse code clones
+            # ------------------------------------------------------------------
+            log.write("[step 4/5] Analysing code clones...\n")
+            modules.analyze_cc.analyze_repo(project)
+
+            # ------------------------------------------------------------------
+            # 5. Analyse co-modification
+            # ------------------------------------------------------------------
+            log.write("[step 5/5] Analysing co-modification...\n")
+            modules.analyze_modification.analyze_repo(project)
+
+            log.write("[job] All steps completed successfully.\n")
+            job["status"] = "completed"
+
+        except Exception as exc:
+            import traceback
+
+            log.write(f"[error] {exc}\n")
+            log.write(traceback.format_exc() + "\n")
             job["status"] = "error"
-            return
-
-        log.write(f"  Found {len(target_commits)} target commits.\n")
-        analyzed_commits_dir = project_root / "dest/analyzed_commits"
-        analyzed_commits_dir.mkdir(parents=True, exist_ok=True)
-        with open(analyzed_commits_dir / f"{name}.json", "w") as f:
-            json.dump(target_commits, f)
-
-        # Build a project dict compatible with existing modules
-        languages = _build_languages_dict(workdir)
-        project = {"URL": url, "languages": languages}
-
-        # ------------------------------------------------------------------
-        # 3. Collect data (clone detection + moving lines)
-        # ------------------------------------------------------------------
-        log.write("[step 3/5] Collecting clone data...\n")
-
-        # Runtime options for collect/detect
-        min_tokens: int = int(params.get("min_tokens", 50))
-        use_import_filter: bool = params.get("import_filter", True)
-        modules.collect_datas.collect_datas_of_repo(
-            project,
-            apply_import_filter=use_import_filter,
-            min_tokens=min_tokens,
-            log=log,
-        )
-
-        # ------------------------------------------------------------------
-        # 4. Analyse code clones
-        # ------------------------------------------------------------------
-        log.write("[step 4/5] Analysing code clones...\n")
-        modules.analyze_cc.analyze_repo(project)
-
-        # ------------------------------------------------------------------
-        # 5. Analyse co-modification
-        # ------------------------------------------------------------------
-        log.write("[step 5/5] Analysing co-modification...\n")
-        modules.analyze_modification.analyze_repo(project)
-
-        log.write("[job] All steps completed successfully.\n")
-        job["status"] = "completed"
-
-    except Exception as exc:
-        import traceback
-
-        log.write(f"[error] {exc}\n")
-        log.write(traceback.format_exc() + "\n")
-        job["status"] = "error"
-    finally:
-        sys.stdout = old_stdout
 
 
 # ---------------------------------------------------------------------------
