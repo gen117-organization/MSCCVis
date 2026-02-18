@@ -1,5 +1,36 @@
 # Progress Log
 
+## 2026-02-17: 可視化CSV生成パイプラインの修正
+
+### 変更ファイル
+
+- src/modules/util.py — `get_file_type()` 関数を追加 (ファイルパスを logic/test/config/data に分類)
+- src/modules/visualization/build_scatter_dataset.py — import パス修正, clone_type 列の完全削除, clones_json_dir を常に `clones_json` に統一, 不要関数 (`resolve_service_for_file_path`, `build_context_to_service_map`) を削除
+- src/commands/csv_build/generate_visualization_csv.py — import パス修正, `FILTER_MODES` をローカル定義, services.json 生成を TODO で保留
+- visualize/data_loader.py — scatter CSV dtypes から clone_type を削除, 全 `print` を `logger` に変換
+- visualize/callbacks.py — `logger` 追加, 全 `print` を `logger` に変換
+- visualize/plotting.py — `logger` 追加, 全 `print` を `logger` に変換
+- visualize/components.py — `logger` 追加, 全 `print` を `logger` に変換
+- tests/test_util.py — `get_file_type` の単体テスト14件を追加
+- tests/test_build_scatter_dataset.py — PairRow構造, CSVヘッダ, normalize_file_path 等の単体テスト14件を追加
+
+### テスト結果
+
+- `python -m pytest tests/ -q` → 28 passed in 0.11s
+
+### 判断メモ
+
+- clones_json_import / clones_json_tks は使われておらず, 全フィルタタイプで `dest/clones_json/` を参照する設計に統一した
+- clone_type 列は CSV 出力・PairRow dataclass・dtypes 定義から完全に除去. ただし visualize/ 内のレガシーデータパス (JSON読込等) では後方互換のため in-memory 生成を残した
+- service_mapping.py / logger_setup.py は既に src/modules/visualization/ に存在していたため, import パスのみ修正
+- build_services_json モジュールは未作成のため, TODO コメントで保留とした
+- PowerShell の Set-Content は UTF-8 日本語コメントを破壊するため, Python スクリプト経由で置換を実行した
+
+### 残課題
+
+- TODO(gen): `build_services_json` モジュールを作成し, services.json 生成を有効化する
+- TODO(gen): Docker 環境で実際のリポジトリデータを使って CSV 生成の結合テストを行う
+
 ## 2026-02-16: Web UI JavaScript の外部ファイル分離
 
 ### 変更ファイル

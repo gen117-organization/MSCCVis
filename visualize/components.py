@@ -1,3 +1,6 @@
+import logging
+
+logger = logging.getLogger(__name__)
 from dash import html, dcc, dash_table
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
@@ -980,7 +983,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
             # no_importsデータ（import行含まない）は現在の表示データ（既に重複除去済み）
             no_imports_clone_count = total_pairs
     except Exception as e:
-        print(f"Error loading comparison data: {e}")
+        logger.error("Error loading comparison data: %s", e)
     
     # クローンタイプ別統計（T046最適化+RNR対応）
     if 'clone_type' in df_unique.columns:
@@ -1028,7 +1031,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
                 ("クローン率:", f"{project_clone_ratio:.2f}%")
             ])
         except Exception as e:
-            print(f"Error calculating project clone ratio: {e}")
+            logger.error("Error calculating project clone ratio: %s", e)
             clone_stats.extend([
                 ("プロジェクト全体クローン率:", "計算できませんでした")
             ])
@@ -1178,7 +1181,7 @@ def create_project_clone_ratio_display(project_name: str) -> html.Div:
         ], className='project-clone-ratio-section')
         
     except Exception as e:
-        print(f"Error calculating project clone ratio: {e}")
+        logger.error("Error calculating project clone ratio: %s", e)
         return html.Div([
             html.H3("プロジェクト全体のクローン率", className='clone-ratio-title'),
             html.Div([

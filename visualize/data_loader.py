@@ -15,7 +15,7 @@ _data_cache = {}  # キャッシュをクリア（統一データローダー統
 # @lru_cache(maxsize=32)  # 一時的に無効化
 def load_service_file_ranges_cached(services_json_path: str, language: str):
     """services.json から言語別の file_ranges を取得する（キャッシュ版）"""
-    print(f"DEBUG: Loading service ranges from {services_json_path}")  # デバッグ用
+    logger.debug("Loading service ranges from %s", services_json_path)
     with open(services_json_path, encoding='utf-8') as f:
         data = json.load(f)
     
@@ -38,7 +38,7 @@ def load_service_file_ranges_cached(services_json_path: str, language: str):
         result = lang_section['file_ranges']
     else:
         result = data.get('file_ranges', {})
-    print(f"DEBUG: Loaded service ranges: {result}")  # デバッグ用
+    logger.debug("Loaded service ranges: %s", result)
     return result
 
 def load_project_summary(summary_path='visualize/project_summary.json'):
@@ -49,7 +49,7 @@ def load_project_summary(summary_path='visualize/project_summary.json'):
         with open(summary_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     except Exception as e:
-        print(f"Error loading project summary: {e}")
+        logger.warning("Error loading project summary: %s", e)
         return None
 
 def load_dashboard_data(scatter_dir='dest/scatter'):
@@ -62,7 +62,7 @@ def load_dashboard_data(scatter_dir='dest/scatter'):
         with open(dashboard_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     except Exception as e:
-        print(f"Error loading dashboard data: {e}")
+        logger.warning("Error loading dashboard data: %s", e)
         return None
 
 def get_actual_service_count(project_name: str, language: str):
@@ -72,7 +72,7 @@ def get_actual_service_count(project_name: str, language: str):
         file_ranges = load_service_file_ranges_cached(services_json_path, language)
         return len(file_ranges) if file_ranges else 0
     except Exception as e:
-        print(f"Warning: Could not get service count for {project_name}: {e}")
+        logger.warning("Could not get service count for %s: %s", project_name, e)
         return 0
 
 def get_available_projects_enhanced(language_filter=None):
@@ -88,7 +88,7 @@ def get_available_projects_enhanced(language_filter=None):
 
     summary = load_project_summary()
     if not summary:
-        print("Warning: Project summary not found. Using fallback method.")
+        logger.warning("Project summary not found. Using fallback method.")
         return get_available_projects()
     
     options = []
@@ -138,7 +138,7 @@ def get_available_projects_enhanced(language_filter=None):
             options.append(option_data)
     
     if not options:
-        print("Warning: No valid projects found in summary. Using fallback method.")
+        logger.warning("No valid projects found in summary. Using fallback method.")
         return get_available_projects()
     
     # 常にクローン数で降順ソート
@@ -394,7 +394,6 @@ def load_from_scatter_csv(sources, services_json_path: str, cache_key: str, lang
                 'start_line_y': 'Int64',
                 'end_line_y': 'Int64',
                 'token_count': 'Int64',
-                'clone_type': 'category',
                 'relation': 'category',
                 'file_type_x': 'category',
                 'file_type_y': 'category',
@@ -405,7 +404,7 @@ def load_from_scatter_csv(sources, services_json_path: str, cache_key: str, lang
                 'comodified': 'boolean'
             }
             df = pd.read_csv(csv_path, dtype=dtypes)
-            print(f"DEBUG: Loaded {csv_path.name} with {len(df)} rows. Method: {detection_method}")
+            logger.info("Loaded %s with %d rows. Method: %s", csv_path.name, len(df), detection_method)
         except Exception as exc:
             error_msg = f"scatter CSV 読み込みに失敗: path={csv_path}"
             logger.error(error_msg)
@@ -417,7 +416,7 @@ def load_from_scatter_csv(sources, services_json_path: str, cache_key: str, lang
         frames.append(df)
 
     if not frames:
-        print("DEBUG: No frames loaded from scatter sources.")
+        logger.debug("No frames loaded from scatter sources.")
         result = (None, None, "scatter CSV が見つかりません")
         _data_cache[cache_key] = result
         return result
@@ -500,10 +499,10 @@ def load_and_process_data(project_name: str, commit_hash: str, language: str):
     """
     cache_key = f"{project_name}_{commit_hash}_{language}"
     if cache_key in _data_cache:
-        print(f"Loading from cache: {cache_key}")
+        logger.debug("Loading from cache: %s", cache_key)
         return _data_cache[cache_key]
 
-    print(f"Loading and processing data: {cache_key}")
+    logger.info("Loading and processing data: %s", cache_key)
 
     # 0) dest/scatter 出力
     scatter_sources = _scatter_sources(project_name, language)
@@ -512,21 +511,21 @@ def load_and_process_data(project_name: str, commit_hash: str, language: str):
         result = load_from_scatter_csv(scatter_sources, services_json_path, cache_key, language)
         if result[0] is not None:
             return result
-        print(f"Scatter CSV loading failed or empty: {result[2]}, falling back...")
+        logger.info("Scatter CSV loading failed or empty: %s, falling back...", result[2])
 
     # 1) 統一データローダー
     try:
         from core.unified_data_loader import UnifiedDataLoader  # noqa: F401
         if _unified_sources_exist(project_name, language):
-            print("Using unified data loader")
+            logger.info("Using unified data loader")
             return load_from_unified_loader(project_name, language, cache_key)
     except ImportError:
-        print("Unified data loader not available, falling back")
+        logger.info("Unified data loader not available, falling back")
 
     # 2) no_imports JSON
     no_imports_json_path, services_json_path = _no_imports_sources(project_name, language)
     if os.path.exists(no_imports_json_path) and os.path.exists(services_json_path):
-        print(f"Using no_imports JSON data: {no_imports_json_path}")
+        logger.info("Using no_imports JSON data: %s", no_imports_json_path)
         return load_from_no_imports_json(no_imports_json_path, services_json_path, cache_key, project_name, language)
 
     # 3) プロジェクトCSV (CCFSW/TKS/RNR)
@@ -534,13 +533,13 @@ def load_and_process_data(project_name: str, commit_hash: str, language: str):
     if os.path.exists(services_json_path) and (
         os.path.exists(ccfsw_csv_path) or os.path.exists(tks_csv_path) or os.path.exists(rnr_csv_path)
     ):
-        print(f"Using project-based CSV data: {project_csv_dir}")
+        logger.info("Using project-based CSV data: %s", project_csv_dir)
         return load_from_project_csv_with_rnr(project_csv_dir, ccfsw_csv_path, tks_csv_path, rnr_csv_path, services_json_path, cache_key, language)
 
     # 4) レガシーCSV
     legacy_csv_path = _legacy_csv_path(project_name, commit_hash, language)
     if legacy_csv_path and os.path.exists(services_json_path):
-        print(f"Fallback to legacy CSV data: {legacy_csv_path}")
+        logger.info("Fallback to legacy CSV data: %s", legacy_csv_path)
         return load_from_csv_fallback(legacy_csv_path, services_json_path, cache_key, language)
 
     error_msg = f"No data source found for {project_name}_{language}"
@@ -558,17 +557,17 @@ def load_from_unified_loader(project_name: str, language: str, cache_key: str):
         df, service_ranges, error = loader.load_unified_data()
 
         if error:
-            print(f"Unified loader error: {error}")
+            logger.warning("Unified loader error: %s", error)
             result = (None, None, error)
         else:
-            print(f"Unified data loaded: {len(df)} clone pairs")
+            logger.info("Unified data loaded: %d clone pairs", len(df))
             result = (df, service_ranges, None)
 
         _data_cache[cache_key] = result
         return result
 
     except Exception as e:
-        print(f"Unified loader failed: {e}")
+        logger.error("Unified loader failed: %s", e)
         error_msg = f"Unified data loader error: {e}"
         result = (None, None, error_msg)
         _data_cache[cache_key] = result
@@ -584,11 +583,11 @@ def load_from_no_imports_json(json_path: str, services_json_path: str, cache_key
     - 処理速度が高速
     """
     try:
-        print("Loading no_imports JSON file...")
+        logger.info("Loading no_imports JSON file...")
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
         
-        print("Loading service file ranges...")
+        logger.info("Loading service file ranges...")
         file_ranges = load_service_file_ranges_cached(services_json_path, language)
         
         # file_idからfile_pathへのマッピングを作成
@@ -600,7 +599,7 @@ def load_from_no_imports_json(json_path: str, services_json_path: str, cache_key
         clone_pairs = []
         clone_sets = json_data.get('clone_sets', [])
         
-        print(f"Processing {len(clone_sets)} clone sets...")
+        logger.info("Processing %d clone sets...", len(clone_sets))
         
         for clone_id, clone_set in enumerate(clone_sets):
             fragments = clone_set.get('fragments', [])
@@ -629,7 +628,7 @@ def load_from_no_imports_json(json_path: str, services_json_path: str, cache_key
             _data_cache[cache_key] = result
             return result
             
-        print(f"Generated {len(clone_pairs)} clone pairs from JSON")
+        logger.info("Generated %d clone pairs from JSON", len(clone_pairs))
         df = pd.DataFrame(clone_pairs)
         
         # 型を最適化
@@ -644,12 +643,12 @@ def load_from_no_imports_json(json_path: str, services_json_path: str, cache_key
         })
         
         # サービス情報の計算
-        print("Computing service mappings...")
+        logger.info("Computing service mappings...")
         df['service_x'] = vectorized_file_id_to_service(df['file_id_x'].values, file_ranges)
         df['service_y'] = vectorized_file_id_to_service(df['file_id_y'].values, file_ranges)
         
         # 関係性の計算
-        print("Computing relations...")
+        logger.info("Computing relations...")
         df['relation'] = 'inter'
         df.loc[df['service_x'] == df['service_y'], 'relation'] = 'intra'
         df['clone_type'] = 'Normal'  # デフォルトはNormal
@@ -657,7 +656,7 @@ def load_from_no_imports_json(json_path: str, services_json_path: str, cache_key
         # TKSデータを統合
         tks_csv_path = f'data/csv/{project_name}/tks_{language.lower()}.csv'
         if os.path.exists(tks_csv_path):
-            print(f"Loading and integrating TKS data from: {tks_csv_path}")
+            logger.info("Loading and integrating TKS data from: %s", tks_csv_path)
             try:
                 tks_df = pd.read_csv(tks_csv_path, dtype={
                     'file_id_x': 'int32',
@@ -679,24 +678,24 @@ def load_from_no_imports_json(json_path: str, services_json_path: str, cache_key
                     
                     # TKSデータを統合
                     df = pd.concat([df, tks_df], ignore_index=True)
-                    print(f"Integrated {len(tks_df)} TKS clone pairs")
+                    logger.info("Integrated %d TKS clone pairs", len(tks_df))
                     
             except Exception as e:
-                print(f"Warning: Failed to load TKS data: {e}")
+                logger.warning("Failed to load TKS data: %s", e)
         
         # coord_pair列を作成
-        print("Computing coordinate pairs...")
+        logger.info("Computing coordinate pairs...")
         df['coord_pair'] = df['file_id_x'].astype(str) + '_' + df['file_id_y'].astype(str)
         
         # overlap_countとcoord_total_linesの計算
-        print("Computing overlap counts and total lines...")
+        logger.info("Computing overlap counts and total lines...")
         coord_counts = df['coord_pair'].value_counts()
         df['overlap_count'] = df['coord_pair'].map(coord_counts)
         df['total_lines'] = (df['end_line_x'] - df['start_line_x'] + 1) + (df['end_line_y'] - df['start_line_y'] + 1)
         coord_total_lines = df.groupby('coord_pair')['total_lines'].sum()
         df['coord_total_lines'] = df['coord_pair'].map(coord_total_lines)
 
-        print(f"Data processing completed. Shape: {df.shape}")
+        logger.info("Data processing completed. Shape: %s", df.shape)
         
         # 結果をキャッシュに保存
         result = (df, file_ranges, None)
@@ -718,7 +717,7 @@ def load_from_project_csv_with_rnr(project_csv_dir: str, ccfsw_csv_path: str, tk
         
         # CCFSWデータの読み込み
         if os.path.exists(ccfsw_csv_path):
-            print(f"Loading CCFSW CSV: {ccfsw_csv_path}")
+            logger.info("Loading CCFSW CSV: %s", ccfsw_csv_path)
             ccfsw_df = pd.read_csv(ccfsw_csv_path, dtype={
                 'file_id_x': 'int32',
                 'file_id_y': 'int32', 
@@ -731,11 +730,11 @@ def load_from_project_csv_with_rnr(project_csv_dir: str, ccfsw_csv_path: str, tk
             # clone_typeがない場合はNormalとして設定
             if 'clone_type' not in ccfsw_df.columns:
                 ccfsw_df['clone_type'] = 'Normal'
-            print(f"CCFSW data loaded: {ccfsw_df.shape[0]} rows")
+            logger.info("CCFSW data loaded: %d rows", ccfsw_df.shape[0])
         
         # TKSデータの読み込み
         if os.path.exists(tks_csv_path):
-            print(f"Loading TKS CSV: {tks_csv_path}")
+            logger.info("Loading TKS CSV: %s", tks_csv_path)
             tks_df = pd.read_csv(tks_csv_path, dtype={
                 'file_id_x': 'int32',
                 'file_id_y': 'int32', 
@@ -748,11 +747,11 @@ def load_from_project_csv_with_rnr(project_csv_dir: str, ccfsw_csv_path: str, tk
             # clone_typeがない場合はTKSとして設定
             if 'clone_type' not in tks_df.columns:
                 tks_df['clone_type'] = 'TKS'
-            print(f"TKS data loaded: {tks_df.shape[0]} rows")
+            logger.info("TKS data loaded: %d rows", tks_df.shape[0])
         
         # RNRデータの読み込み
         if os.path.exists(rnr_csv_path):
-            print(f"Loading RNR CSV: {rnr_csv_path}")
+            logger.info("Loading RNR CSV: %s", rnr_csv_path)
             rnr_df = pd.read_csv(rnr_csv_path, dtype={
                 'file_id_x': 'int32',
                 'file_id_y': 'int32', 
@@ -765,7 +764,7 @@ def load_from_project_csv_with_rnr(project_csv_dir: str, ccfsw_csv_path: str, tk
             # clone_typeがない場合はRNRとして設定
             if 'clone_type' not in rnr_df.columns:
                 rnr_df['clone_type'] = 'RNR'
-            print(f"RNR data loaded: {rnr_df.shape[0]} rows")
+            logger.info("RNR data loaded: %d rows", rnr_df.shape[0])
 
         # データフレームが存在しない場合のエラーハンドリング
         if ccfsw_df is None and tks_df is None and rnr_df is None:
@@ -782,38 +781,38 @@ def load_from_project_csv_with_rnr(project_csv_dir: str, ccfsw_csv_path: str, tk
         
         # 統合
         df = pd.concat(available_dfs, ignore_index=True)
-        print(f"Integrated data: {len(df)} total rows")
+        logger.info("Integrated data: %d total rows", len(df))
         
-        print("Loading service file ranges...")
+        logger.info("Loading service file ranges...")
         file_ranges = load_service_file_ranges_cached(services_json_path, language)
 
         # サービス情報の計算（ベクトル化で高速化）
         if 'service_x' not in df.columns or 'service_y' not in df.columns:
-            print("Computing service mappings...")
+            logger.info("Computing service mappings...")
             df['service_x'] = vectorized_file_id_to_service(df['file_id_x'].values, file_ranges)
             df['service_y'] = vectorized_file_id_to_service(df['file_id_y'].values, file_ranges)
         
         # 関係性の計算（ベクトル化）
         if 'relation' not in df.columns:
-            print("Computing relations...")
+            logger.info("Computing relations...")
             df['relation'] = 'inter'
             df.loc[df['service_x'] == df['service_y'], 'relation'] = 'intra'
 
         # coord_pair列を常に作成（高速化）
         if 'coord_pair' not in df.columns:
-            print("Computing coordinate pairs...")
+            logger.info("Computing coordinate pairs...")
             df['coord_pair'] = df['file_id_x'].astype(str) + '_' + df['file_id_y'].astype(str)
 
         # overlap_countとcoord_total_linesの計算（高速化）
         if 'overlap_count' not in df.columns or 'coord_total_lines' not in df.columns:
-            print("Computing overlap counts and total lines...")
+            logger.info("Computing overlap counts and total lines...")
             coord_counts = df['coord_pair'].value_counts()
             df['overlap_count'] = df['coord_pair'].map(coord_counts)
             df['total_lines'] = (df['end_line_x'] - df['start_line_x'] + 1) + (df['end_line_y'] - df['start_line_y'] + 1)
             coord_total_lines = df.groupby('coord_pair')['total_lines'].sum()
             df['coord_total_lines'] = df['coord_pair'].map(coord_total_lines)
 
-        print(f"RNR-integrated data processing completed. Shape: {df.shape}")
+        logger.info("RNR-integrated data processing completed. Shape: %s", df.shape)
         
         # 結果をキャッシュに保存
         result = (df, file_ranges, None)
@@ -835,7 +834,7 @@ def load_from_project_csv(project_csv_dir: str, ccfsw_csv_path: str, tks_csv_pat
         
         # CCFSWデータの読み込み
         if os.path.exists(ccfsw_csv_path):
-            print(f"Loading CCFSW CSV: {ccfsw_csv_path}")
+            logger.info("Loading CCFSW CSV: %s", ccfsw_csv_path)
             ccfsw_df = pd.read_csv(ccfsw_csv_path, dtype={
                 'file_id_x': 'int32',
                 'file_id_y': 'int32', 
@@ -848,11 +847,11 @@ def load_from_project_csv(project_csv_dir: str, ccfsw_csv_path: str, tks_csv_pat
             # clone_typeがない場合はNormalとして設定
             if 'clone_type' not in ccfsw_df.columns:
                 ccfsw_df['clone_type'] = 'Normal'
-            print(f"CCFSW data loaded: {ccfsw_df.shape[0]} rows")
+            logger.info("CCFSW data loaded: %d rows", ccfsw_df.shape[0])
         
         # TKSデータの読み込み
         if os.path.exists(tks_csv_path):
-            print(f"Loading TKS CSV: {tks_csv_path}")
+            logger.info("Loading TKS CSV: %s", tks_csv_path)
             tks_df = pd.read_csv(tks_csv_path, dtype={
                 'file_id_x': 'int32',
                 'file_id_y': 'int32', 
@@ -865,7 +864,7 @@ def load_from_project_csv(project_csv_dir: str, ccfsw_csv_path: str, tks_csv_pat
             # clone_typeがない場合はTKSとして設定
             if 'clone_type' not in tks_df.columns:
                 tks_df['clone_type'] = 'TKS'
-            print(f"TKS data loaded: {tks_df.shape[0]} rows")
+            logger.info("TKS data loaded: %d rows", tks_df.shape[0])
         
         # データフレームが存在しない場合のエラーハンドリング
         if ccfsw_df is None and tks_df is None:
@@ -881,18 +880,16 @@ def load_from_project_csv(project_csv_dir: str, ccfsw_csv_path: str, tks_csv_pat
             if ccfsw_df is not None:
                 ccfsw_validation = validator.validate_ccfsw_data(ccfsw_df)
                 ccfsw_df = ccfsw_validation['cleaned_data']
-                print(f"CCFSW quality validation: {ccfsw_validation['original_count']} -> "
-                      f"{len(ccfsw_df)} rows ({ccfsw_validation['cleaning_stats'].get('removal_rate', 0):.1f}% duplicates removed)")
+                logger.info("CCFSW quality validation: %d -> %d rows (%.1f%% duplicates removed)", ccfsw_validation['original_count'], len(ccfsw_df), ccfsw_validation['cleaning_stats'].get('removal_rate', 0))
             
             # TKS内部重複除去
             if tks_df is not None:
                 tks_validation = validator.validate_tks_data(tks_df)
                 tks_df = tks_validation['cleaned_data']
-                print(f"TKS quality validation: {tks_validation['original_count']} -> "
-                      f"{len(tks_df)} rows ({tks_validation['cleaning_stats'].get('removal_rate', 0):.1f}% duplicates removed)")
+                logger.info("TKS quality validation: %d -> %d rows (%.1f%% duplicates removed)", tks_validation['original_count'], len(tks_df), tks_validation['cleaning_stats'].get('removal_rate', 0))
             
         except ImportError:
-            print("Warning: Data quality validator not available, skipping internal deduplication")
+            logger.warning("Data quality validator not available, skipping internal deduplication")
         
         # T046: CCFSW/TKS間重複除去最適化
         if ccfsw_df is not None and tks_df is not None:
@@ -904,56 +901,56 @@ def load_from_project_csv(project_csv_dir: str, ccfsw_csv_path: str, tks_csv_pat
                 if overlap_analysis.get('significant_overlap', False):
                     # 重要な重複がある場合：CCFSWを優先してTKSから重複除去
                     df, dedup_stats = remove_duplicate_clones(ccfsw_df, tks_df, strategy='keep_ccfsw')
-                    print(f"Inter-dataset deduplication: removed {dedup_stats['removed_duplicates']} duplicates")
+                    logger.info("Inter-dataset deduplication: removed %d duplicates", dedup_stats['removed_duplicates'])
                 else:
                     # 重複が少ない場合：両方を統合
                     df = pd.concat([ccfsw_df, tks_df], ignore_index=True)
-                    print(f"Both datasets integrated: {len(ccfsw_df)} CCFSW + {len(tks_df)} TKS = {len(df)} total")
+                    logger.info("Both datasets integrated: %d CCFSW + %d TKS = %d total", len(ccfsw_df), len(tks_df), len(df))
             except ImportError:
                 # フォールバック：単純統合
                 df = pd.concat([ccfsw_df, tks_df], ignore_index=True)
-                print(f"Fallback integration: {len(ccfsw_df)} CCFSW + {len(tks_df)} TKS = {len(df)} total")
+                logger.info("Fallback integration: %d CCFSW + %d TKS = %d total", len(ccfsw_df), len(tks_df), len(df))
         elif ccfsw_df is not None:
             # CCFSWのみ（内部重複除去済み）
             df = ccfsw_df
-            print(f"Using cleaned CCFSW data: {len(df)} rows")
+            logger.info("Using cleaned CCFSW data: %d rows", len(df))
         else:
             # TKSのみ（内部重複除去済み）
             df = tks_df
-            print(f"Using cleaned TKS data: {len(df)} rows")
+            logger.info("Using cleaned TKS data: %d rows", len(df))
         
         # 統合完了後の処理
         
-        print("Loading service file ranges...")
+        logger.info("Loading service file ranges...")
         file_ranges = load_service_file_ranges_cached(services_json_path, language)
 
         # サービス情報の計算（ベクトル化で高速化）
         if 'service_x' not in df.columns or 'service_y' not in df.columns:
-            print("Computing service mappings...")
+            logger.info("Computing service mappings...")
             df['service_x'] = vectorized_file_id_to_service(df['file_id_x'].values, file_ranges)
             df['service_y'] = vectorized_file_id_to_service(df['file_id_y'].values, file_ranges)
         
         # 関係性の計算（ベクトル化）
         if 'relation' not in df.columns:
-            print("Computing relations...")
+            logger.info("Computing relations...")
             df['relation'] = 'inter'
             df.loc[df['service_x'] == df['service_y'], 'relation'] = 'intra'
 
         # coord_pair列を常に作成（高速化）
         if 'coord_pair' not in df.columns:
-            print("Computing coordinate pairs...")
+            logger.info("Computing coordinate pairs...")
             df['coord_pair'] = df['file_id_x'].astype(str) + '_' + df['file_id_y'].astype(str)
 
         # overlap_countとcoord_total_linesの計算（高速化）
         if 'overlap_count' not in df.columns or 'coord_total_lines' not in df.columns:
-            print("Computing overlap counts and total lines...")
+            logger.info("Computing overlap counts and total lines...")
             coord_counts = df['coord_pair'].value_counts()
             df['overlap_count'] = df['coord_pair'].map(coord_counts)
             df['total_lines'] = (df['end_line_x'] - df['start_line_x'] + 1) + (df['end_line_y'] - df['start_line_y'] + 1)
             coord_total_lines = df.groupby('coord_pair')['total_lines'].sum()
             df['coord_total_lines'] = df['coord_pair'].map(coord_total_lines)
 
-        print(f"Project-based data processing completed. Shape: {df.shape}")
+        logger.info("Project-based data processing completed. Shape: %s", df.shape)
         
         # 結果をキャッシュに保存
         result = (df, file_ranges, None)
@@ -969,7 +966,7 @@ def load_from_csv_fallback(csv_path: str, services_json_path: str, cache_key: st
     """従来のCSVファイルからデータを読み込む（no_importsが利用できない場合のフォールバック）"""
     try:
         # CSVファイルの読み込み（高速化）
-        print("Loading CSV file...")
+        logger.info("Loading CSV file...")
         df = pd.read_csv(csv_path, dtype={
             'file_id_x': 'int32',
             'file_id_y': 'int32', 
@@ -980,36 +977,36 @@ def load_from_csv_fallback(csv_path: str, services_json_path: str, cache_key: st
             'clone_id': 'int32'  # intに修正
         })
         
-        print("Loading service file ranges...")
+        logger.info("Loading service file ranges...")
         file_ranges = load_service_file_ranges_cached(services_json_path, language)
 
         # サービス情報の計算（ベクトル化で高速化）
         if 'service_x' not in df.columns or 'service_y' not in df.columns:
-            print("Computing service mappings...")
+            logger.info("Computing service mappings...")
             df['service_x'] = vectorized_file_id_to_service(df['file_id_x'].values, file_ranges)
             df['service_y'] = vectorized_file_id_to_service(df['file_id_y'].values, file_ranges)
         
         # 関係性の計算（ベクトル化）
         if 'relation' not in df.columns:
-            print("Computing relations...")
+            logger.info("Computing relations...")
             df['relation'] = 'inter'
             df.loc[df['service_x'] == df['service_y'], 'relation'] = 'intra'
 
         # coord_pair列を常に作成（高速化）
         if 'coord_pair' not in df.columns:
-            print("Computing coordinate pairs...")
+            logger.info("Computing coordinate pairs...")
             df['coord_pair'] = df['file_id_x'].astype(str) + '_' + df['file_id_y'].astype(str)
 
         # overlap_countとcoord_total_linesの計算（高速化）
         if 'overlap_count' not in df.columns or 'coord_total_lines' not in df.columns:
-            print("Computing overlap counts and total lines...")
+            logger.info("Computing overlap counts and total lines...")
             coord_counts = df['coord_pair'].value_counts()
             df['overlap_count'] = df['coord_pair'].map(coord_counts)
             df['total_lines'] = (df['end_line_x'] - df['start_line_x'] + 1) + (df['end_line_y'] - df['start_line_y'] + 1)
             coord_total_lines = df.groupby('coord_pair')['total_lines'].sum()
             df['coord_total_lines'] = df['coord_pair'].map(coord_total_lines)
 
-        print(f"Data processing completed. Shape: {df.shape}")
+        logger.info("Data processing completed. Shape: %s", df.shape)
         
         # 結果をキャッシュに保存
         result = (df, file_ranges, None)
@@ -1026,7 +1023,7 @@ def clear_data_cache():
     global _data_cache
     _data_cache.clear()
     # load_service_file_ranges_cached.cache_clear()  # lru_cache無効化のため一時的にコメントアウト
-    print("Data cache cleared.")
+    logger.info("Data cache cleared.")
 
 def build_file_tree_data(file_paths):
     """

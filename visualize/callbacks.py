@@ -1,3 +1,4 @@
+import logging
 from dash import Input, Output, State, no_update, html, dcc, ALL, callback_context
 import dash
 import json
@@ -15,6 +16,8 @@ from .components import (
 )
 from modules.util import get_file_type
 from .constants import DetectionMethod
+
+logger = logging.getLogger(__name__)
 
 # データキャッシュ用のグローバル変数
 app_data = {
@@ -109,7 +112,7 @@ def register_callbacks(app):
         cached_project_key = f"{app_data.get('project', '')}_{app_data.get('commit', '')}_{app_data.get('language', '')}"
         
         if current_project_key != cached_project_key:
-            print(f"Project changed from {cached_project_key} to {current_project_key}, clearing cache...")
+            logger.info("Project changed from %s to %s, clearing cache...", cached_project_key, current_project_key)
             from .data_loader import clear_data_cache
             clear_data_cache()
         
@@ -161,7 +164,7 @@ def register_callbacks(app):
                     filter_status += f" | 🌐 ID: {selected_clone_id}"
             except Exception as e:
                 # Fallback or silent fail
-                print(f"Cross service filtering error: {e}")
+                logger.warning("Cross service filtering error: %s", e)
 
         # 最適化された検出方法フィルタを適用（T046）
         method_filter_applied = False
@@ -170,9 +173,9 @@ def register_callbacks(app):
         if not method_column and 'clone_type' in df_display.columns:
             method_column = 'clone_type'
         
-        print(f"DEBUG: Filtering - Method: {detection_method_filter}, Column: {method_column}")
+        logger.debug("Filtering - Method: %s, Column: %s", detection_method_filter, method_column)
         if method_column:
-            print(f"DEBUG: Available methods in data: {df_display[method_column].unique()}")
+            logger.debug("Available methods in data: %s", df_display[method_column].unique())
 
         if detection_method_filter and detection_method_filter != 'all' and method_column:
             method_filter_applied = True
@@ -185,7 +188,7 @@ def register_callbacks(app):
             else:
                 filtered_data = df_display[df_display[method_column].str.lower() == target_method]
             
-            print(f"DEBUG: Filtered count: {len(filtered_data)} (Original: {original_count})")
+            logger.debug("Filtered count: %d (Original: %d)", len(filtered_data), original_count)
             filter_label = f"{DetectionMethod.LABELS.get(detection_method_filter, detection_method_filter)} クローンのみ"
 
             if len(filtered_data) > 0:
@@ -239,7 +242,7 @@ def register_callbacks(app):
                         filter_status_parts.append(f"🎯 ID {selected_clone_id:03d}: {metrics['pair_count']}ペア")
                         filter_status = " | ".join(filter_status_parts)
             except Exception as e:
-                print(f"Clone ID filtering error: {e}")
+                logger.warning("Clone ID filtering error: %s", e)
                 pass
         
         # 同時修正フィルタ
@@ -543,7 +546,7 @@ def register_callbacks(app):
                 if target_value:
                     return 'tab-scatter', target_value
         except Exception as e:
-            print(f"Error in dashboard click: {e}")
+            logger.error("Error in dashboard click: %s", e)
         
         return no_update, no_update
 
@@ -640,7 +643,7 @@ def register_callbacks(app):
             from .network import create_network_graph
             return create_network_graph(services_data, project, language, df=df_filtered)
         except Exception as e:
-            print(f"Error updating network graph: {e}")
+            logger.error("Error updating network graph: %s", e)
             return go.Figure().update_layout(title=f"Error: {e}")
 
     # --- New IDE Theme Callbacks ---
@@ -740,7 +743,7 @@ def register_callbacks(app):
                      view_container = html.Div(split_view, style={'padding': '20px', 'height': '100%', 'overflow': 'auto'})
                      return view_container, f"Comparing Clone #{clone_id}", no_update, no_update
              except Exception as e:
-                 print(f"Error handling scatter click: {e}")
+                 logger.error("Error handling scatter click: %s", e)
             
              return no_update
 
@@ -1192,5 +1195,5 @@ def register_callbacks(app):
              options = generate_cross_service_filter_options(clone_stats)
              return options
         except Exception as e:
-             print(f"Error updating cross service options: {e}")
+             logger.error("Error updating cross service options: %s", e)
              return [{'label': '所有 (All)', 'value': 'all'}]

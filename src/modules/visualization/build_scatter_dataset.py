@@ -7,7 +7,7 @@
 付加情報:
 - selected_projects.json の project["languages"][language] にある
   context -> [service名...] を用いた service 解決
-- dest/clones_json_<filter>/<project>/<head_commit>/<language>.json の file_data を
+- dest/clones_json/<project>/<head_commit>/<language>.json の file_data を
   FileMapper で読み, file_path -> file_id を解決
 
 出力:
@@ -29,12 +29,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
-from modules.service_mapping import (
+from modules.visualization.service_mapping import (
     ServiceContext,
     load_claim_service_contexts_for_repo,
     resolve_service_for_file_path as resolve_service_context_for_file_path,
 )
-from modules.util import FileMapper, classify_clone_type, get_file_type
+from modules.util import FileMapper, get_file_type
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,6 @@ class PairRow:
     """散布図用CSVの1行（クローンペア）."""
 
     clone_id: str
-    clone_type: str
     file_path_x: str
     file_path_y: str
     file_id_x: int
@@ -243,88 +242,6 @@ def iter_fragment_groups(csv_path: Path) -> Iterable[list[FragmentRow]]:
         yield buf
 
 
-def resolve_service_for_file_path(
-    file_path: str,
-    contexts_sorted: Sequence[str],
-    context_to_services: Mapping[str, Sequence[str]],
-    project_dir: Path,
-) -> str:
-    """file_path から service を解決する（最長prefix一致）.
-
-    Args:
-        file_path: 相対/絶対どちらもあり得る.
-        contexts_sorted: context を長さ降順に並べた配列（空文字は含めない）.
-        context_to_services: context -> service名の配列.
-        project_dir: dest/projects/<project>.
-
-    Returns:
-        service名（解決できない場合は空文字）.
-        contextにservice名が複数ぶら下がる場合は '|' で連結して返す.
-    """
-
-    normalized = normalize_file_path(file_path, project_dir)
-    if not normalized:
-        return ""
-
-    best_context: str | None = None
-    for context in contexts_sorted:
-        if normalized.startswith(context):
-            best_context = context
-            break
-
-    if best_context is None:
-        return ""
-
-    services = list(context_to_services.get(best_context, []))
-    if not services:
-        return ""
-    if len(services) == 1:
-        return services[0]
-    return "|".join(services)
-
-
-def build_context_to_service_map(
-    project: Mapping[str, Any], language: str
-) -> dict[str, list[str]]:
-    """selected_projects.json の形式から context -> service名一覧 の辞書を構築する.
-
-    Args:
-        project: selected_projects.json の1プロジェクト要素.
-        language: 対象言語名.
-
-    Returns:
-        context（prefix）をキー, service名のリストを値とする辞書.
-
-    Raises:
-        KeyError: languages/language が存在しない場合.
-        ValueError: context->services の形式が不正な場合.
-    """
-
-    languages = project.get("languages")
-    if not isinstance(languages, dict) or language not in languages:
-        raise KeyError(f"language not found in project.languages: language={language}")
-
-    raw = languages[language]
-    if not isinstance(raw, dict):
-        raise ValueError(f"invalid languages[{language}] type: {type(raw)}")
-
-    out: dict[str, list[str]] = {}
-    for context, services in raw.items():
-        if not isinstance(context, str):
-            continue
-        if services is None:
-            out[context] = []
-            continue
-        if isinstance(services, list) and all(isinstance(x, str) for x in services):
-            out[context] = services
-            continue
-        raise ValueError(
-            f"invalid context->services mapping: context={context}, services={services}"
-        )
-
-    return out
-
-
 def parse_modified_commits(modification_raw: str) -> set[str]:
     """modification JSON 文字列から modified commit の集合を返す."""
 
@@ -414,14 +331,6 @@ def build_pair_rows(
         return ([], [])
 
     ordered = sorted(fragments, key=lambda r: r.index)
-    try:
-        clone_type = classify_clone_type([{"file_path": f.file_path} for f in ordered])
-    except ValueError:
-        logger.warning(
-            "skip clone_id due to invalid file_path for clone_type classification: clone_id=%s",
-            ordered[0].clone_id,
-        )
-        return ([], [])
 
     enriched: list[tuple[FragmentRow, str, str, int, set[str], str]]
     enriched = []
@@ -465,7 +374,6 @@ def build_pair_rows(
 
             row = PairRow(
                 clone_id=x.clone_id,
-                clone_type=clone_type,
                 file_path_x=norm_x,
                 file_path_y=norm_y,
                 file_id_x=file_id_x,
@@ -497,7 +405,6 @@ def write_pair_csv_header(writer: csv.writer) -> None:
     writer.writerow(
         [
             "clone_id",
-            "clone_type",
             "file_path_x",
             "file_path_y",
             "file_id_x",
@@ -523,7 +430,6 @@ def write_pair_csv_row(writer: csv.writer, r: PairRow) -> None:
     writer.writerow(
         [
             r.clone_id,
-            r.clone_type,
             r.file_path_x,
             r.file_path_y,
             r.file_id_x,
@@ -584,8 +490,6 @@ def build_scatter_dataset_for_language(
     head_commit = str(analyzed_commits[0])
 
     clones_json_dir = "clones_json"
-    if filter_type:
-        clones_json_dir = f"clones_json_{filter_type}"
     clones_json_path = (
         project_root
         / "dest"

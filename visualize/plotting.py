@@ -1,3 +1,6 @@
+import logging
+
+logger = logging.getLogger(__name__)
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
@@ -45,7 +48,7 @@ def add_service_boundaries(fig, file_ranges):
 
 def add_service_labels(fig, file_ranges):
     """サービス名のラベルを追加（スタッガード配置対応）"""
-    print(f"DEBUG: add_service_labels called with file_ranges: {file_ranges}")  # デバッグ用
+    logger.debug("add_service_labels called with file_ranges: %s", file_ranges)
     
     # サービス数が一定以上の場合はスタッガード（千鳥）配置にする
     num_services = len(file_ranges)
@@ -69,7 +72,7 @@ def add_service_labels(fig, file_ranges):
             x_label_y_pos = -0.15
             y_label_x_pos = -0.05
 
-        print(f"DEBUG: Processing service {service_name} with ranges {ranges}")  # デバッグ用
+        logger.debug("Processing service %s with ranges %s", service_name, ranges)
         for start, end in ranges:
             center = (start + end) / 2
             text = f"{service_name.split('/')[-1]}<br>[{start}-{end}]"
@@ -80,7 +83,7 @@ def add_service_labels(fig, file_ranges):
 
 def create_scatter_plot(df, file_ranges, project_name, language, static_mode=False):
     """データフレームから散布図を作成する（ヒートマップ風カラーマップ + マーカー形状区別）"""
-    print(f"DEBUG: create_scatter_plot called with file_ranges: {file_ranges}, static_mode={static_mode}")  # デバッグ用
+    logger.debug("create_scatter_plot called with file_ranges: %s, static_mode=%s", file_ranges, static_mode)
     if df is None or df.empty:
         return go.Figure().update_layout(title="No data available")
 
@@ -102,7 +105,7 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
         df['clone_key'] = clone_key_parts[0] + '|' + clone_key_parts[1] + '|' + clone_key_parts[2] + '|' + clone_key_parts[3] + '|' + clone_key_parts[4]
     
     # 高速化：ベクトル化された処理
-    print("Processing data for visualization...")
+    logger.info("Processing data for visualization...")
     
     # 重複除去: 同じcoord_pair + clone_id + file情報の組み合わせを除去（高速化）
     clone_key_parts = [
@@ -120,16 +123,16 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
     df['filtered_overlap_count'] = df['coord_pair'].map(coord_counts)
     
     # サービス相対パスを計算（ベクトル化で高速化）
-    print(f"DEBUG: Before extracting relative paths - sample file_path_x: {df['file_path_x'].iloc[0] if not df.empty else 'No data'}")
-    print(f"DEBUG: Before extracting relative paths - sample service_x: {df['service_x'].iloc[0] if not df.empty else 'No data'}")
+    logger.debug("Before extracting relative paths - sample file_path_x: %s", df['file_path_x'].iloc[0] if not df.empty else 'No data')
+    logger.debug("Before extracting relative paths - sample service_x: %s", df['service_x'].iloc[0] if not df.empty else 'No data')
     df['service_relative_path_x'] = extract_service_relative_path_vectorized(
         df['file_path_x'].values, df['service_x'].values
     )
     df['service_relative_path_y'] = extract_service_relative_path_vectorized(
         df['file_path_y'].values, df['service_y'].values
     )
-    print(f"DEBUG: After extracting relative paths - sample service_relative_path_x: {df['service_relative_path_x'].iloc[0] if not df.empty else 'No data'}")
-    print(f"DEBUG: After extracting relative paths - sample service_relative_path_y: {df['service_relative_path_y'].iloc[0] if not df.empty else 'No data'}")
+    logger.debug("After extracting relative paths - sample service_relative_path_x: %s", df['service_relative_path_x'].iloc[0] if not df.empty else 'No data')
+    logger.debug("After extracting relative paths - sample service_relative_path_y: %s", df['service_relative_path_y'].iloc[0] if not df.empty else 'No data')
     
     # クローン集中度に基づくカラーマッピング用の値を正規化（高速化）
     max_overlap = df['filtered_overlap_count'].max()
@@ -154,7 +157,7 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
     color_indices = np.clip((df['normalized_density'] * 5).astype(int), 0, 4)
     df['heatmap_color'] = [color_map[i] for i in color_indices]
     
-    print("Creating scatter plot...")
+    logger.info("Creating scatter plot...")
     
     # 空のfigureを作成
     fig = go.Figure()
@@ -352,7 +355,7 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
         
         fig.add_trace(ScatterClass(**trace_args))
 
-    print("Adding service boundaries and labels...")
+    logger.info("Adding service boundaries and labels...")
     add_service_boundaries(fig, file_ranges)
     # add_service_labels(fig, file_ranges) # ホバーで確認できるためラベルは非表示
     
@@ -402,5 +405,5 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
         uirevision=f"{project_name}_{language}_{len(df)}"
     )
     
-    print("Scatter plot creation completed.")
+    logger.info("Scatter plot creation completed.")
     return fig

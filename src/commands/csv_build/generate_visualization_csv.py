@@ -27,13 +27,21 @@ from datetime import datetime
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from config import SELECTED_DATASET, FILTER_MODES
-from modules.build_scatter_dataset import build_scatter_dataset_for_language
-from modules.build_services_json import build_services_json_for_project
-import modules.logger_setup
+from config import SELECTED_DATASET
+from modules.visualization.build_scatter_dataset import build_scatter_dataset_for_language
+import modules.visualization.logger_setup as logger_setup
 from modules.identify_microservice import analyze_repo
 
 logger = logging.getLogger(__name__)
+
+# filter_type の選択肢.
+# None=フィルタなし, "import"=import行除外, "tks"=TKSフィルタ.
+FILTER_MODES: dict[str, list[str | None]] = {
+    "all": [None, "import", "tks"],
+    "import": ["import"],
+    "tks": ["tks"],
+    "none": [None],
+}
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -69,7 +77,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--filter-type",
         choices=list(FILTER_MODES.keys()),
-        default="all",
+        default="import",
         help="生成するフィルタ種別（default: all）",
     )
     parser.add_argument(
@@ -274,31 +282,9 @@ def main(argv: list[str]) -> int:
         else:
             logger.info("skip scatter csv (requested by --skip-csv)")
 
-        # 2. JSON生成 (Services JSON)
-        try:
-            task_start = time.perf_counter()
-            logger.info("start services json: project=%s", project_name)
-
-            result = build_services_json_for_project(
-                project_name=project_name,
-                project_def=project_def,
-                clones_dir=args.clones_dir,
-                scatter_dir=out_dir,
-                ms_detection_dir=args.ms_detection_dir,
-            )
-
-            if result:
-                metrics, detailed_stats = result
-                dashboard_data["metrics"][project_name] = metrics
-                dashboard_data["detailed_stats"][project_name] = detailed_stats
-
-            logger.info(
-                "done services json: project=%s elapsed=%.1fs",
-                project_name,
-                time.perf_counter() - task_start,
-            )
-        except Exception as e:
-            logger.error("failed services json: %s", e, exc_info=True)
+        # 2. JSON生成 (Services JSON) — 未実装のためスキップ
+        # TODO(gen): build_services_json モジュール作成後に有効化する
+        logger.info("skip services json (not yet implemented)")
 
         logger.info(
             "done project: %d/%d project=%s elapsed=%.1fs",
@@ -326,7 +312,7 @@ if __name__ == "__main__":
     # 既存のlogger設定と競合しないように、ファイル出力用ロガーを別途設定するか、
     # あるいは既存のlogger設定の前にファイルハンドラを追加する形にする。
     # ここでは modules.logger_setup を使ってファイル出力を追加する。
-    file_logger = modules.logger_setup.setup_logger(__file__)
+    file_logger = logger_setup.setup_logger(__file__)
     # 既存のloggerにもファイルハンドラを追加したい場合は、setup_loggerの実装を調整する必要があるが、
     # 今回はシンプルに file_logger を使って開始/終了を記録し、
     # main処理中のログは既存の logging.basicConfig (標準出力) に任せる形とする。
@@ -342,9 +328,9 @@ if __name__ == "__main__":
 
     try:
         ret = main(sys.argv[1:])
-        modules.logger_setup.log_execution_time(file_logger, start_time)
+        logger_setup.log_execution_time(file_logger, start_time)
         raise SystemExit(ret)
     except Exception as e:
         file_logger.error("An error occurred", exc_info=True)
-        modules.logger_setup.log_execution_time(file_logger, start_time)
+        logger_setup.log_execution_time(file_logger, start_time)
         raise

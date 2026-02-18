@@ -39,6 +39,63 @@ class FileMapper:
         return self.file_loc[path]
 
 
+def get_file_type(file_path: str) -> str:
+    """ファイルパスからコード種別を推定する.
+
+    Args:
+        file_path: ファイルパス（相対/絶対どちらでも可）.
+
+    Returns:
+        "test" | "config" | "data" | "logic" のいずれか.
+    """
+    lower = file_path.lower().replace("\\", "/")
+    name = lower.rsplit("/", 1)[-1] if "/" in lower else lower
+
+    # テストファイル
+    test_indicators = (
+        "/test/", "/tests/", "/test_", "test_",
+        "_test.", ".test.", "/spec/", "/specs/",
+        "_spec.", ".spec.", "/__tests__/",
+    )
+    if any(ind in lower for ind in test_indicators):
+        return "test"
+
+    # 設定ファイル
+    config_names = {
+        "dockerfile", "docker-compose.yml", "docker-compose.yaml",
+        "makefile", ".env", "tsconfig.json", "package.json",
+        "setup.py", "setup.cfg", "pyproject.toml", "pom.xml",
+        "build.gradle", "build.sbt", "cargo.toml", "go.mod",
+        ".eslintrc", ".prettierrc", ".babelrc", "jest.config.js",
+        "webpack.config.js", "rollup.config.js", "vite.config.ts",
+        "nginx.conf", "requirements.txt", "gemfile",
+    }
+    config_extensions = {".yml", ".yaml", ".toml", ".ini", ".cfg", ".conf"}
+    if name in config_names:
+        return "config"
+    ext = "." + name.rsplit(".", 1)[-1] if "." in name else ""
+    if ext in config_extensions:
+        return "config"
+    config_dirs = ("/config/", "/configs/", "/.github/", "/.circleci/")
+    if any(d in lower for d in config_dirs):
+        return "config"
+
+    # データ/モデルファイル
+    data_indicators = (
+        "/model/", "/models/", "/entity/", "/entities/",
+        "/schema/", "/schemas/", "/dto/", "/proto/",
+        "/migration/", "/migrations/", "/seed/", "/seeds/",
+        "/fixture/", "/fixtures/",
+    )
+    data_extensions = {".sql", ".graphql", ".proto", ".avsc"}
+    if any(ind in lower for ind in data_indicators):
+        return "data"
+    if ext in data_extensions:
+        return "data"
+
+    return "logic"
+
+
 def calculate_loc(file_path: str) -> int:
     with open(file_path, "r") as f:
         return len(f.readlines())
