@@ -70,6 +70,9 @@ docker run --rm -it -p 8000:8000 \
 
 起動後, ブラウザで `http://localhost:8000` にアクセスしてください.
 
+Web UI 画面の `Open Visualization Tool` ボタンから可視化画面へ遷移できます.
+直接開く場合は `http://localhost:8000/visualize/` を利用してください.
+
 #### 起動方法 (Local — 画面確認のみ)
 
 外部ツールが揃っていないため分析の実行はできませんが, UI の確認は可能です.
@@ -80,6 +83,9 @@ python main.py web-ui
 ```
 
 起動後, ブラウザで `http://127.0.0.1:8000` にアクセスしてください.
+
+Web UI 画面の `Open Visualization Tool` ボタンから可視化画面へ遷移できます.
+直接開く場合は `http://127.0.0.1:8000/visualize/` を利用してください.
 
 ### run-all-steps の再開実行
 

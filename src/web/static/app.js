@@ -42,6 +42,7 @@ const I18N = {
     labelMaxCommits: "Max Analysed Commits",
     tooltipMaxCommits: "Maximum commits to analyze, independent from SEARCH_DEPTH, -1 means unlimited.",
     runButton: "Run Analysis",
+    openVisualization: "Open Visualization Tool",
     executionLog: "Execution Log",
     statusRunning: "Running...",
     statusInputError: "Input Error",
@@ -102,6 +103,7 @@ const I18N = {
     labelMaxCommits: "MAX_ANALYZED_COMMITS",
     tooltipMaxCommits: "実際に分析するコミット数の上限です, -1 で無制限。",
     runButton: "分析を実行",
+    openVisualization: "可視化ツールを開く",
     executionLog: "実行ログ",
     statusRunning: "実行中...",
     statusInputError: "入力エラー",
@@ -178,6 +180,7 @@ function applyLanguage(lang) {
   setText("label-max-commits", "labelMaxCommits");
   setText("tooltip-max-commits", "tooltipMaxCommits");
   setText("btn-run", "runButton");
+  setText("btn-visualize", "openVisualization");
   setText("execution-log-title", "executionLog");
   if (!document.getElementById("status-text").className) {
     setText("status-text", "statusRunning");

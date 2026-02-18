@@ -12,6 +12,7 @@ import re
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.wsgi import WSGIMiddleware
 from .stdout_proxy import ThreadLocalStdoutProxy
 
 # ---------------------------------------------------------------------------
@@ -40,6 +41,7 @@ from modules.visualization.build_scatter_dataset import (
 )
 from modules.visualization.naming import build_visualization_csv_filename_from_params
 from commands.pipeline import determine_analyzed_commits as dac
+from visualize.scatter import create_dash_app
 
 # ---------------------------------------------------------------------------
 # App
@@ -49,6 +51,8 @@ app = FastAPI(title="MSCCATools Web UI")
 app.mount(
     "/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static"
 )
+_dash_app = create_dash_app("/visualize/")
+app.mount("/visualize", WSGIMiddleware(_dash_app.server))
 
 # Store running job logs keyed by job_id
 _jobs: dict[str, dict] = {}

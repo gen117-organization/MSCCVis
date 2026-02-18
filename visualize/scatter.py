@@ -16,35 +16,61 @@ from visualize.plotting import create_scatter_plot
 from visualize.components import create_layout, build_project_summary, create_ide_layout
 from visualize.callbacks import register_callbacks, app_data
 
-# --- アプリケーションの初期化 ---
-# assetsフォルダへの絶対パスを構築
-# __file__ はこのファイル(scatter.py)のパス
-# os.path.dirnameでディレクトリを取得し、'..'で親ディレクトリ(プロジェクトルート)に移動
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-assets_path = os.path.join(project_root, 'assets')
+def create_dash_app(url_base_pathname: str = "/") -> Dash:
+    """Dashアプリを作成して返す.
 
-# assets_folderに絶対パスを指定してDashアプリを初期化
-app = Dash(__name__, assets_folder=assets_path, external_stylesheets=[dbc.themes.BOOTSTRAP])
-app.title = "マイクロサービス コードクローン可視化"
-app.config.suppress_callback_exceptions = True  # 動的コンポーネント用の設定
+    Args:
+        url_base_pathname: ルートパス. 例: "/" または "/visualize/".
 
-# 利用可能なプロジェクトと言語を取得（改善版）
-available_projects = get_available_projects_enhanced()
-available_languages = get_available_languages()
+    Returns:
+        初期化済みDashアプリ.
+    """
 
-# 初期表示用のデータを準備（重いデータを初回ロードしない）
-default_value = None
-if not available_projects:
-    initial_fig = go.Figure().update_layout(title="CSVファイルが見つかりません")
-    initial_summary = build_project_summary(None, {}, "N/A", "N/A", "N/A")
-else:
-    initial_fig = go.Figure().update_layout(title="プロジェクトを選択してください")
-    initial_summary = build_project_summary(None, {}, "N/A", "N/A", "N/A")
+    # --- アプリケーションの初期化 ---
+    # assetsフォルダへの絶対パスを構築
+    # __file__ はこのファイル(scatter.py)のパス
+    # os.path.dirnameでディレクトリを取得し、'..'で親ディレクトリ(プロジェクトルート)に移動
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    assets_path = os.path.join(project_root, 'assets')
 
-# レイアウトとコールバックを設定
-# Use create_ide_layout instead of create_layout
-app.layout = create_ide_layout(available_projects, available_languages, default_value, initial_fig, initial_summary)
-register_callbacks(app)
+    # assets_folderに絶対パスを指定してDashアプリを初期化
+    dash_app = Dash(
+        __name__,
+        assets_folder=assets_path,
+        external_stylesheets=[dbc.themes.BOOTSTRAP],
+        requests_pathname_prefix=url_base_pathname,
+        routes_pathname_prefix=url_base_pathname,
+    )
+    dash_app.title = "マイクロサービス コードクローン可視化"
+    dash_app.config.suppress_callback_exceptions = True  # 動的コンポーネント用の設定
+
+    # 利用可能なプロジェクトと言語を取得（改善版）
+    available_projects = get_available_projects_enhanced()
+    available_languages = get_available_languages()
+
+    # 初期表示用のデータを準備（重いデータを初回ロードしない）
+    default_value = None
+    if not available_projects:
+        initial_fig = go.Figure().update_layout(title="CSVファイルが見つかりません")
+        initial_summary = build_project_summary(None, {}, "N/A", "N/A", "N/A")
+    else:
+        initial_fig = go.Figure().update_layout(title="プロジェクトを選択してください")
+        initial_summary = build_project_summary(None, {}, "N/A", "N/A", "N/A")
+
+    # レイアウトとコールバックを設定
+    # Use create_ide_layout instead of create_layout
+    dash_app.layout = create_ide_layout(
+        available_projects,
+        available_languages,
+        default_value,
+        initial_fig,
+        initial_summary,
+    )
+    register_callbacks(dash_app)
+    return dash_app
+
+
+app = create_dash_app("/")
 
 # --- アプリケーションの実行 ---
 if __name__ == '__main__':

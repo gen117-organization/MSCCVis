@@ -1,5 +1,30 @@
 # Progress Log
 
+## 2026-02-18: Web UI から可視化ツールへの導線追加
+
+### 変更ファイル
+
+- src/web/app.py — Dash 可視化アプリを `WSGIMiddleware` で `/visualize` にマウント
+- visualize/scatter.py — `create_dash_app(url_base_pathname)` を追加し, `/` と `/visualize/` の両方で動作できるように変更
+- src/web/static/index.html — `Open Visualization Tool` ボタンを追加
+- src/web/static/app.js — ボタン文言の i18n キーを追加（英語/日本語）
+- README.md — `/visualize/` のアクセス方法を追記
+
+### テスト結果
+
+- `.venv/bin/python -m py_compile src/web/app.py visualize/scatter.py` → 成功
+- `.venv/bin/python -m pytest -q` → 失敗（`visualize/test_ui_logic.py` で `pandas` 未導入による import error）
+- `.venv/bin/python -m pytest tests/ -q` → 成功, 34 passed
+
+### 判断メモ
+
+- 可視化ツールを別ポートで起動する方式ではなく, 既存 FastAPI に同居させることで Web UI から即遷移できる構成にした
+- Dash のパス衝突を避けるため, `requests_pathname_prefix` と `routes_pathname_prefix` を `create_dash_app()` で切り替える設計にした
+
+### 残課題
+
+- TODO(gen): `.venv` に `pandas` を導入するか, `visualize/test_ui_logic.py` を optional dependency 前提でスキップする方針を決める
+
 ## 2026-02-18: Web UI Run Analysis に可視化CSV生成ステップを追加
 
 ### 変更ファイル

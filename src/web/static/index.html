@@ -256,6 +256,27 @@
       cursor: not-allowed;
     }
 
+    .btn-nav {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: #fff;
+      border: 1px solid var(--primary);
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 10px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-nav:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
     /* Log panel */
     .log-panel {
       display: none;
@@ -475,6 +496,7 @@
 
   <!-- ===== Run ===== -->
   <button class="btn-run" id="btn-run" onclick="startAnalysis()">Run Analysis</button>
+  <a class="btn-nav" id="btn-visualize" href="/visualize/" target="_blank" rel="noopener noreferrer">Open Visualization Tool</a>
 
   <!-- ===== Log Panel ===== -->
   <div class="log-panel" id="log-panel">
