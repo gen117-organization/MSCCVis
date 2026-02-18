@@ -562,7 +562,9 @@ def build_scatter_dataset_for_language(
         unknown_csv_path = out_project_dir / f"{output_csv_stem}_unknown.csv"
     else:
         resolved_csv_path = out_project_dir / f"{csv_prefix}{language}_scatter.csv"
-        unknown_csv_path = out_project_dir / f"{csv_prefix}{language}_scatter_unknown.csv"
+        unknown_csv_path = (
+            out_project_dir / f"{csv_prefix}{language}_scatter_unknown.csv"
+        )
     out_project_dir.mkdir(parents=True, exist_ok=True)
 
     resolved_count = 0

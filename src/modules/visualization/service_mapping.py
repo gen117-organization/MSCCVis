@@ -211,7 +211,9 @@ def save_service_contexts_to_json(
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-    logger.info("Saved service contexts JSON: %s (%d services)", output_path, len(services))
+    logger.info(
+        "Saved service contexts JSON: %s (%d services)", output_path, len(services)
+    )
     return output_path
 
 
@@ -259,7 +261,9 @@ def load_service_contexts_from_json(
                 )
             )
 
-    logger.info("Loaded service contexts from JSON: %s (%d contexts)", json_path, len(contexts))
+    logger.info(
+        "Loaded service contexts from JSON: %s (%d contexts)", json_path, len(contexts)
+    )
     return contexts
 
 

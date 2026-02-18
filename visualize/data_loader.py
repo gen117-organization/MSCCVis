@@ -260,7 +260,9 @@ def get_project_names() -> list[dict]:
             continue
         # CSV ファイルが1つでもあるプロジェクトのみ
         has_csv = any(
-            p.is_file() and p.name.endswith(".csv") and not p.name.endswith("_unknown.csv")
+            p.is_file()
+            and p.name.endswith(".csv")
+            and not p.name.endswith("_unknown.csv")
             for p in csv_dir.iterdir()
         )
         if has_csv:
@@ -312,7 +314,9 @@ def get_csv_options_for_project(project_name: str) -> list[dict]:
             label_parts.append(f"mac{info['max_analyzed_commits']}")
 
         label = " | ".join([p for p in label_parts if p])
-        value = f"{project_name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
+        value = (
+            f"{project_name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
+        )
         options.append(
             {
                 "label": label,
@@ -377,9 +381,7 @@ def _gather_scatter_projects():
                 label_parts.append(f"mac{info['max_analyzed_commits']}")
 
             label = " | ".join([p for p in label_parts if p])
-            value = (
-                f"{project_dir.name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
-            )
+            value = f"{project_dir.name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
             file_options.append(
                 {
                     "label": label,

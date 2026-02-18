@@ -38,7 +38,7 @@ def analyze_repo_by_linguist(workdir: str, name: str):
     result_dir = project_root / "dest/github_linguist"
     result_dir.mkdir(parents=True, exist_ok=True)
     result_file = result_dir / f"{name}.json"
-    with open(result_file, 'w') as result_output:
+    with open(result_file, "w") as result_output:
         result_output.write(json.dumps(output_json, indent=4))
 
 
@@ -63,9 +63,7 @@ def analyze_repo_by_clim(url: str, name: str, workdir: str):
         # ms_detection CSV → services_json キャッシュ
         _save_services_json_cache(url, name)
     except Exception as e:
-        raise RuntimeError(
-            f"CLAIM analysis failed: repo={name}, url={url}"
-        ) from e
+        raise RuntimeError(f"CLAIM analysis failed: repo={name}, url={url}") from e
 
 
 def _save_services_json_cache(url: str, name: str) -> None:
@@ -77,13 +75,19 @@ def _save_services_json_cache(url: str, name: str) -> None:
     """
     ms_detection_csv = project_root / "dest" / "ms_detection" / f"{name}.csv"
     if not ms_detection_csv.exists():
-        logger.warning("ms_detection CSV not found, skipping JSON cache: %s", ms_detection_csv)
+        logger.warning(
+            "ms_detection CSV not found, skipping JSON cache: %s", ms_detection_csv
+        )
         return
 
     try:
-        contexts = load_claim_service_contexts_for_repo(name, ms_detection_csv, chunk="latest")
+        contexts = load_claim_service_contexts_for_repo(
+            name, ms_detection_csv, chunk="latest"
+        )
         if not contexts:
-            logger.warning("No service contexts extracted, skipping JSON cache: %s", name)
+            logger.warning(
+                "No service contexts extracted, skipping JSON cache: %s", name
+            )
             return
 
         services_json_dir = project_root / "dest" / "services_json"
@@ -105,9 +109,7 @@ def analyze_repo(url: str, name: str, workdir: str):
         analyze_repo_by_linguist(workdir, name)
         analyze_repo_by_clim(url, name, workdir)
     except Exception as e:
-        raise RuntimeError(
-            f"analyze_repo failed: repo={name}, url={url}"
-        ) from e
+        raise RuntimeError(f"analyze_repo failed: repo={name}, url={url}") from e
 
 
 def analyze_dataset():
@@ -118,20 +120,22 @@ def analyze_dataset():
         total_repos += 1
 
     with open(dataset_file) as dataset:
-        repos = csv.DictReader(dataset, delimiter=';')
+        repos = csv.DictReader(dataset, delimiter=";")
         for index, repo in enumerate(repos):
             print_progress(f"Processing {index + 1}/{total_repos}")
             url = repo["URL"]
-            name = url.split('/')[-2] + '.' + url.split('/')[-1]
+            name = url.split("/")[-2] + "." + url.split("/")[-1]
             workdir = str(project_root / "dest/temp/clones" / name)
             try:
                 git.Repo.clone_from(url, workdir, depth=1)
                 analyze_repo(url, name, workdir)
             except Exception as e:
-                logger.error("Error processing repo %s: %s", url, traceback.format_exc())
+                logger.error(
+                    "Error processing repo %s: %s", url, traceback.format_exc()
+                )
                 continue
             finally:
-                print_info('   Clearing temporary directories')
+                print_info("   Clearing temporary directories")
                 clear_repo(Path(workdir))
 
 

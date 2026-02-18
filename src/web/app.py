@@ -260,7 +260,9 @@ def _generate_visualization_csv(
         modules.identify_microservice.analyze_repo(url, name, str(workdir))
         ms_detection_csv = ms_detection_dir / f"{name}.csv"
         if not ms_detection_csv.exists() and not services_json_path.exists():
-            log.write(f"  [warn] ms_detection CSV was not generated: {ms_detection_csv}\n")
+            log.write(
+                f"  [warn] ms_detection CSV was not generated: {ms_detection_csv}\n"
+            )
             return
 
     # 命名規則に基づくファイル名の生成
@@ -322,7 +324,9 @@ def _run_job(job_id: str, params: dict):
 
             force_recompute = bool(params.get("force_recompute", True))
             if force_recompute:
-                log.write("[job] Clearing previous results to apply selected filters.\n")
+                log.write(
+                    "[job] Clearing previous results to apply selected filters.\n"
+                )
                 _clear_previous_results(name)
 
             # ------------------------------------------------------------------
@@ -360,13 +364,17 @@ def _run_job(job_id: str, params: dict):
 
             try:
                 if analysis_method == "merge_commit":
-                    target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
+                    target_commits = dac.determine_analyzed_commits_by_mergecommits(
+                        workdir
+                    )
                 elif analysis_method == "tag":
                     target_commits = dac.determine_by_tag(workdir)
                 elif analysis_method == "frequency":
                     target_commits = dac.determine_by_frequency(workdir)
                 else:
-                    target_commits = dac.determine_analyzed_commits_by_mergecommits(workdir)
+                    target_commits = dac.determine_analyzed_commits_by_mergecommits(
+                        workdir
+                    )
             finally:
                 _cfg.ANALYSIS_METHOD = _orig_method
                 _cfg.SEARCH_DEPTH = _orig_depth
