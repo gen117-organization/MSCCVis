@@ -28,7 +28,9 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 from config import SELECTED_DATASET
-from modules.visualization.build_scatter_dataset import build_scatter_dataset_for_language
+from modules.visualization.build_scatter_dataset import (
+    build_scatter_dataset_for_language,
+)
 import modules.visualization.logger_setup as logger_setup
 from modules.identify_microservice import analyze_repo
 

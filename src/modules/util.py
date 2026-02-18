@@ -22,17 +22,17 @@ class FileMapper:
         self.file_loc = {}
         for file in files:
             file_id = int(file["file_id"])
-            path = str(file["file_path"]).replace(project_dir+"/", "")
+            path = str(file["file_path"]).replace(project_dir + "/", "")
             self.id_to_path[file_id] = path
             self.path_to_id[path] = file_id
             self.file_loc[path] = int(file["loc"])
-    
+
     def get_file_id(self, path: str) -> int:
         return self.path_to_id[path]
-    
+
     def get_file_path(self, file_id: int) -> str:
         return self.id_to_path[file_id]
-    
+
     def get_file_loc(self, path: str) -> int:
         if path not in self.file_loc.keys():
             return -1
@@ -53,22 +53,48 @@ def get_file_type(file_path: str) -> str:
 
     # テストファイル
     test_indicators = (
-        "/test/", "/tests/", "/test_", "test_",
-        "_test.", ".test.", "/spec/", "/specs/",
-        "_spec.", ".spec.", "/__tests__/",
+        "/test/",
+        "/tests/",
+        "/test_",
+        "test_",
+        "_test.",
+        ".test.",
+        "/spec/",
+        "/specs/",
+        "_spec.",
+        ".spec.",
+        "/__tests__/",
     )
     if any(ind in lower for ind in test_indicators):
         return "test"
 
     # 設定ファイル
     config_names = {
-        "dockerfile", "docker-compose.yml", "docker-compose.yaml",
-        "makefile", ".env", "tsconfig.json", "package.json",
-        "setup.py", "setup.cfg", "pyproject.toml", "pom.xml",
-        "build.gradle", "build.sbt", "cargo.toml", "go.mod",
-        ".eslintrc", ".prettierrc", ".babelrc", "jest.config.js",
-        "webpack.config.js", "rollup.config.js", "vite.config.ts",
-        "nginx.conf", "requirements.txt", "gemfile",
+        "dockerfile",
+        "docker-compose.yml",
+        "docker-compose.yaml",
+        "makefile",
+        ".env",
+        "tsconfig.json",
+        "package.json",
+        "setup.py",
+        "setup.cfg",
+        "pyproject.toml",
+        "pom.xml",
+        "build.gradle",
+        "build.sbt",
+        "cargo.toml",
+        "go.mod",
+        ".eslintrc",
+        ".prettierrc",
+        ".babelrc",
+        "jest.config.js",
+        "webpack.config.js",
+        "rollup.config.js",
+        "vite.config.ts",
+        "nginx.conf",
+        "requirements.txt",
+        "gemfile",
     }
     config_extensions = {".yml", ".yaml", ".toml", ".ini", ".cfg", ".conf"}
     if name in config_names:
@@ -82,10 +108,20 @@ def get_file_type(file_path: str) -> str:
 
     # データ/モデルファイル
     data_indicators = (
-        "/model/", "/models/", "/entity/", "/entities/",
-        "/schema/", "/schemas/", "/dto/", "/proto/",
-        "/migration/", "/migrations/", "/seed/", "/seeds/",
-        "/fixture/", "/fixtures/",
+        "/model/",
+        "/models/",
+        "/entity/",
+        "/entities/",
+        "/schema/",
+        "/schemas/",
+        "/dto/",
+        "/proto/",
+        "/migration/",
+        "/migrations/",
+        "/seed/",
+        "/seeds/",
+        "/fixture/",
+        "/fixtures/",
     )
     data_extensions = {".sql", ".graphql", ".proto", ".avsc"}
     if any(ind in lower for ind in data_indicators):
@@ -99,7 +135,7 @@ def get_file_type(file_path: str) -> str:
 def calculate_loc(file_path: str) -> int:
     with open(file_path, "r") as f:
         return len(f.readlines())
-    
+
 
 def get_codeclones_classified_by_type(project: dict, language: str) -> dict:
     """
@@ -120,7 +156,7 @@ def get_codeclones_classified_by_type(project: dict, language: str) -> dict:
         "within-utility": {},
         "across-testing": {},
         "across-production": {},
-        "across-utility": {}
+        "across-utility": {},
     }
 
     codebases = project["languages"][language]
@@ -130,7 +166,7 @@ def get_codeclones_classified_by_type(project: dict, language: str) -> dict:
         for row in fragments:
             path = row["file_path"]
             if "test" in path.lower():
-                is_testing = True    
+                is_testing = True
             else:
                 is_production = True
         service_set = set()
