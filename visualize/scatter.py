@@ -33,13 +33,23 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     assets_path = os.path.join(project_root, 'assets')
 
+    normalized_prefix = url_base_pathname if url_base_pathname.endswith("/") else f"{url_base_pathname}/"
+    if normalized_prefix == "//":
+        normalized_prefix = "/"
+
+    # FastAPI の /visualize マウント配下で動かす場合は,
+    # 外部リクエストの prefix だけ /visualize/ にし,
+    # Dash 側の内部ルーティングは "/" にする.
+    # （Mount で prefix が剥がされて WSGI 側へ渡るため）
+    routes_prefix = "/" if normalized_prefix != "/" else "/"
+
     # assets_folderに絶対パスを指定してDashアプリを初期化
     dash_app = Dash(
         __name__,
         assets_folder=assets_path,
         external_stylesheets=[dbc.themes.BOOTSTRAP],
-        requests_pathname_prefix=url_base_pathname,
-        routes_pathname_prefix=url_base_pathname,
+        requests_pathname_prefix=normalized_prefix,
+        routes_pathname_prefix=routes_prefix,
     )
     dash_app.title = "マイクロサービス コードクローン可視化"
     dash_app.config.suppress_callback_exceptions = True  # 動的コンポーネント用の設定

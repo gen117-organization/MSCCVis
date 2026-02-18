@@ -1,5 +1,48 @@
 # Progress Log
 
+## 2026-02-18: /visualize 404 と起動時ノイズログの修正
+
+### 変更ファイル
+
+- visualize/scatter.py — FastAPI mount 配下で動くよう `requests_pathname_prefix` と `routes_pathname_prefix` の扱いを修正
+- visualize/data_loader.py — `services.json` が存在しない場合に warning を出さず 0 を返すよう変更
+
+### テスト結果
+
+- `.venv/bin/python -m py_compile visualize/scatter.py visualize/data_loader.py src/web/app.py` , 成功
+- `.venv/bin/python -m pytest tests/ -q` , 成功, 34 passed in 0.03s
+- `docker build -t msccatools .` , 成功
+- `docker run ... msccatools web-ui --host 0.0.0.0` で `GET /` = 200, `GET /visualize/` = 200 を確認
+
+### 判断メモ
+
+- `WSGIMiddleware` 配下では mount prefix が WSGI 側に剥がされるため, Dash の内部 route は `/` で持ち, 外部 request prefix のみ `/visualize/` にする必要があった
+- `services.json` は未実装機能のため未存在が通常ケースであり, warning を大量出力しない実装に変更した
+
+### 残課題
+
+- TODO(gen): CLAIM 側の `SyntaxWarning: invalid escape sequence '\$'` は機能影響はないが, 必要なら upstream 側で正規表現文字列の raw 化を検討する
+
+## 2026-02-18: Docker起動時の可視化依存不足を修正
+
+### 変更ファイル
+
+- requirements.txt — `dash-bootstrap-components==1.6.0`, `pandas==2.2.3` を追加
+
+### テスト結果
+
+- `.venv/bin/python -m py_compile src/web/app.py visualize/scatter.py` , 成功
+- `.venv/bin/python -m pytest tests/ -q` , 成功, 34 passed in 0.03s
+
+### 判断メモ
+
+- Web UI 起動時に `src/web/app.py` が `visualize.scatter` を import するため, 可視化依存は optional ではなく必須依存として `requirements.txt` に含める必要がある
+- エラー原因は `dash_bootstrap_components` 未導入だったが, 可視化実行時に `pandas` も必要なため同時に追加した
+
+### 残課題
+
+- TODO(gen): Docker イメージを再ビルドし, `web-ui --host 0.0.0.0` で `/` と `/visualize/` の起動確認を行う
+
 ## 2026-02-18: Web UI から可視化ツールへの導線追加
 
 ### 変更ファイル

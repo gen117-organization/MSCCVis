@@ -71,8 +71,11 @@ def load_dashboard_data(scatter_dir="dest/scatter"):
 
 def get_actual_service_count(project_name: str, language: str):
     """実際のservices.jsonからサービス数を取得する"""
+    services_json_path = f"dest/scatter/{project_name}/services.json"
+    if not os.path.exists(services_json_path):
+        return 0
+
     try:
-        services_json_path = f"dest/scatter/{project_name}/services.json"
         file_ranges = load_service_file_ranges_cached(services_json_path, language)
         return len(file_ranges) if file_ranges else 0
     except Exception as e:
