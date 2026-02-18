@@ -11,10 +11,15 @@ if __package__ is None or __package__ == "":
     sys.path.append(str(project_root))
 
 # 可視化モジュール（パッケージとして実行/スクリプト実行の両対応）
-from visualize.data_loader import get_available_projects_enhanced, get_available_languages, load_and_process_data
+from visualize.data_loader import (
+    get_available_projects_enhanced,
+    get_available_languages,
+    load_and_process_data,
+)
 from visualize.plotting import create_scatter_plot
 from visualize.components import create_layout, build_project_summary, create_ide_layout
 from visualize.callbacks import register_callbacks, app_data
+
 
 def create_dash_app(url_base_pathname: str = "/") -> Dash:
     """Dashアプリを作成して返す.
@@ -30,9 +35,13 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
     # assetsフォルダへの絶対パスを構築
     # __file__ はこのファイル(scatter.py)のパス = visualize/scatter.py
     # assets は同じ visualize/ ディレクトリ配下にある
-    assets_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets')
+    assets_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 
-    normalized_prefix = url_base_pathname if url_base_pathname.endswith("/") else f"{url_base_pathname}/"
+    normalized_prefix = (
+        url_base_pathname
+        if url_base_pathname.endswith("/")
+        else f"{url_base_pathname}/"
+    )
     if normalized_prefix == "//":
         normalized_prefix = "/"
 
@@ -82,5 +91,5 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
 app = create_dash_app("/")
 
 # --- アプリケーションの実行 ---
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True, port=8050)

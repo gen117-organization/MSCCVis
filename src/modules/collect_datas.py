@@ -239,8 +239,17 @@ def collect_datas_of_repo(
                 if not clones_json.exists():
                     missing_languages.append(language)
             if missing_languages:
-                if commit_idx == 1 or commit_idx % 10 == 0 or commit_idx == total_commits:
-                    logger.info("  commit progress: %d/%d (checkout %s...)", commit_idx, total_commits, commit_hash[:7])
+                if (
+                    commit_idx == 1
+                    or commit_idx % 10 == 0
+                    or commit_idx == total_commits
+                ):
+                    logger.info(
+                        "  commit progress: %d/%d (checkout %s...)",
+                        commit_idx,
+                        total_commits,
+                        commit_hash[:7],
+                    )
                 git_repo.git.checkout("-f", commit_hash)
 
                 if apply_import_filter:
@@ -258,9 +267,16 @@ def collect_datas_of_repo(
                         log=log,
                     )
             else:
-                if commit_idx == 1 or commit_idx % 10 == 0 or commit_idx == total_commits:
+                if (
+                    commit_idx == 1
+                    or commit_idx % 10 == 0
+                    or commit_idx == total_commits
+                ):
                     logger.info(
-                        "  commit progress: %d/%d (skip %s, already detected)", commit_idx, total_commits, commit_hash[:7]
+                        "  commit progress: %d/%d (skip %s, already detected)",
+                        commit_idx,
+                        total_commits,
+                        commit_hash[:7],
                     )
             if commit_hash == hcommit.hexsha:
                 continue
