@@ -1,8 +1,16 @@
 import json
+import logging
 import sys
 from pathlib import Path
 
 import git
+
+logger = logging.getLogger(__name__)
+if not logger.handlers:
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
 
 def _find_repo_root(start: Path) -> Path:
     for parent in [start] + list(start.parents):
@@ -61,14 +69,14 @@ def analyze_repo(project: dict):
     workdir = project_root / "dest/projects" / name
     git_repo = git.Repo(workdir)
     analyzed_commits_path = project_root / "dest/analyzed_commits" / f"{name}.json"
-    print("name:", name)
+    logger.info("analyze_modification: %s", name)
 
     with open(analyzed_commits_path, "r") as f:
         analyzed_commit_hashes = json.load(f)
     head_commit = git_repo.commit(analyzed_commit_hashes[0])
 
     for language in project["languages"]:
-        print("language:", language)
+        logger.info("  language: %s", language)
         head_ccfsw_file = project_root / "dest/clones_json" / name / head_commit.hexsha / f"{language}.json"
         head_ccfsw = _load_ccfsw(head_ccfsw_file)
         latest_file_map = FileMapper(head_ccfsw["file_data"], str(workdir))
@@ -79,12 +87,16 @@ def analyze_repo(project: dict):
         }
 
         prev_commit = head_commit
+        total_commits = len(analyzed_commit_hashes) - 1
+        commit_idx = 0
         for commit_hash in analyzed_commit_hashes:
             if commit_hash == head_commit.hexsha:
                 continue
 
+            commit_idx += 1
             commit = git_repo.commit(commit_hash)
-            print("commit:", commit.hexsha)
+            if commit_idx == 1 or commit_idx % 10 == 0 or commit_idx == total_commits:
+                logger.info("  commit progress: %d/%d", commit_idx, total_commits)
             modified_clones_file = project_root / "dest/modified_clones" / name / f"{commit.hexsha}-{prev_commit.hexsha}" / f"{language}.json"
 
             if not modified_clones_file.exists():

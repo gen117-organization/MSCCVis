@@ -1366,7 +1366,7 @@ def _legend_chip(label, color):
     return html.Div(label, style={'background':color, 'border':'1px solid #ddd', 'padding':'2px 6px', 'borderRadius':'3px', 'fontSize':'11px'})
 
 def create_ide_layout(available_projects, available_languages, default_project, initial_fig, initial_summary):
-    """IDE風レイアウトを作成する"""
+    """IDE風レイアウトを作成する (index.html 風デザイン + 英語/日本語切替対応)"""
     
     # Project Selector
     project_selector = dcc.Dropdown(
@@ -1374,35 +1374,80 @@ def create_ide_layout(available_projects, available_languages, default_project, 
         options=available_projects,
         value=default_project,
         placeholder="Select Project",
-        style={'width': '400px'}, # Increased width
+        style={'width': '400px'},
         clearable=False
     )
     
     # View Switcher (Tabs)
     view_switcher = html.Div([
-        html.Button("Scatter Plot", id="btn-view-scatter", className="view-btn active", n_clicks=0),
-        html.Button("Explorer", id="btn-view-explorer", className="view-btn", n_clicks=0),
-        html.Button("Statistics", id="btn-view-stats", className="view-btn", n_clicks=0),
+        html.Button("Scatter Plot", id="btn-view-scatter", className="view-btn active", n_clicks=0,
+                     **{"data-i18n": "btnScatter"}),
+        html.Button("Explorer", id="btn-view-explorer", className="view-btn", n_clicks=0,
+                     **{"data-i18n": "btnExplorer"}),
+        html.Button("Statistics", id="btn-view-stats", className="view-btn", n_clicks=0,
+                     **{"data-i18n": "btnStats"}),
     ], className="view-switcher", style={'marginLeft': '20px'})
+
+    # Language Selector (index.html 風)
+    lang_selector = html.Div([
+        html.Span("Language", id="vis-lang-label", style={
+            'fontSize': '0.85rem', 'color': '#777',
+        }, **{"data-i18n": "langLabel"}),
+        dcc.Dropdown(
+            id='vis-lang-select',
+            options=[
+                {'label': 'English', 'value': 'en'},
+                {'label': '日本語', 'value': 'ja'},
+            ],
+            value='en',
+            clearable=False,
+            searchable=False,
+            style={'width': '110px', 'fontSize': '0.85rem'},
+        ),
+    ], className="lang-bar", style={
+        'display': 'flex', 'alignItems': 'center', 'gap': '8px',
+        'marginLeft': 'auto', 'flexShrink': '0',
+    })
+
+    # Back to Settings link
+    back_link = html.A(
+        "Back to Settings",
+        href="/",
+        id="back-to-settings-link",
+        className="btn-back",
+        **{"data-i18n": "backToSettings"},
+        style={
+            'fontSize': '0.85rem', 'color': 'var(--primary, #f5a623)',
+            'textDecoration': 'none', 'fontWeight': '600',
+            'marginRight': '16px', 'whiteSpace': 'nowrap',
+        },
+    )
 
     # Header
     header = html.Div([
-        html.Div("🔬 MSCCA Tools - Clone Explorer", style={'fontWeight': 'bold', 'color': '#007acc'}),
+        html.Div("MSCCA Tools - Clone Explorer", style={
+            'fontWeight': 'bold', 'color': 'var(--primary, #f5a623)',
+            'fontSize': '1rem', 'whiteSpace': 'nowrap',
+        }, **{"data-i18n": "headerTitle"}),
         html.Div([
             project_selector,
-            view_switcher
+            view_switcher,
+            back_link,
+            lang_selector,
         ], className="header-controls")
     ], className="ide-header")
 
     # Sidebar
     sidebar = html.Div([
         html.Div([
-            html.Div("EXPLORER", className="sidebar-header"),
+            html.Div("EXPLORER", className="sidebar-header",
+                      **{"data-i18n": "sidebarExplorer"}),
             html.Div(id="file-tree-container", className="sidebar-tree")
         ], className="sidebar-section", style={'flex': '2', 'borderBottom': '1px solid #e0e0e0'}),
         html.Div([
             html.Div(id="drag-handle", className="sidebar-resizer"),
-            html.Div("CLONE OUTLINE", className="sidebar-header"),
+            html.Div("CLONE OUTLINE", className="sidebar-header",
+                      **{"data-i18n": "sidebarCloneOutline"}),
             html.Div(id="clone-list-container", className="sidebar-tree", style={'flex': '1'})
         ], className="sidebar-section", style={'flex': '1', 'display': 'flex', 'flexDirection': 'column'})
     ], className="ide-sidebar")
@@ -1410,11 +1455,18 @@ def create_ide_layout(available_projects, available_languages, default_project, 
     # Main Area
     main_content = html.Div([
         # Editor Header (Breadcrumbs etc)
-        html.Div(id="editor-header", className="editor-header", children="Select a file to view"),
+        html.Div(id="editor-header", className="editor-header",
+                 children=html.Span("Select a file to view",
+                                    **{"data-i18n": "editorPlaceholder"})),
         
         # Editor Content
         html.Div(id="editor-content", className="editor-content", children=[
-            html.Div("Select a file from the explorer to view its content.", id="empty-state-message", style={'padding': '20px', 'color': '#777', 'textAlign': 'center', 'marginTop': '50px'})
+            html.Div(
+                html.Span("Select a file from the explorer to view its content.",
+                           **{"data-i18n": "emptyState"}),
+                id="empty-state-message",
+                style={'padding': '20px', 'color': '#777', 'textAlign': 'center', 'marginTop': '50px'},
+            )
         ], style={'padding': '0', 'height': '100%', 'overflow': 'hidden'})
     ], className="ide-content")
 
@@ -1424,7 +1476,8 @@ def create_ide_layout(available_projects, available_languages, default_project, 
         html.Div([
             dbc.Row([
                 dbc.Col([
-                    html.Label("Detection Method:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555'}),
+                    html.Label("Detection Method:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555'},
+                               **{"data-i18n": "filterDetection"}),
                     dbc.RadioItems(
                         id='detection-method-radio',
                         options=[
@@ -1441,7 +1494,8 @@ def create_ide_layout(available_projects, available_languages, default_project, 
                 ], width="auto", style={'marginRight': '30px'}),
 
                 dbc.Col([
-                    html.Label("Co-modification:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555'}),
+                    html.Label("Co-modification:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555'},
+                               **{"data-i18n": "filterComod"}),
                     dbc.RadioItems(
                         id='comodification-filter',
                         options=[
@@ -1457,7 +1511,8 @@ def create_ide_layout(available_projects, available_languages, default_project, 
                 ], width="auto", style={'marginRight': '30px'}),
 
                 dbc.Col([
-                    html.Label("Scope:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555'}),
+                    html.Label("Scope:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555'},
+                               **{"data-i18n": "filterScope"}),
                     dbc.RadioItems(
                         id='service-scope-filter',
                         options=[
@@ -1475,14 +1530,16 @@ def create_ide_layout(available_projects, available_languages, default_project, 
 
             # Code Type Buttons Row
             html.Div([
-                html.Label("Code Type:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555', 'marginBottom': '4px', 'display': 'block'}),
+                html.Label("Code Type:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555', 'marginBottom': '4px', 'display': 'block'},
+                           **{"data-i18n": "filterCodeType"}),
                 html.Div(id='code-type-buttons-container', className='code-type-buttons', style={'display': 'flex', 'gap': '8px', 'flexWrap': 'wrap'}),
                 dcc.Store(id='code-type-store', data='all'), # Logic/Data/Test etc.
             ], style={'marginTop': '10px'}),
 
             # Clone ID Row (collapsed if not needed, or right aligned)
             html.Div([
-                 html.Label("Clone ID search:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555', 'marginRight': '8px'}),
+                 html.Label("Clone ID search:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555', 'marginRight': '8px'},
+                            **{"data-i18n": "filterCloneId"}),
                  dcc.Input(
                     id='clone-id-filter',
                     type='text',
@@ -1504,7 +1561,8 @@ def create_ide_layout(available_projects, available_languages, default_project, 
                 ),
                 
                 # Cross Service Filter
-                html.Label("Many Services:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555', 'marginRight': '8px'}),
+                html.Label("Many Services:", style={'fontSize': '12px', 'fontWeight': 'bold', 'color': '#555', 'marginRight': '8px'},
+                           **{"data-i18n": "filterManyServices"}),
                 dcc.Dropdown(
                     id='cross-service-filter',
                     options=[{'label': 'All', 'value': 'all'}],
@@ -1541,7 +1599,10 @@ def create_ide_layout(available_projects, available_languages, default_project, 
             # Clone Details Panel (Below Scatter Plot, Natural Flow)
             html.Div([
                 html.Div(id='clone-selector-container', style={'marginBottom': '10px'}),
-                html.Div(id='clone-details-table', children=[html.P("グラフ上の点をクリックすると、ここにクローンの詳細とコード比較が表示されます。")])
+                html.Div(id='clone-details-table', children=[
+                    html.P("Click a point on the graph to view clone details and code comparison here.",
+                           **{"data-i18n": "scatterClickHint"})
+                ])
             ], style={'padding': '20px', 'borderTop': '2px solid #ddd', 'backgroundColor': '#fff'})
             
          ], className="graph-container"),
@@ -1555,9 +1616,11 @@ def create_ide_layout(available_projects, available_languages, default_project, 
 
     # Stores
     stores = html.Div([
-         dcc.Store(id='file-tree-data-store'), # Tree structure data
-         dcc.Store(id='selected-file-store'),  # Currently selected file path
-         dcc.Store(id='clone-data-store'),     # Clone data for current project
+         dcc.Store(id='file-tree-data-store'),  # Tree structure data
+         dcc.Store(id='selected-file-store'),    # Currently selected file path
+         dcc.Store(id='clone-data-store'),       # Clone data for current project
+         dcc.Store(id='lang-store', data='en'),  # UI language (en / ja)
+         html.Div(id='i18n-dummy', style={'display': 'none'}),  # clientside callback output
     ])
 
     return html.Div([
@@ -1565,7 +1628,7 @@ def create_ide_layout(available_projects, available_languages, default_project, 
         html.Div([
             sidebar,
             main_content
-        ], id="ide-main-container", className="ide-main"), # Added ID for toggling
+        ], id="ide-main-container", className="ide-main"),
         scatter_overlay,
         stats_container,
         stores

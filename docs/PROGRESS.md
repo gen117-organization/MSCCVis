@@ -1,5 +1,33 @@
 # Progress Log
 
+## 02-18-21:30 ログ削減・可視化UIのCSS修正・言語切替・デザイン統一
+
+### 変更ファイル
+
+- src/modules/analyze_modification.py — print()をlogging変換, コミットごとのログを10件間隔の進捗表示に変更
+- src/modules/collect_datas.py — コミットごとのcheckout/skipログを10件間隔の進捗表示に変更
+- visualize/scatter.py — assets_folderパスを `visualize/assets/` に修正 (CSS読み込み不具合の根本原因)
+- visualize/assets/ide_theme.css — CSS変数をindex.html風の `--primary: #f5a623` に統一, ヘッダーのアクセントカラー変更
+- visualize/assets/components.css — h1/h4の装飾色を `--primary` に統一
+- visualize/assets/i18n.js — 新規: 英語/日本語切替のクライアントサイドロジック
+- visualize/components.py — create_ide_layout に言語セレクタ(en/ja)と `data-i18n` 属性を追加, 設定画面への戻りリンク追加
+- visualize/callbacks.py — 言語切替用のclientside callbackを登録
+
+### テスト結果
+
+- `pytest tests/ -q` — 28 passed in 0.04s
+
+### 判断メモ
+
+- CSSが当たらない原因: `scatter.py` の `assets_folder` がリポジトリルートの `assets/` を指していたが, 実ファイルは `visualize/assets/` にあった
+- i18nはDashのclientside_callbackで実装し, サーバー往復を回避して高速に切り替わるようにした
+- デザイントークン (--primary等) をindex.htmlのクローン検出設定画面と共通化した
+- ログの間引き: 1件ごと→10件ごとにすることでWebSocket配信量を大幅に削減
+
+### 残課題
+
+- TODO(gen): visualize/test_ui_logic.py はpandas未インストールで collect errorになる (今回の変更とは無関係)
+
 ## 2026-02-18: 可視化UIのプロジェクト選択をCSVファイル単位へ変更
 
 ### 変更ファイル

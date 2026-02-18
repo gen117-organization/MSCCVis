@@ -68,6 +68,28 @@ def create_code_type_button(label, count, value, active_value):
 def register_callbacks(app):
     """Dashアプリにコールバックを登録する"""
     
+    # --- i18n: 言語セレクタ → lang-store → clientside で DOM テキスト差し替え ---
+    @app.callback(
+        Output('lang-store', 'data'),
+        Input('vis-lang-select', 'value'),
+        prevent_initial_call=False,
+    )
+    def _sync_lang_store(lang):
+        return lang or 'en'
+
+    app.clientside_callback(
+        """
+        function(lang) {
+            if (window.dash_clientside && window.dash_clientside.i18n) {
+                return window.dash_clientside.i18n.applyLang(lang);
+            }
+            return "";
+        }
+        """,
+        Output('i18n-dummy', 'children'),
+        Input('lang-store', 'data'),
+    )
+    
     # --- REMOVED: update_filter_options (UI removed) ---
     
     @app.callback(

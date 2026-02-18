@@ -28,10 +28,9 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
 
     # --- アプリケーションの初期化 ---
     # assetsフォルダへの絶対パスを構築
-    # __file__ はこのファイル(scatter.py)のパス
-    # os.path.dirnameでディレクトリを取得し、'..'で親ディレクトリ(プロジェクトルート)に移動
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    assets_path = os.path.join(project_root, 'assets')
+    # __file__ はこのファイル(scatter.py)のパス = visualize/scatter.py
+    # assets は同じ visualize/ ディレクトリ配下にある
+    assets_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets')
 
     normalized_prefix = url_base_pathname if url_base_pathname.endswith("/") else f"{url_base_pathname}/"
     if normalized_prefix == "//":

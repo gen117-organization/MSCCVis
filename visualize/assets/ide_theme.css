@@ -1,0 +1,390 @@
+/* IDE Theme - index.html (Clone Detection Settings) style */
+:root {
+    /* index.html と共通のデザイントークン */
+    --primary: #f5a623;
+    --primary-dark: #e09100;
+    --bg: #fafafa;
+    --card-bg: #ffffff;
+    --text: #333;
+    --text-light: #777;
+    --border: #e0e0e0;
+    --radius: 6px;
+
+    --ide-bg: var(--bg);
+    --ide-sidebar-bg: #f3f3f3;
+    --ide-header-bg: var(--card-bg);
+    --ide-border: var(--border);
+    --ide-text: var(--text);
+    --ide-accent: var(--primary);
+    --ide-hover: #f0ebe3;
+    --ide-selection: #fdf3e0;
+    --ide-code-bg: #ffffff;
+    --ide-line-num-bg: #f5f5f5;
+    --ide-line-num-text: #999999;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--ide-bg);
+    color: var(--ide-text);
+    overflow: hidden;
+    /* Prevent body scroll, use inner scroll */
+    height: 100vh;
+}
+
+/* Layout Grid */
+.ide-container {
+    display: grid;
+    grid-template-rows: 50px 1fr;
+    height: 100vh;
+    width: 100vw;
+}
+
+.ide-header {
+    background-color: var(--ide-header-bg);
+    border-bottom: 2px solid var(--primary);
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.ide-main {
+    display: flex;
+    overflow: hidden;
+}
+
+.ide-sidebar {
+    width: 300px;
+    background-color: var(--ide-sidebar-bg);
+    border-right: 1px solid var(--ide-border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ide-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--ide-bg);
+}
+
+/* Sidebar Components */
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sidebar-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.sidebar-resizer {
+    height: 5px;
+    background-color: transparent;
+    cursor: row-resize;
+}
+
+.sidebar-resizer:hover {
+    background-color: var(--ide-accent);
+}
+
+/* Tree View */
+.tree-item {
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    padding: 2px 0;
+}
+
+.tree-item:hover {
+    background-color: var(--ide-hover);
+}
+
+.tree-item-content {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.tree-item-label {
+    margin-left: 6px;
+}
+
+.tree-item-icon {
+    width: 16px;
+    text-align: center;
+    color: #888;
+}
+
+.tree-item.active {
+    background-color: var(--ide-selection);
+    color: var(--ide-accent);
+}
+
+/* Clone List in Sidebar */
+.clone-list-item {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--ide-border);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.clone-list-item:hover {
+    background-color: var(--ide-hover);
+}
+
+.clone-list-item.active {
+    background-color: var(--ide-selection);
+    border-left: 3px solid var(--primary);
+}
+
+.clone-list-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.clone-id {
+    font-weight: bold;
+}
+
+.clone-similarity {
+    color: #666;
+}
+
+.clone-file {
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Editor Area */
+.editor-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.editor-header {
+    height: 35px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid var(--ide-border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.editor-breadcrumbs {
+    font-size: 12px;
+    color: #666;
+}
+
+.editor-content {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    padding: 0;
+}
+
+/* Code View */
+.code-container {
+    display: flex;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.line-numbers {
+    background-color: var(--ide-line-num-bg);
+    color: var(--ide-line-num-text);
+    padding: 4px 8px;
+    text-align: right;
+    user-select: none;
+    min-width: 40px;
+    border-right: 1px solid var(--ide-border);
+}
+
+.code-lines {
+    background-color: var(--ide-code-bg);
+    padding: 4px 8px;
+    flex: 1;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.code-line {
+    height: 1.5em;
+    /* Ensure consistent height */
+}
+
+.code-line-marker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background-color: rgba(144, 238, 144, 0.2);
+    /* Highlight color */
+    pointer-events: none;
+}
+
+.missing-line {
+    background-color: #f0f0f0;
+    color: #999;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Compare View */
+.compare-container {
+    display: flex;
+    flex: 1;
+    height: 100%;
+}
+
+.split-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--ide-border);
+}
+
+.split-pane:last-child {
+    border-right: none;
+}
+
+.clone-highlight {
+    background-color: rgba(174, 219, 255, 0.4);
+    display: block;
+    width: 100%;
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.view-switcher {
+    display: flex;
+    background: #e0e0e0;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.view-btn {
+    padding: 4px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 3px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.view-btn:hover {
+    background: var(--ide-hover);
+}
+
+.view-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+}
+
+/* Scatter Plot Container - hidden by default unless active */
+.scatter-container-fullscreen {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 100;
+    overflow: auto;
+    padding: 20px;
+    display: none;
+}
+
+.scatter-container-fullscreen.active {
+    display: block;
+}
+
+/* Statistics View Container - identical to scatter */
+.stats-container-fullscreen {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 100;
+    overflow: auto;
+    padding: 20px;
+    display: none;
+}
+
+.stats-container-fullscreen.active {
+    display: block;
+}
+
+/* Details/Summary overrides for Tree */
+details>summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+details>summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Language bar (matches index.html .lang-bar) */
+.lang-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Back to settings link */
+.btn-back {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.btn-back:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Sidebar resizer accent on hover */
+.sidebar-resizer:hover {
+    background-color: var(--primary);
+}

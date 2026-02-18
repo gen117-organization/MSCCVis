@@ -223,9 +223,10 @@ def collect_datas_of_repo(
     with open(analyzed_commits_path, "r") as f:
         analyzed_commit_hashes = json.load(f)
     hcommit = git_repo.commit(analyzed_commit_hashes[0])
+    total_commits = len(analyzed_commit_hashes)
     try:
         prev_commit = hcommit
-        for commit_hash in analyzed_commit_hashes:
+        for commit_idx, commit_hash in enumerate(analyzed_commit_hashes, 1):
             missing_languages = []
             for language in languages:
                 clones_json = (
@@ -238,7 +239,8 @@ def collect_datas_of_repo(
                 if not clones_json.exists():
                     missing_languages.append(language)
             if missing_languages:
-                logger.info("checkout to %s...", commit_hash)
+                if commit_idx == 1 or commit_idx % 10 == 0 or commit_idx == total_commits:
+                    logger.info("  commit progress: %d/%d (checkout %s...)", commit_idx, total_commits, commit_hash[:7])
                 git_repo.git.checkout("-f", commit_hash)
 
                 if apply_import_filter:
@@ -256,9 +258,10 @@ def collect_datas_of_repo(
                         log=log,
                     )
             else:
-                logger.info(
-                    "skip clone detection for %s (already detected)", commit_hash
-                )
+                if commit_idx == 1 or commit_idx % 10 == 0 or commit_idx == total_commits:
+                    logger.info(
+                        "  commit progress: %d/%d (skip %s, already detected)", commit_idx, total_commits, commit_hash[:7]
+                    )
             if commit_hash == hcommit.hexsha:
                 continue
             commit = git_repo.commit(commit_hash)
