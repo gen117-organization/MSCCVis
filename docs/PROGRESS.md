@@ -1,5 +1,30 @@
 # Progress Log
 
+## 2026-02-18: 可視化UIのプロジェクト選択をCSVファイル単位へ変更
+
+### 変更ファイル
+
+- visualize/data_loader.py — `dest/scatter/<project>/csv` 配下の CSV を1ファイル1選択肢として列挙する実装へ変更
+- visualize/data_loader.py — 命名規則を解析する `_parse_scatter_csv_filename()` を追加し, ラベルに `detection/filter/analysis/min/date/sd/mac` を反映
+- visualize/data_loader.py — 選択値を `project|||scatter_file:<filename>|||language` 形式に変更し, 選択したCSVのみを読み込むよう `_scatter_sources()` を拡張
+- visualize/data_loader.py — `get_available_languages()` を scatter 優先にして選択肢と言語一覧の不整合を解消
+
+### テスト結果
+
+- `.venv/bin/python -m py_compile visualize/data_loader.py visualize/callbacks.py visualize/scatter.py` , 成功
+- `.venv/bin/python -m pytest tests/ -q` , 成功, 34 passed in 0.03s
+- `docker run --rm --entrypoint python -v $(pwd)/dest:/app/dest msccatools -c "from visualize.data_loader import _gather_scatter_projects; ..."` , 成功（`count 4` とファイル単位value/labelを確認）
+- `docker run ... msccatools web-ui --host 0.0.0.0` + `GET /visualize/` , 200 を確認
+
+### 判断メモ
+
+- 要件どおり, 既存の「言語単位」選択ではなく「CSVファイル単位」選択に統一した
+- 既存命名の揺れ（`sd/mac` が date の前後どちらでも出現）を許容するパーサにして既存データとの互換性を担保した
+
+### 残課題
+
+- TODO(gen): `build_project_summary` の `コミット/参照` 表示は `scatter_file:<filename>` をそのまま表示するため, 将来的に表示文言を「CSV名/日付」へ最適化する
+
 ## 2026-02-18: /visualize 404 と起動時ノイズログの修正
 
 ### 変更ファイル

@@ -9,6 +9,8 @@ from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
+SCATTER_FILE_COMMIT_PREFIX = "scatter_file:"
+
 # データキャッシュ用のグローバル変数
 _data_cache = {}  # キャッシュをクリア（統一データローダー統合）
 
@@ -198,17 +200,23 @@ def get_available_projects_enhanced(language_filter=None):
 
 def get_available_languages():
     """利用可能な言語の一覧を取得"""
+    scatter_options = _gather_scatter_projects()
+    if scatter_options:
+        langs = {
+            opt["value"].split("|||")[2]
+            for opt in scatter_options
+            if isinstance(opt, dict)
+            and "value" in opt
+            and not str(opt["value"]).startswith("HEADER_")
+        }
+        return sorted(langs)
+
     summary = load_project_summary()
     if summary:
         languages = set()
         for project_data in summary["projects"].values():
             languages.update(project_data["languages"].keys())
         return sorted(list(languages))
-
-    scatter_options = _gather_scatter_projects()
-    if scatter_options:
-        langs = {opt["value"].split("|||")[2] for opt in scatter_options}
-        return sorted(langs)
 
     return []
 
@@ -240,10 +248,6 @@ def _gather_scatter_projects():
     if not base_dir.exists():
         return []
 
-    pattern = re.compile(
-        r"^(?P<prefix>tks_|import_)?(?P<lang>.+)_scatter(?!_unknown)\.csv$",
-        re.IGNORECASE,
-    )
     options = []
 
     for project_dir in sorted(base_dir.iterdir()):
@@ -251,21 +255,139 @@ def _gather_scatter_projects():
         if not csv_dir.is_dir():
             continue
 
-        languages = set()
+        file_options = []
         for csv_path in csv_dir.iterdir():
-            if not csv_path.name.endswith(".csv"):
+            if not csv_path.is_file() or not csv_path.name.endswith(".csv"):
                 continue
-            match = pattern.match(csv_path.name)
-            if not match:
-                continue
-            languages.add(match.group("lang"))
 
-        for lang in sorted(languages):
-            label = f"{project_dir.name} ({lang}, scatter)"
-            value = f"{project_dir.name}|||latest|||{lang}"
-            options.append({"label": label, "value": value})
+            if csv_path.name.endswith("_unknown.csv"):
+                continue
+
+            info = _parse_scatter_csv_filename(csv_path.name)
+            if info is None:
+                continue
+
+            language = str(info.get("language", ""))
+            if not language:
+                continue
+
+            label_parts = [
+                f"{project_dir.name}",
+                f"{language}",
+                str(info.get("detection", "unknown")),
+                str(info.get("filter", "unknown")),
+                str(info.get("analysis", "unknown")),
+                f"min{info.get('min_tokens', '?')}",
+                str(info.get("date", "")),
+            ]
+
+            if info.get("search_depth") is not None:
+                label_parts.append(f"sd{info['search_depth']}")
+            if info.get("max_analyzed_commits") is not None:
+                label_parts.append(f"mac{info['max_analyzed_commits']}")
+
+            label = " | ".join([p for p in label_parts if p])
+            value = (
+                f"{project_dir.name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
+            )
+            file_options.append(
+                {
+                    "label": label,
+                    "value": value,
+                    "project": project_dir.name,
+                    "language": language,
+                    "date": str(info.get("date", "")),
+                }
+            )
+
+        file_options.sort(
+            key=lambda item: (
+                item.get("project", ""),
+                item.get("language", ""),
+                item.get("date", ""),
+                item.get("label", ""),
+            ),
+            reverse=True,
+        )
+        options.extend(file_options)
 
     return sorted(options, key=lambda o: o["label"])
+
+
+def _parse_scatter_csv_filename(filename: str) -> dict | None:
+    """散布図CSVファイル名を解析する.
+
+    期待形式:
+        {repo}_{detection}_{min_tokens}_{filter}_{comod}_{analysis}_{date}[_{sd...}][_{mac...}]_{language}.csv
+
+    互換のため `sd/mac` が `date` の前後どちらにあっても許容する.
+    """
+
+    stem = filename.removesuffix(".csv")
+    parts = stem.split("_")
+    if len(parts) < 8:
+        return None
+
+    language = parts[-1]
+    core = parts[:-1]
+
+    detection_idx = None
+    for i, token in enumerate(core):
+        if re.fullmatch(r"normal|TKS\d+|RNR\d+", token):
+            detection_idx = i
+            break
+    if detection_idx is None:
+        return None
+
+    if len(core) <= detection_idx + 5:
+        return None
+
+    repo = "_".join(core[:detection_idx])
+    detection = core[detection_idx]
+    min_tokens_token = core[detection_idx + 1]
+    filter_token = core[detection_idx + 2]
+    comod_token = core[detection_idx + 3]
+    analysis_token = core[detection_idx + 4]
+    tail_tokens = core[detection_idx + 5 :]
+
+    if not repo:
+        return None
+    if not min_tokens_token.isdigit():
+        return None
+    if filter_token not in {"filtered", "nofilter"}:
+        return None
+    if comod_token not in {"cloneset", "clonepair"}:
+        return None
+    if not re.fullmatch(r"merge|tag|freq\d+", analysis_token):
+        return None
+
+    date_token = None
+    search_depth = None
+    max_analyzed_commits = None
+    for token in tail_tokens:
+        if re.fullmatch(r"\d{8}", token):
+            date_token = token
+        elif re.fullmatch(r"sd\d+", token):
+            search_depth = int(token[2:])
+        elif re.fullmatch(r"mac\d+", token):
+            max_analyzed_commits = int(token[3:])
+
+    if date_token is None:
+        return None
+
+    return {
+        "repo": repo,
+        "detection": detection,
+        "min_tokens": int(min_tokens_token),
+        "filter": filter_token,
+        "comod": comod_token,
+        "analysis": analysis_token,
+        "date": date_token,
+        "search_depth": search_depth,
+        "max_analyzed_commits": max_analyzed_commits,
+        "language": language,
+        "filename": filename,
+    }
 
 
 def _gather_project_csv_projects():
@@ -356,10 +478,34 @@ def _unified_sources_exist(project_name: str, language: str) -> bool:
 from .constants import DetectionMethod
 
 
-def _scatter_sources(project_name: str, language: str):
+def _scatter_sources(project_name: str, language: str, commit_hash: str | None = None):
     base_dir = Path("dest/scatter") / project_name / "csv"
     if not base_dir.exists():
         return []
+
+    if commit_hash and str(commit_hash).startswith(SCATTER_FILE_COMMIT_PREFIX):
+        filename = str(commit_hash)[len(SCATTER_FILE_COMMIT_PREFIX) :]
+        specific = base_dir / filename
+        if not specific.exists() or not specific.is_file():
+            return []
+        if specific.name.endswith("_unknown.csv"):
+            return []
+
+        match = _parse_scatter_csv_filename(specific.name)
+        if not match:
+            return []
+        if str(match.get("language", "")).lower() != language.lower():
+            return []
+
+        detection_token = str(match.get("detection", "normal")).lower()
+        if detection_token.startswith("tks"):
+            detection_method = DetectionMethod.TKS
+        elif detection_token.startswith("rnr"):
+            detection_method = DetectionMethod.CCFSW
+        else:
+            detection_method = DetectionMethod.NO_IMPORT
+
+        return [(specific, detection_method)]
 
     pattern = re.compile(
         r"^(?P<prefix>tks_|import_)?(?P<lang>.+)_scatter(_unknown)?\.csv$",
@@ -560,7 +706,7 @@ def load_and_process_data(project_name: str, commit_hash: str, language: str):
     logger.info("Loading and processing data: %s", cache_key)
 
     # 0) dest/scatter 出力
-    scatter_sources = _scatter_sources(project_name, language)
+    scatter_sources = _scatter_sources(project_name, language, commit_hash)
     services_json_path = f"dest/scatter/{project_name}/services.json"
     if scatter_sources:
         result = load_from_scatter_csv(
