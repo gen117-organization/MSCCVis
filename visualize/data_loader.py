@@ -243,6 +243,96 @@ def get_available_projects():
     return sorted(unique, key=lambda o: o["label"])
 
 
+def get_project_names() -> list[dict]:
+    """プロジェクト名の一覧を取得する (2段階選択の Step 1 用).
+
+    Returns:
+        プロジェクト名のドロップダウンオプション (label/value).
+    """
+    base_dir = Path("dest/scatter")
+    if not base_dir.exists():
+        return []
+
+    names: list[str] = []
+    for project_dir in sorted(base_dir.iterdir()):
+        csv_dir = project_dir / "csv"
+        if not csv_dir.is_dir():
+            continue
+        # CSV ファイルが1つでもあるプロジェクトのみ
+        has_csv = any(
+            p.is_file() and p.name.endswith(".csv") and not p.name.endswith("_unknown.csv")
+            for p in csv_dir.iterdir()
+        )
+        if has_csv:
+            names.append(project_dir.name)
+
+    return [{"label": name, "value": name} for name in names]
+
+
+def get_csv_options_for_project(project_name: str) -> list[dict]:
+    """指定プロジェクトの散布図CSVファイル一覧を取得する (2段階選択の Step 2 用).
+
+    Args:
+        project_name: プロジェクト名 (owner.repo 形式).
+
+    Returns:
+        CSVファイルのドロップダウンオプション (label/value).
+            value は ``project|||scatter_file:<filename>|||language`` 形式.
+    """
+    csv_dir = Path("dest/scatter") / project_name / "csv"
+    if not csv_dir.is_dir():
+        return []
+
+    options: list[dict] = []
+    for csv_path in csv_dir.iterdir():
+        if not csv_path.is_file() or not csv_path.name.endswith(".csv"):
+            continue
+        if csv_path.name.endswith("_unknown.csv"):
+            continue
+
+        info = _parse_scatter_csv_filename(csv_path.name)
+        if info is None:
+            continue
+
+        language = str(info.get("language", ""))
+        if not language:
+            continue
+
+        label_parts = [
+            language,
+            str(info.get("detection", "unknown")),
+            str(info.get("filter", "unknown")),
+            str(info.get("analysis", "unknown")),
+            f"min{info.get('min_tokens', '?')}",
+            str(info.get("date", "")),
+        ]
+        if info.get("search_depth") is not None:
+            label_parts.append(f"sd{info['search_depth']}")
+        if info.get("max_analyzed_commits") is not None:
+            label_parts.append(f"mac{info['max_analyzed_commits']}")
+
+        label = " | ".join([p for p in label_parts if p])
+        value = f"{project_name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
+        options.append(
+            {
+                "label": label,
+                "value": value,
+                "language": language,
+                "date": str(info.get("date", "")),
+            }
+        )
+
+    options.sort(
+        key=lambda item: (
+            item.get("language", ""),
+            item.get("date", ""),
+            item.get("label", ""),
+        ),
+        reverse=True,
+    )
+    return options
+
+
 def _gather_scatter_projects():
     base_dir = Path("dest/scatter")
     if not base_dir.exists():

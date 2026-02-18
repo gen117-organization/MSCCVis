@@ -14,6 +14,7 @@ if __package__ is None or __package__ == "":
 from visualize.data_loader import (
     get_available_projects_enhanced,
     get_available_languages,
+    get_project_names,
     load_and_process_data,
 )
 from visualize.plotting import create_scatter_plot
@@ -65,6 +66,7 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
     # 利用可能なプロジェクトと言語を取得（改善版）
     available_projects = get_available_projects_enhanced()
     available_languages = get_available_languages()
+    project_names = get_project_names()
 
     # 初期表示用のデータを準備（重いデータを初回ロードしない）
     default_value = None
@@ -83,6 +85,7 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
         default_value,
         initial_fig,
         initial_summary,
+        project_names=project_names,
     )
     register_callbacks(dash_app)
     return dash_app

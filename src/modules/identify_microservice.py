@@ -1,9 +1,13 @@
 from pathlib import Path
 import csv
+import logging
 import traceback
 import json
 import git  # GitPython
 import sys
+
+
+logger = logging.getLogger(__name__)
 
 
 def _find_repo_root(start: Path) -> Path:
@@ -21,6 +25,10 @@ import modules.CLAIM.ms_detection as ms_detection
 from lib.CLAIM.src.utils.print_utils import print_progress, print_major_step, print_info
 from lib.CLAIM.src.utils.repo import clear_repo
 from modules.github_linguist import run_github_linguist
+from modules.visualization.service_mapping import (
+    load_claim_service_contexts_for_repo,
+    save_service_contexts_to_json,
+)
 from config import BASED_DATASET
 
 
@@ -35,6 +43,15 @@ def analyze_repo_by_linguist(workdir: str, name: str):
 
 
 def analyze_repo_by_clim(url: str, name: str, workdir: str):
+    """CLAIM による Docker Compose 分析とマイクロサービス検出を実行する.
+
+    ms_detection 完了後, 結果を ``dest/services_json/<name>.json`` にも保存する.
+
+    Args:
+        url: リポジトリの URL.
+        name: owner.repo 形式のリポジトリ名.
+        workdir: ローカルリポジトリのパス.
+    """
     try:
         res = dc_choice.analyze_repo(name, workdir)
         dc_choice.print_results(url, res)
@@ -42,16 +59,55 @@ def analyze_repo_by_clim(url: str, name: str, workdir: str):
         res = ms_detection.analyze_repo(name, workdir)
         ms_detection.print_results(url, res)
         ms_detection.save_results(url, res)
+
+        # ms_detection CSV → services_json キャッシュ
+        _save_services_json_cache(url, name)
     except Exception as e:
-        raise e
+        raise RuntimeError(
+            f"CLAIM analysis failed: repo={name}, url={url}"
+        ) from e
+
+
+def _save_services_json_cache(url: str, name: str) -> None:
+    """ms_detection CSV を解析し, dest/services_json に JSON キャッシュを保存する.
+
+    Args:
+        url: リポジトリの URL.
+        name: owner.repo 形式のリポジトリ名.
+    """
+    ms_detection_csv = project_root / "dest" / "ms_detection" / f"{name}.csv"
+    if not ms_detection_csv.exists():
+        logger.warning("ms_detection CSV not found, skipping JSON cache: %s", ms_detection_csv)
+        return
+
+    try:
+        contexts = load_claim_service_contexts_for_repo(name, ms_detection_csv, chunk="latest")
+        if not contexts:
+            logger.warning("No service contexts extracted, skipping JSON cache: %s", name)
+            return
+
+        services_json_dir = project_root / "dest" / "services_json"
+        output_path = services_json_dir / f"{name}.json"
+        save_service_contexts_to_json(contexts, url, output_path)
+    except Exception as e:
+        logger.warning("Failed to save services JSON cache for %s: %s", name, e)
 
 
 def analyze_repo(url: str, name: str, workdir: str):
+    """リポジトリの言語解析と CLAIM マイクロサービス検出を実行する.
+
+    Args:
+        url: リポジトリの URL.
+        name: owner.repo 形式のリポジトリ名.
+        workdir: ローカルリポジトリのパス.
+    """
     try:
         analyze_repo_by_linguist(workdir, name)
         analyze_repo_by_clim(url, name, workdir)
     except Exception as e:
-        raise e
+        raise RuntimeError(
+            f"analyze_repo failed: repo={name}, url={url}"
+        ) from e
 
 
 def analyze_dataset():
@@ -72,7 +128,7 @@ def analyze_dataset():
                 git.Repo.clone_from(url, workdir, depth=1)
                 analyze_repo(url, name, workdir)
             except Exception as e:
-                print(traceback.format_exc())
+                logger.error("Error processing repo %s: %s", url, traceback.format_exc())
                 continue
             finally:
                 print_info('   Clearing temporary directories')

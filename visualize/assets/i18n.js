@@ -38,6 +38,9 @@ const VIS_I18N = {
     langLabel: "Language",
     // Nav
     backToSettings: "Back to Settings",
+    // 2-step project selection
+    labelProject: "Project:",
+    labelDataset: "Dataset:",
   },
   ja: {
     headerTitle: "MSCCA Tools - クローンエクスプローラ",
@@ -62,6 +65,8 @@ const VIS_I18N = {
     statsCloneStats: "クローン統計",
     langLabel: "言語",
     backToSettings: "設定画面に戻る",
+    labelProject: "プロジェクト:",
+    labelDataset: "データセット:",
   },
 };
 

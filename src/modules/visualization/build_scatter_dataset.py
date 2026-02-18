@@ -32,6 +32,7 @@ from typing import Any, Iterable, Mapping, Sequence
 from modules.visualization.service_mapping import (
     ServiceContext,
     load_claim_service_contexts_for_repo,
+    load_service_contexts_from_json,
     resolve_service_for_file_path as resolve_service_context_for_file_path,
 )
 from modules.util import FileMapper, get_file_type
@@ -521,23 +522,38 @@ def build_scatter_dataset_for_language(
     claim_contexts: list[ServiceContext] = []
     if ms_detection_dir is None:
         raise FileNotFoundError("ms_detection_dir is required for service resolution")
-    claim_csv_path = ms_detection_dir / f"{project_name}.csv"
-    if not claim_csv_path.exists():
-        raise FileNotFoundError(f"ms_detection csv not found: {claim_csv_path}")
-    try:
-        claim_contexts = load_claim_service_contexts_for_repo(
-            project_name,
-            claim_csv_path,
-            chunk="latest",
-        )
-    except Exception as e:
-        raise RuntimeError(
-            f"failed to load claim contexts. project={project_name}, language={language}, path={claim_csv_path}"
-        ) from e
+
+    # JSON キャッシュを優先的に使用 (eval() 不要で高速かつ安全)
+    services_json_dir = ms_detection_dir.parent / "services_json"
+    services_json_path = services_json_dir / f"{project_name}.json"
+    if services_json_path.exists():
+        try:
+            claim_contexts = load_service_contexts_from_json(services_json_path)
+        except Exception as e:
+            logger.warning(
+                "Failed to load services JSON cache, falling back to CSV: %s", e
+            )
+            claim_contexts = []
+
+    # JSON キャッシュがなければ従来の CSV パースにフォールバック
+    if not claim_contexts:
+        claim_csv_path = ms_detection_dir / f"{project_name}.csv"
+        if not claim_csv_path.exists():
+            raise FileNotFoundError(f"ms_detection csv not found: {claim_csv_path}")
+        try:
+            claim_contexts = load_claim_service_contexts_for_repo(
+                project_name,
+                claim_csv_path,
+                chunk="latest",
+            )
+        except Exception as e:
+            raise RuntimeError(
+                f"failed to load claim contexts. project={project_name}, language={language}, path={claim_csv_path}"
+            ) from e
 
     if not claim_contexts:
         raise ValueError(
-            f"empty claim contexts. project={project_name}, language={language}, path={claim_csv_path}"
+            f"empty claim contexts. project={project_name}, language={language}"
         )
 
     out_project_dir = out_dir / project_name / "csv"

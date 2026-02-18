@@ -91,6 +91,28 @@ def register_callbacks(app):
     )
     
     # --- REMOVED: update_filter_options (UI removed) ---
+
+    # --- 2段階プロジェクト選択: プロジェクト名 → CSVファイル一覧更新 ---
+    @app.callback(
+        [Output('project-selector', 'options'),
+         Output('project-selector', 'value'),
+         Output('project-selector', 'disabled')],
+        Input('project-name-selector', 'value'),
+        prevent_initial_call=True,
+    )
+    def update_csv_options_for_project(project_name):
+        """プロジェクト名選択時にCSVファイルドロップダウンを更新する."""
+        if not project_name:
+            return [], None, True
+
+        from .data_loader import get_csv_options_for_project
+        csv_options = get_csv_options_for_project(project_name)
+        if not csv_options:
+            return [], None, True
+
+        # 最初のオプションをデフォルト選択
+        default_value = csv_options[0]["value"]
+        return csv_options, default_value, False
     
     @app.callback(
         [Output('scatter-plot', 'figure'),

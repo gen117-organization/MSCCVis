@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import csv
+import json
 import logging
 import re
 from dataclasses import dataclass
@@ -178,6 +179,88 @@ def load_claim_service_contexts_for_repo(
         )
 
     return list(contexts.values())
+
+
+def save_service_contexts_to_json(
+    contexts: Sequence[ServiceContext],
+    url: str,
+    output_path: Path,
+) -> Path:
+    """ServiceContext リストを JSON ファイルに保存する.
+
+    出力形式は codebases_inter-service.json と同一:
+    ``{"services": {"<context>": ["<service_name>", ...]}, "URL": "..."}``
+
+    Args:
+        contexts: 保存する ServiceContext のリスト.
+        url: リポジトリの URL.
+        output_path: 保存先の JSON ファイルパス.
+
+    Returns:
+        保存した JSON ファイルのパス.
+    """
+    services: dict[str, list[str]] = {}
+    for ctx in contexts:
+        key = ctx.context.rstrip("/") + "/"
+        services.setdefault(key, [])
+        if ctx.service_name not in services[key]:
+            services[key].append(ctx.service_name)
+
+    data = {"services": services, "URL": url}
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    logger.info("Saved service contexts JSON: %s (%d services)", output_path, len(services))
+    return output_path
+
+
+def load_service_contexts_from_json(
+    json_path: Path,
+) -> list[ServiceContext]:
+    """JSON キャッシュから ServiceContext リストを読み込む.
+
+    Args:
+        json_path: ``dest/services_json/<repo>.json`` のパス.
+
+    Returns:
+        ServiceContext のリスト.
+
+    Raises:
+        FileNotFoundError: json_path が存在しない場合.
+    """
+    if not json_path.exists():
+        raise FileNotFoundError(f"services json not found: {json_path}")
+
+    with json_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    services = data.get("services", {})
+    # languages ラッパー形式にも対応 (codebases_inter-service.json 互換)
+    if not services and "languages" in data:
+        for _lang, lang_map in data["languages"].items():
+            if isinstance(lang_map, dict):
+                for ctx_key, svc_names in lang_map.items():
+                    services.setdefault(ctx_key, []).extend(
+                        n for n in svc_names if n not in services.get(ctx_key, [])
+                    )
+
+    contexts: list[ServiceContext] = []
+    for context_key, service_names in services.items():
+        ctx = normalize_repo_relative_path(str(context_key), repo_dir=None)
+        if not ctx:
+            continue
+        for name in service_names:
+            contexts.append(
+                ServiceContext(
+                    service_name=str(name),
+                    context=ctx,
+                    source="services_json",
+                )
+            )
+
+    logger.info("Loaded service contexts from JSON: %s (%d contexts)", json_path, len(contexts))
+    return contexts
 
 
 def load_selected_projects_contexts(

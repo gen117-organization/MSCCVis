@@ -247,15 +247,21 @@ def _generate_visualization_csv(
         log.write("  No languages found, skipping visualization CSV.\n")
         return
 
-    # ms_detection の実行
-    log.write("  Running microservice detection...\n")
+    # ms_detection の実行 (JSON キャッシュがあればスキップ)
     ms_detection_dir = project_root / "dest/ms_detection"
     ms_detection_dir.mkdir(parents=True, exist_ok=True)
-    modules.identify_microservice.analyze_repo(url, name, str(workdir))
-    ms_detection_csv = ms_detection_dir / f"{name}.csv"
-    if not ms_detection_csv.exists():
-        log.write(f"  [warn] ms_detection CSV was not generated: {ms_detection_csv}\n")
-        return
+    services_json_dir = project_root / "dest/services_json"
+    services_json_path = services_json_dir / f"{name}.json"
+
+    if services_json_path.exists():
+        log.write("  Services JSON cache found, skipping ms_detection.\n")
+    else:
+        log.write("  Running microservice detection...\n")
+        modules.identify_microservice.analyze_repo(url, name, str(workdir))
+        ms_detection_csv = ms_detection_dir / f"{name}.csv"
+        if not ms_detection_csv.exists() and not services_json_path.exists():
+            log.write(f"  [warn] ms_detection CSV was not generated: {ms_detection_csv}\n")
+            return
 
     # 命名規則に基づくファイル名の生成
     csv_stem = build_visualization_csv_filename_from_params(params)

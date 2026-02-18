@@ -1,5 +1,36 @@
 # Progress Log
 
+## 02-19-01:00 services_json キャッシュ・2段階プロジェクト選択
+
+### 変更ファイル
+
+- src/modules/visualization/service_mapping.py — `save_service_contexts_to_json()` / `load_service_contexts_from_json()` を追加. JSON キャッシュの保存・読み込みをサポート. codebases_inter-service.json 互換の languages ラッパー形式にも対応
+- src/modules/identify_microservice.py — ms_detection 完了後に `dest/services_json/<name>.json` へ自動保存する `_save_services_json_cache()` を追加. print→logging変換, 例外メッセージにコンテキスト追加
+- src/modules/visualization/build_scatter_dataset.py — `dest/services_json/<name>.json` を優先読み込みし, 存在しなければ従来の ms_detection CSV にフォールバック
+- src/web/app.py — `dest/services_json/<name>.json` が既に存在する場合に ms_detection の再実行をスキップ
+- visualize/data_loader.py — `get_project_names()` / `get_csv_options_for_project()` を追加 (2段階選択 API)
+- visualize/components.py — `create_ide_layout` にプロジェクト名セレクタ (`project-name-selector`) を追加し, CSVファイルセレクタ (`project-selector`) と2段階で選択する UI に変更
+- visualize/callbacks.py — `project-name-selector` 変更時に `project-selector` のオプションを動的更新するコールバックを追加
+- visualize/assets/i18n.js — `labelProject` / `labelDataset` の英語・日本語ラベルを追加
+- visualize/scatter.py — `get_project_names()` をインポートし, `create_ide_layout` に `project_names` を渡すよう変更
+- tests/test_service_mapping_json.py — 新規: JSON キャッシュの保存/読み込み/ラウンドトリップ/重複排除/互換形式のテスト (5テスト)
+
+### テスト結果
+
+- `pytest tests/ -q` — 33 passed in 0.12s (既存28 + 新規5)
+
+### 判断メモ
+
+- services_json の保存形式: `{"services": {"<context>/": ["<svc_name>"]}, "URL": "..."}`. CLAIM の ms_detection は言語を区別しないため languages ラッパーなしにした. ただし読み込み側は languages ラッパー形式にも対応
+- 2段階選択: 既存コールバックの `project-selector` ID を維持し, その前に `project-name-selector` を追加するアプローチを採用. 既存の全コールバックを変更せずに済む
+- `claim_parser.py` の `eval()` 使用は安全性の懸念があり, JSON キャッシュ導入により将来的に `eval()` を完全に排除できる基盤ができた
+
+### 残課題
+
+- TODO(gen): visualize/test_ui_logic.py はpandas未インストールで collect errorになる (前回からの継続)
+- TODO(gen): 既存の ms_detection CSV から一括で services_json を生成するマイグレーションスクリプトがあると便利
+- TODO(gen): claim_parser.py の eval() を完全排除する安全化リファクタリング
+
 ## 02-18-21:30 ログ削減・可視化UIのCSS修正・言語切替・デザイン統一
 
 ### 変更ファイル

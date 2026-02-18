@@ -2257,17 +2257,31 @@ def create_ide_layout(
     default_project,
     initial_fig,
     initial_summary,
+    *,
+    project_names=None,
 ):
     """IDE風レイアウトを作成する (index.html 風デザイン + 英語/日本語切替対応)"""
 
-    # Project Selector
+    # Project Name Selector (Step 1: プロジェクト選択)
+    project_name_selector = dcc.Dropdown(
+        id="project-name-selector",
+        options=project_names or [],
+        value=None,
+        placeholder="Select Project",
+        style={"width": "220px"},
+        clearable=False,
+    )
+
+    # CSV File Selector (Step 2: CSVファイル選択)
+    # ID は既存コールバックとの互換性のため "project-selector" を維持
     project_selector = dcc.Dropdown(
         id="project-selector",
         options=available_projects,
         value=default_project,
-        placeholder="Select Project",
+        placeholder="Select CSV",
         style={"width": "400px"},
         clearable=False,
+        disabled=True,
     )
 
     # View Switcher (Tabs)
@@ -2365,7 +2379,45 @@ def create_ide_layout(
             ),
             html.Div(
                 [
-                    project_selector,
+                    html.Div(
+                        [
+                            html.Span(
+                                "Project:",
+                                style={
+                                    "fontSize": "0.8rem",
+                                    "color": "#888",
+                                    "marginRight": "4px",
+                                    "whiteSpace": "nowrap",
+                                },
+                                **{"data-i18n": "labelProject"},
+                            ),
+                            project_name_selector,
+                            html.Span(
+                                "▸",
+                                style={
+                                    "color": "#888",
+                                    "margin": "0 6px",
+                                    "fontSize": "0.9rem",
+                                },
+                            ),
+                            html.Span(
+                                "Dataset:",
+                                style={
+                                    "fontSize": "0.8rem",
+                                    "color": "#888",
+                                    "marginRight": "4px",
+                                    "whiteSpace": "nowrap",
+                                },
+                                **{"data-i18n": "labelDataset"},
+                            ),
+                            project_selector,
+                        ],
+                        style={
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "4px",
+                        },
+                    ),
                     view_switcher,
                     back_link,
                     lang_selector,
