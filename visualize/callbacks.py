@@ -327,7 +327,7 @@ def register_callbacks(app):
             logger.debug(
                 "Filtered count: %d (Original: %d)", len(filtered_data), original_count
             )
-            filter_label = f"{DetectionMethod.LABELS.get(detection_method_filter, detection_method_filter)} クローンのみ"
+            filter_label = f"{DetectionMethod.LABELS.get(detection_method_filter, detection_method_filter)} clones only"
 
             if len(filtered_data) > 0:
                 df_display = filtered_data
@@ -337,10 +337,10 @@ def register_callbacks(app):
                     detection_method_filter, detection_method_filter
                 )
                 fig = go.Figure().update_layout(
-                    title=f"選択したプロジェクトに{label_upper}クローンデータがありません",
+                    title=f"No {label_upper} clone data found for this project",
                     annotations=[
                         {
-                            "text": f"このプロジェクトには{label_upper}検出結果がないか、<br>データ変換が実行されていない可能性があります。",
+                            "text": f"No {label_upper} detection results available,<br>or data conversion has not been performed.",
                             "xref": "paper",
                             "yref": "paper",
                             "x": 0.5,
@@ -352,7 +352,7 @@ def register_callbacks(app):
                         }
                     ],
                 )
-                filter_status = f"🔍 {filter_label} (0 行)"
+                filter_status = f"🔍 {filter_label} (0 rows)"
                 filters = {
                     "method": detection_method_filter,
                     "clone_id": clone_id_filter,
@@ -1430,18 +1430,18 @@ def register_callbacks(app):
         project_value, detection_method, comodified_val, service_scope, code_type_filter
     ):
         if not project_value:
-            return [{"label": "所有 (All)", "value": "all"}]
+            return [{"label": "All", "value": "all"}]
         try:
             if "|||" in project_value:
                 project, commit, language = project_value.split("|||", 2)
             else:
-                return [{"label": "所有 (All)", "value": "all"}]
+                return [{"label": "All", "value": "all"}]
 
             # Reuse load_and_process_data (it is cached)
             df, _, _ = load_and_process_data(project, commit, language)
 
             if df is None or df.empty:
-                return [{"label": "所有 (All)", "value": "all"}]
+                return [{"label": "All", "value": "all"}]
 
             # --- 1. Base Filtering (Method) ---
             # Apply Method filter first to get the universe of clones for this detection method.
@@ -1475,7 +1475,7 @@ def register_callbacks(app):
             if df_method.empty:
                 return [
                     {
-                        "label": "条件に一致するクローンはありません (No Match)",
+                        "label": "No matching clones",
                         "value": "all",
                     }
                 ]
@@ -1522,7 +1522,7 @@ def register_callbacks(app):
             if df_method.empty:
                 return [
                     {
-                        "label": "条件に一致するクローンはありません (No Match)",
+                        "label": "No matching clones",
                         "value": "all",
                     }
                 ]
@@ -1578,7 +1578,7 @@ def register_callbacks(app):
             if len(valid_clone_ids) == 0:
                 return [
                     {
-                        "label": "条件に一致するクローンはありません (No Match)",
+                        "label": "No matching clones",
                         "value": "all",
                     }
                 ]
@@ -1592,7 +1592,7 @@ def register_callbacks(app):
             df_candidates = df_method[df_method["clone_id"].isin(valid_clone_ids)]
 
             if "clone_id" not in df_candidates.columns:
-                return [{"label": "所有 (All)", "value": "all"}]
+                return [{"label": "All", "value": "all"}]
 
             s1_df = df_candidates[["clone_id", "service_x"]].rename(
                 columns={"service_x": "service"}
@@ -1619,7 +1619,7 @@ def register_callbacks(app):
             if not top_ids:
                 return [
                     {
-                        "label": "条件に一致するクローンはありません (No Match)",
+                        "label": "No matching clones",
                         "value": "all",
                     }
                 ]
@@ -1671,4 +1671,4 @@ def register_callbacks(app):
             return options
         except Exception as e:
             logger.error("Error updating cross service options: %s", e)
-            return [{"label": "所有 (All)", "value": "all"}]
+            return [{"label": "All", "value": "all"}]

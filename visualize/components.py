@@ -131,7 +131,7 @@ def generate_cross_service_filter_options(clone_stats):
     clone_stats: list of dict {'clone_id': id, 'service_count': count, 'code_type': type}
     Sorted by service_count DESC
     """
-    options = [{"label": "すべてのクローンを表示 (All)", "value": "all"}]
+    options = [{"label": "Show All Clones", "value": "all"}]
 
     for stat in clone_stats:
         # Improved formatting using symbols for readability and spacing
@@ -262,15 +262,15 @@ def build_clone_selector(overlapping_indices, df):
     for data in clone_data:
         clone_id = data["clone_id"]
         count = clone_id_counts[clone_id]
-        count_info = f" ({count}ペア)" if count > 1 else ""
+        count_info = f" ({count} pairs)" if count > 1 else ""
         label = f"Clone ID {clone_id}: {data['file_x']}[{data['lines_x']}] ↔ {data['file_y']}[{data['lines_y']}]{count_info}"
         options.append({"label": label, "value": data["idx"]})
 
     # 重複除去の情報を表示
     removed_count = clone_count - len(clone_data)
-    header_text = f"{len(clone_data)}個のクローンが重複しています。表示するクローンを選択してください："
+    header_text = f"{len(clone_data)} overlapping clones found. Select a clone to display:"
     if removed_count > 0:
-        header_text += f" (重複{removed_count}個を除去)"
+        header_text += f" ({removed_count} duplicates removed)"
 
     return html.Div(
         [
@@ -302,7 +302,7 @@ def create_help_section():
     return html.Details(
         [
             html.Summary(
-                "📊 散布図の見方",
+                "📊 How to Read the Scatter Plot",
                 style={
                     "cursor": "pointer",
                     "fontWeight": "bold",
@@ -313,7 +313,7 @@ def create_help_section():
             html.Div(
                 [
                     html.P(
-                        "この散布図は、ファイル間のクローン関係をヒートマップ風に可視化します。",
+                        "This scatter plot visualizes clone relationships between files as a heatmap.",
                         className="help-text",
                         style={"marginBottom": "15px", "fontStyle": "italic"},
                     ),
@@ -321,27 +321,27 @@ def create_help_section():
                     html.Div(
                         [
                             html.H6(
-                                "🔍 基本概念",
+                                "🔍 Basic Concepts",
                                 style={"color": "#6c757d", "marginBottom": "10px"},
                             ),
                             html.Ul(
                                 [
                                     html.Li(
                                         [
-                                            html.Strong("軸: "),
-                                            "各ファイルに割り当てられたファイル番号（X軸・Y軸共通）",
+                                            html.Strong("Axes: "),
+                                            "File numbers assigned to each file (shared on both X and Y axes)",
                                         ]
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("点（プロット）: "),
-                                            "2つのファイル間でコードクローンが検出されたことを示す",
+                                            html.Strong("Point: "),
+                                            "Indicates a code clone detected between two files",
                                         ]
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("点線: "),
-                                            "各マイクロサービスの境界線（ファイル範囲）",
+                                            html.Strong("Dashed line: "),
+                                            "Service boundaries (file ranges for each microservice)",
                                         ]
                                     ),
                                 ],
@@ -353,7 +353,7 @@ def create_help_section():
                     html.Div(
                         [
                             html.H6(
-                                "🔸 マーカー形状",
+                                "🔸 Marker Shapes",
                                 style={"color": "#6c757d", "marginBottom": "10px"},
                             ),
                             html.Ul(
@@ -361,25 +361,25 @@ def create_help_section():
                                     html.Li(
                                         [
                                             html.Span(
-                                                "● 円形: ",
+                                                "● Circle: ",
                                                 style={
                                                     "color": "#495057",
                                                     "fontWeight": "bold",
                                                 },
                                             ),
-                                            "サービス内クローン（同じマイクロサービス内）",
+                                            "Intra-service clone (within the same microservice)",
                                         ]
                                     ),
                                     html.Li(
                                         [
                                             html.Span(
-                                                "■ 四角: ",
+                                                "■ Square: ",
                                                 style={
                                                     "color": "#495057",
                                                     "fontWeight": "bold",
                                                 },
                                             ),
-                                            "サービス間クローン（異なるマイクロサービス間）",
+                                            "Inter-service clone (across different microservices)",
                                         ]
                                     ),
                                 ],
@@ -391,11 +391,11 @@ def create_help_section():
                     html.Div(
                         [
                             html.H6(
-                                "🌡️ ヒートマップ（クローン集中度）",
+                                "🌡️ Heatmap (Clone Density)",
                                 style={"color": "#6c757d", "marginBottom": "10px"},
                             ),
                             html.P(
-                                "同一座標での重複クローン数に基づく5段階カラーマップ：",
+                                "5-level color map based on overlapping clone count at same coordinates:",
                                 style={"marginBottom": "8px"},
                             ),
                             html.Ul(
@@ -403,61 +403,61 @@ def create_help_section():
                                     html.Li(
                                         [
                                             html.Span(
-                                                "● 青: ",
+                                                "● Blue: ",
                                                 style={
                                                     "color": "#0066CC",
                                                     "fontWeight": "bold",
                                                 },
                                             ),
-                                            "低密度（重複数: 少）",
+                                            "Low density",
                                         ]
                                     ),
                                     html.Li(
                                         [
                                             html.Span(
-                                                "● 緑: ",
+                                                "● Green: ",
                                                 style={
                                                     "color": "#00CC66",
                                                     "fontWeight": "bold",
                                                 },
                                             ),
-                                            "中密度",
+                                            "Medium density",
                                         ]
                                     ),
                                     html.Li(
                                         [
                                             html.Span(
-                                                "● 黄: ",
+                                                "● Yellow: ",
                                                 style={
                                                     "color": "#CCCC00",
                                                     "fontWeight": "bold",
                                                 },
                                             ),
-                                            "高密度",
+                                            "High density",
                                         ]
                                     ),
                                     html.Li(
                                         [
                                             html.Span(
-                                                "● オレンジ: ",
+                                                "● Orange: ",
                                                 style={
                                                     "color": "#FF6600",
                                                     "fontWeight": "bold",
                                                 },
                                             ),
-                                            "超高密度",
+                                            "Very high density",
                                         ]
                                     ),
                                     html.Li(
                                         [
                                             html.Span(
-                                                "● 赤: ",
+                                                "● Red: ",
                                                 style={
                                                     "color": "#CC0000",
                                                     "fontWeight": "bold",
                                                 },
                                             ),
-                                            "最高密度（重複数: 多）",
+                                            "Maximum density",
                                         ]
                                     ),
                                 ],
@@ -469,27 +469,27 @@ def create_help_section():
                     html.Div(
                         [
                             html.H6(
-                                "🖱️ 操作方法",
+                                "🖱️ Interactions",
                                 style={"color": "#6c757d", "marginBottom": "10px"},
                             ),
                             html.Ul(
                                 [
                                     html.Li(
                                         [
-                                            html.Strong("単一クリック: "),
-                                            "該当座標のクローン詳細を画面下部に表示",
+                                            html.Strong("Click: "),
+                                            "Shows clone details below the graph",
                                         ]
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("複数クローン時: "),
-                                            "DropDownメニューが表示され、表示するクローンを選択可能",
+                                            html.Strong("Multiple clones: "),
+                                            "A dropdown menu appears to select which clone to display",
                                         ]
                                     ),
                                     html.Li(
                                         [
-                                            html.Strong("ファイル表示: "),
-                                            "詳細画面の「File」ボタンで、クローンを含むファイル全体を確認可能",
+                                            html.Strong("File view: "),
+                                            "Use the 'File' button in the detail panel to view the full file containing the clone",
                                         ]
                                     ),
                                 ],
@@ -790,7 +790,7 @@ def create_layout(
     dashboard_view = build_dashboard_view(dashboard_data)
 
     # 言語フィルターのオプションを作成
-    language_options = [{"label": "全言語", "value": "all"}]
+    language_options = [{"label": "All Languages", "value": "all"}]
     language_options.extend(
         [{"label": lang, "value": lang} for lang in available_languages]
     )
@@ -808,17 +808,17 @@ def create_layout(
                         className="control-row",
                         children=[
                             html.Label(
-                                "クローンIDフィルタ:",
+                                "Clone ID Filter:",
                                 className="control-label",
                                 style={"width": "120px"},
                             ),
                             dcc.Dropdown(
                                 id="clone-id-filter",
                                 options=[
-                                    {"label": "すべてのクローンを表示", "value": "all"}
+                                    {"label": "Show all clones", "value": "all"}
                                 ],
                                 value="all",
-                                placeholder="クローンIDでフィルタリング...",
+                                placeholder="Filter by Clone ID...",
                                 style={
                                     "width": "400px",
                                     "fontFamily": "monospace",
@@ -865,7 +865,7 @@ def create_layout(
                         id="clone-details-table",
                         children=[
                             html.P(
-                                "グラフ上の点をクリックすると、クローンの詳細情報が表示されます。"
+                                "Click a point on the graph to view clone details."
                             )
                         ],
                     ),
@@ -883,7 +883,7 @@ def create_layout(
                 children=[
                     html.H4("Service Dependency Network", className="card-title"),
                     html.P(
-                        "マイクロサービス間のクローン共有関係を可視化します。エッジはクローン共有を表し、ノードサイズはファイル数を表します。",
+                        "Visualizes clone sharing relationships between microservices. Edges represent clone sharing, and node sizes represent file counts.",
                         className="text-muted",
                     ),
                     dcc.Graph(id="network-graph", style={"height": "800px"}),
@@ -903,7 +903,7 @@ def create_layout(
                         className="control-row",
                         children=[
                             html.Label(
-                                "プロジェクトを選択:",
+                                "Select project:",
                                 className="control-label",
                                 style={"width": "120px"},
                             ),
@@ -1062,9 +1062,9 @@ def build_project_summary(df, file_ranges, project, commit, language):
 
     # --- 1. プロジェクト情報カード ---
     basic_info = [
-        ("プロジェクト名:", project.split(".")[-1]),
-        ("コミット/参照:", commit[:7] if len(commit) > 7 else commit),
-        ("対象言語:", language),
+        ("Project:", project.split(".")[-1]),
+        ("Commit/Ref:", commit[:7] if len(commit) > 7 else commit),
+        ("Language:", language),
     ]
 
     # GitHubリンク
@@ -1073,7 +1073,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
         github_url = metadata.get("url", f"https://github.com/{project}")
         basic_info.append(
             (
-                "GitHubリンク:",
+                "GitHub Link:",
                 html.A(
                     github_url,
                     href=github_url,
@@ -1086,7 +1086,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
         github_url = f"https://github.com/{project}"
         basic_info.append(
             (
-                "GitHubリンク:",
+                "GitHub Link:",
                 html.A(
                     github_url,
                     href=github_url,
@@ -1100,14 +1100,14 @@ def build_project_summary(df, file_ranges, project, commit, language):
     if language_info and "stats" in language_info:
         stats = language_info["stats"]
         if stats.get("total_files", 0) > 0:
-            basic_info.append(("総ファイル数:", f"{stats['total_files']:,}"))
+            basic_info.append(("Total Files:", f"{stats['total_files']:,}"))
             if "code_lines" in stats:
-                basic_info.append(("総コード行数:", f"{stats['code_lines']:,}"))
+                basic_info.append(("Total Code Lines:", f"{stats['code_lines']:,}"))
 
     project_info_card = html.Div(
         [
             html.H5(
-                "📋 プロジェクト情報",
+                "📋 Project Info",
                 style={"color": "#495057", "marginBottom": "10px"},
             ),
             create_info_table(basic_info),
@@ -1117,7 +1117,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
     )
 
     # --- 2. サービス情報カード ---
-    service_content = html.P("サービス情報がありません")
+    service_content = html.P("No service information available")
     if file_ranges:
         # サービスごとの統計情報を構築
         svc_file_counts = {}
@@ -1162,7 +1162,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
     service_info_card = html.Div(
         [
             html.H5(
-                "🏢 サービス情報", style={"color": "#495057", "marginBottom": "10px"}
+                "🏢 Service Info", style={"color": "#495057", "marginBottom": "10px"}
             ),
             service_content,
         ],
@@ -1262,7 +1262,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
         stats_card_content = html.Div(
             [
                 html.H5(
-                    "📊 クローン統計詳細",
+                    "📊 Clone Statistics (Detailed)",
                     style={"color": "#495057", "marginBottom": "10px"},
                 ),
                 html.Div(
@@ -1437,8 +1437,8 @@ def build_project_summary(df, file_ranges, project, commit, language):
             # Co-modification
             comod = detailed_stats.get("comodification", {})
             comod_rows = [
-                ("あり (True):", f"{comod.get('true', 0):,}"),
-                ("なし (False):", f"{comod.get('false', 0):,}"),
+                ("Yes (True):", f"{comod.get('true', 0):,}"),
+                ("No (False):", f"{comod.get('false', 0):,}"),
             ]
             old_cards.append(
                 html.Div(
@@ -1492,10 +1492,10 @@ def build_project_summary(df, file_ranges, project, commit, language):
                 stats_card_content = html.Div(
                     [
                         html.H5(
-                            "📊 クローン統計 (簡易)",
+                            "📊 Clone Statistics (Simple)",
                             style={"color": "#495057", "marginBottom": "10px"},
                         ),
-                        create_info_table([("総クローンペア数:", f"{total_pairs:,}")]),
+                        create_info_table([("Total Clone Pairs:", f"{total_pairs:,}")]),
                     ],
                     className="summary-card",
                 )
@@ -1567,37 +1567,37 @@ def build_project_summary(df, file_ranges, project, commit, language):
         type_stats = []
         if ccfsw_cnt > 0:
             type_stats.append(
-                ("CCFSW クローン:", f"{ccfsw_cnt:,} ({ccfsw_cnt/total_pairs*100:.1f}%)")
+                ("CCFSW Clones:", f"{ccfsw_cnt:,} ({ccfsw_cnt/total_pairs*100:.1f}%)")
             )
         if tks_cnt > 0:
             type_stats.append(
-                ("TKS クローン:", f"{tks_cnt:,} ({tks_cnt/total_pairs*100:.1f}%)")
+                ("TKS Clones:", f"{tks_cnt:,} ({tks_cnt/total_pairs*100:.1f}%)")
             )
         if rnr_cnt > 0:
             type_stats.append(
-                ("RNR クローン:", f"{rnr_cnt:,} ({rnr_cnt/total_pairs*100:.1f}%)")
+                ("RNR Clones:", f"{rnr_cnt:,} ({rnr_cnt/total_pairs*100:.1f}%)")
             )
 
         if type_stats:
             clone_stats.extend(type_stats)
         else:
-            clone_stats.append(("レガシーデータ:", f"{total_pairs:,} (100.0%)"))
+            clone_stats.append(("Legacy Data:", f"{total_pairs:,} (100.0%)"))
     else:
         # 旧形式データ
-        clone_stats.append(("レガシーデータ:", f"{total_pairs:,} (100.0%)"))
+        clone_stats.append(("Legacy Data:", f"{total_pairs:,} (100.0%)"))
 
     # サービス間・サービス内クローンの統計（重複除去後の正確な値）
     clone_stats.extend(
         [
             (
-                "サービス間クローン:",
+                "Inter-service Clones:",
                 f"{inter_cnt:,} ({inter_cnt/total_pairs*100:.1f}%)",
             ),
             (
-                "サービス内クローン:",
+                "Intra-service Clones:",
                 f"{intra_cnt:,} ({intra_cnt/total_pairs*100:.1f}%)",
             ),
-            ("最大重複数:", f"{top_overlap}"),
+            ("Max Overlap:", f"{top_overlap}"),
         ]
     )
 
@@ -1605,8 +1605,8 @@ def build_project_summary(df, file_ranges, project, commit, language):
         stats = language_info["stats"]
         clone_stats.extend(
             [
-                ("平均クローンサイズ:", f"{stats.get('avg_clone_size', 'N/A')} 行"),
-                ("クローン対象ファイル数:", f"{stats.get('unique_files', 'N/A'):,}"),
+                ("Avg Clone Size:", f"{stats.get('avg_clone_size', 'N/A')} lines"),
+                ("Files with Clones:", f"{stats.get('unique_files', 'N/A'):,}"),
             ]
         )
 
@@ -1615,11 +1615,11 @@ def build_project_summary(df, file_ranges, project, commit, language):
             from visualize.clone_analytics import calculate_project_average_clone_ratio
 
             project_clone_ratio = calculate_project_average_clone_ratio(project)
-            clone_stats.extend([("クローン率:", f"{project_clone_ratio:.2f}%")])
+            clone_stats.extend([("Clone Ratio:", f"{project_clone_ratio:.2f}%")])
         except Exception as e:
             logger.error("Error calculating project clone ratio: %s", e)
             clone_stats.extend(
-                [("プロジェクト全体クローン率:", "計算できませんでした")]
+                                [("Project Clone Ratio:", "Could not be calculated")]
             )
 
         # Import preprocessing statistics (if available from project summary)
@@ -1629,7 +1629,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
         html.Div(
             [
                 html.H5(
-                    "📊 クローン統計",
+                    "📊 Clone Statistics",
                     style={"color": "#495057", "marginBottom": "10px"},
                 ),
                 create_info_table(clone_stats),
@@ -1670,17 +1670,17 @@ def build_project_summary(df, file_ranges, project, commit, language):
             stats = language_info["stats"]
             if stats.get("total_files", 0) > 0:
                 project_stats_info.append(
-                    ("プロジェクト全ファイル数:", f"{stats['total_files']:,}")
+                    ("Total Files:", f"{stats['total_files']:,}")
                 )
 
                 if "total_lines" in stats:
                     project_stats_info.append(
-                        ("プロジェクト全行数:", f"{stats['total_lines']:,}")
+                        ("Total Lines:", f"{stats['total_lines']:,}")
                     )
 
                 if "code_lines" in stats:
                     project_stats_info.append(
-                        ("プロジェクトコード行数:", f"{stats['code_lines']:,}")
+                        ("Code Lines:", f"{stats['code_lines']:,}")
                     )
 
         service_content = []
@@ -1689,7 +1689,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
                 html.Div(
                     [
                         html.H6(
-                            "� プロジェクト全体",
+                            "📁 Project Overview",
                             style={
                                 "color": "#6c757d",
                                 "fontSize": "12px",
@@ -1711,7 +1711,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
             html.Div(
                 [
                     html.H6(
-                        "🔧 サービス一覧",
+                        "🔧 Service List",
                         style={
                             "color": "#6c757d",
                             "fontSize": "12px",
@@ -1724,7 +1724,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
                         else html.Details(
                             [
                                 html.Summary(
-                                    f"{len(service_data)} サービス (クリックで展開)"
+                                    f"{len(service_data)} services (click to expand)"
                                 ),
                                 create_service_table(service_data),
                             ]
@@ -1738,7 +1738,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
             html.Div(
                 [
                     html.H5(
-                        f"🏗️ マイクロサービス ({len(service_data)})",
+                        f"🏗️ Microservices ({len(service_data)})",
                         style={"color": "#495057", "marginBottom": "10px"},
                     ),
                     (
@@ -1747,7 +1747,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
                         else html.Details(
                             [
                                 html.Summary(
-                                    f"{len(service_data)} サービス (クリックで展開)"
+                                    f"{len(service_data)} services (click to expand)"
                                 ),
                                 create_service_table(service_data),
                             ]
@@ -1761,7 +1761,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
     return html.Div(
         [
             html.H4(
-                "📈 プロジェクト概要",
+                "📈 Project Overview",
                 style={
                     "marginBottom": "20px",
                     "color": "#343a40",
@@ -1792,7 +1792,7 @@ def create_info_table(rows):
 def create_service_table(service_data):
     """サービス統計テーブルを作成するヘルパー関数（シンプル版）"""
     if not service_data:
-        return html.P("サービス情報がありません")
+        return html.P("No service information available")
 
     # 総行数を計算
     total_files = sum(svc["files"] for svc in service_data)
@@ -1801,11 +1801,11 @@ def create_service_table(service_data):
 
     header = html.Tr(
         [
-            html.Th("サービス名"),
-            html.Th("ファイル数"),
-            html.Th("総行数"),
-            html.Th("コード行数"),
-            html.Th("クローン率"),
+            html.Th("Service"),
+            html.Th("Files"),
+            html.Th("Total Lines"),
+            html.Th("Code Lines"),
+            html.Th("Clone Ratio"),
         ]
     )
 
@@ -1827,7 +1827,7 @@ def create_service_table(service_data):
     rows.append(
         html.Tr(
             [
-                html.Td("合計", style={"fontWeight": "bold"}),
+                html.Td("Total", style={"fontWeight": "bold"}),
                 html.Td(f"{total_files:,}", style={"fontWeight": "bold"}),
                 html.Td(f"{total_lines:,}", style={"fontWeight": "bold"}),
                 html.Td(f"{total_code_lines:,}", style={"fontWeight": "bold"}),
@@ -1855,12 +1855,12 @@ def create_project_clone_ratio_display(project_name: str) -> html.Div:
 
         return html.Div(
             [
-                html.H3("プロジェクト全体のクローン率", className="clone-ratio-title"),
+                html.H3("Project Clone Ratio", className="clone-ratio-title"),
                 html.Div(
                     [
                         html.Span(f"{clone_ratio:.2f}%", className="clone-ratio-value"),
                         html.Span(
-                            "のコードがクローンです",
+                            "of code is cloned",
                             className="clone-ratio-description",
                         ),
                     ],
@@ -1874,9 +1874,9 @@ def create_project_clone_ratio_display(project_name: str) -> html.Div:
         logger.error("Error calculating project clone ratio: %s", e)
         return html.Div(
             [
-                html.H3("プロジェクト全体のクローン率", className="clone-ratio-title"),
+                html.H3("Project Clone Ratio", className="clone-ratio-title"),
                 html.Div(
-                    [html.Span("計算できませんでした", className="clone-ratio-error")],
+                    [html.Span("Could not be calculated", className="clone-ratio-error")],
                     className="clone-ratio-container",
                 ),
             ],
@@ -2364,19 +2364,34 @@ def create_ide_layout(
         },
     )
 
-    # Header
+    # Header (2-row layout: title/nav on top, selectors/views on bottom)
     header = html.Div(
         [
+            # Top row: Title + Back link + Language
             html.Div(
-                "MSCCA Tools - Clone Explorer",
-                style={
-                    "fontWeight": "bold",
-                    "color": "var(--primary, #f5a623)",
-                    "fontSize": "1rem",
-                    "whiteSpace": "nowrap",
-                },
-                **{"data-i18n": "headerTitle"},
+                [
+                    html.Div(
+                        "MSCCA Tools - Clone Explorer",
+                        style={
+                            "fontWeight": "bold",
+                            "color": "var(--primary, #f5a623)",
+                            "fontSize": "1rem",
+                            "whiteSpace": "nowrap",
+                        },
+                        **{"data-i18n": "headerTitle"},
+                    ),
+                    html.Div(
+                        [back_link, lang_selector],
+                        style={
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "16px",
+                        },
+                    ),
+                ],
+                className="header-top-row",
             ),
+            # Bottom row: Project ▸ Dataset + View switcher
             html.Div(
                 [
                     html.Div(
@@ -2419,10 +2434,8 @@ def create_ide_layout(
                         },
                     ),
                     view_switcher,
-                    back_link,
-                    lang_selector,
                 ],
-                className="header-controls",
+                className="header-bottom-row",
             ),
         ],
         className="ide-header",
@@ -2503,48 +2516,27 @@ def create_ide_layout(
     # Scatter Plot Overlay (Initially Hidden)
     scatter_overlay = html.Div(
         [
-            # Filter Section
+            # Hidden: Detection Method (kept for callback compatibility, default="all")
+            html.Div(
+                dbc.RadioItems(
+                    id="detection-method-radio",
+                    options=[{"label": "All", "value": "all"}],
+                    value="all",
+                ),
+                style={"display": "none"},
+            ),
+            # Filter Section — simplified, index.html style
             html.Div(
                 [
-                    dbc.Row(
+                    # Row 1: Co-modification / Scope / Code Type
+                    html.Div(
                         [
-                            dbc.Col(
+                            # Co-modification
+                            html.Div(
                                 [
                                     html.Label(
-                                        "Detection Method:",
-                                        style={
-                                            "fontSize": "12px",
-                                            "fontWeight": "bold",
-                                            "color": "#555",
-                                        },
-                                        **{"data-i18n": "filterDetection"},
-                                    ),
-                                    dbc.RadioItems(
-                                        id="detection-method-radio",
-                                        options=[
-                                            {"label": "No-Import", "value": "import"},
-                                            {"label": "All", "value": "all"},
-                                            {"label": "TKS", "value": "tks"},
-                                            {"label": "RNR", "value": "rnr"},
-                                        ],
-                                        value="import",
-                                        inline=True,
-                                        style={"fontSize": "13px"},
-                                        labelStyle={"marginRight": "15px"},
-                                    ),
-                                ],
-                                width="auto",
-                                style={"marginRight": "30px"},
-                            ),
-                            dbc.Col(
-                                [
-                                    html.Label(
-                                        "Co-modification:",
-                                        style={
-                                            "fontSize": "12px",
-                                            "fontWeight": "bold",
-                                            "color": "#555",
-                                        },
+                                        "Co-modification",
+                                        className="filter-label",
                                         **{"data-i18n": "filterComod"},
                                     ),
                                     dbc.RadioItems(
@@ -2556,22 +2548,17 @@ def create_ide_layout(
                                         ],
                                         value="all",
                                         inline=True,
-                                        style={"fontSize": "13px"},
-                                        labelStyle={"marginRight": "15px"},
+                                        className="filter-radio",
                                     ),
                                 ],
-                                width="auto",
-                                style={"marginRight": "30px"},
+                                className="filter-group",
                             ),
-                            dbc.Col(
+                            # Scope
+                            html.Div(
                                 [
                                     html.Label(
-                                        "Scope:",
-                                        style={
-                                            "fontSize": "12px",
-                                            "fontWeight": "bold",
-                                            "color": "#555",
-                                        },
+                                        "Scope",
+                                        className="filter-label",
                                         **{"data-i18n": "filterScope"},
                                     ),
                                     dbc.RadioItems(
@@ -2583,115 +2570,82 @@ def create_ide_layout(
                                         ],
                                         value="all",
                                         inline=True,
-                                        style={"fontSize": "13px"},
-                                        labelStyle={"marginRight": "15px"},
+                                        className="filter-radio",
                                     ),
                                 ],
-                                width="auto",
+                                className="filter-group",
+                            ),
+                            # Code Type
+                            html.Div(
+                                [
+                                    html.Label(
+                                        "Code Type",
+                                        className="filter-label",
+                                        **{"data-i18n": "filterCodeType"},
+                                    ),
+                                    html.Div(
+                                        id="code-type-buttons-container",
+                                        className="code-type-buttons",
+                                        style={
+                                            "display": "flex",
+                                            "gap": "6px",
+                                            "flexWrap": "wrap",
+                                        },
+                                    ),
+                                    dcc.Store(id="code-type-store", data="all"),
+                                ],
+                                className="filter-group",
+                                style={"flex": "1"},
                             ),
                         ],
-                        className="mb-2",
+                        className="filter-row",
                     ),
-                    # Code Type Buttons Row
+                    # Row 2: Clone ID / Many Services
                     html.Div(
                         [
-                            html.Label(
-                                "Code Type:",
-                                style={
-                                    "fontSize": "12px",
-                                    "fontWeight": "bold",
-                                    "color": "#555",
-                                    "marginBottom": "4px",
-                                    "display": "block",
-                                },
-                                **{"data-i18n": "filterCodeType"},
+                            html.Div(
+                                [
+                                    html.Label(
+                                        "Clone ID",
+                                        className="filter-label",
+                                        **{"data-i18n": "filterCloneId"},
+                                    ),
+                                    dcc.Input(
+                                        id="clone-id-filter",
+                                        type="text",
+                                        placeholder="Input Clone ID",
+                                        debounce=True,
+                                        className="filter-input",
+                                    ),
+                                ],
+                                className="filter-group",
                             ),
                             html.Div(
-                                id="code-type-buttons-container",
-                                className="code-type-buttons",
-                                style={
-                                    "display": "flex",
-                                    "gap": "8px",
-                                    "flexWrap": "wrap",
-                                },
-                            ),
-                            dcc.Store(
-                                id="code-type-store", data="all"
-                            ),  # Logic/Data/Test etc.
-                        ],
-                        style={"marginTop": "10px"},
-                    ),
-                    # Clone ID Row (collapsed if not needed, or right aligned)
-                    html.Div(
-                        [
-                            html.Label(
-                                "Clone ID search:",
-                                style={
-                                    "fontSize": "12px",
-                                    "fontWeight": "bold",
-                                    "color": "#555",
-                                    "marginRight": "8px",
-                                },
-                                **{"data-i18n": "filterCloneId"},
-                            ),
-                            dcc.Input(
-                                id="clone-id-filter",
-                                type="text",
-                                placeholder="Input Clone ID",
-                                debounce=True,  # Search on Enter or loss of focus
-                                style={
-                                    "width": "220px",
-                                    "height": "36px",  # Match standard dropdown height
-                                    "display": "inline-block",
-                                    "fontSize": "13px",
-                                    "fontFamily": "inherit",  # Use standard font
-                                    "padding": "0 10px",
-                                    "marginRight": "20px",
-                                    "border": "1px solid #ccc",
-                                    "borderRadius": "4px",
-                                    "verticalAlign": "middle",  # Align with label
-                                    "boxSizing": "border-box",
-                                },
-                            ),
-                            # Cross Service Filter
-                            html.Label(
-                                "Many Services:",
-                                style={
-                                    "fontSize": "12px",
-                                    "fontWeight": "bold",
-                                    "color": "#555",
-                                    "marginRight": "8px",
-                                },
-                                **{"data-i18n": "filterManyServices"},
-                            ),
-                            dcc.Dropdown(
-                                id="cross-service-filter",
-                                options=[{"label": "All", "value": "all"}],
-                                value="all",
-                                placeholder="Select Clone ID (Many Services)",
-                                clearable=True,
-                                style={
-                                    "width": "450px",
-                                    "display": "inline-block",
-                                    "verticalAlign": "middle",
-                                    "fontSize": "13px",
-                                },
+                                [
+                                    html.Label(
+                                        "Multi-Service Clones",
+                                        className="filter-label",
+                                        **{"data-i18n": "filterManyServices"},
+                                    ),
+                                    dcc.Dropdown(
+                                        id="cross-service-filter",
+                                        options=[{"label": "All", "value": "all"}],
+                                        value="all",
+                                        placeholder="Select Clone ID",
+                                        clearable=True,
+                                        className="filter-dropdown",
+                                        style={"minWidth": "360px"},
+                                    ),
+                                ],
+                                className="filter-group",
+                                style={"flex": "1"},
                             ),
                         ],
-                        style={
-                            "marginTop": "10px",
-                            "borderTop": "1px solid #eee",
-                            "paddingTop": "8px",
-                            "display": "flex",
-                            "alignItems": "center",
-                        },
+                        className="filter-row",
+                        style={"borderTop": "1px solid var(--border, #e0e0e0)", "paddingTop": "8px"},
                     ),
                 ],
-                style={
-                    "padding": "15px",
-                    "borderBottom": "1px solid #ddd",
-                    "background": "#f8f9fa",
-                },
+                className="filter-panel",
             ),
             # Main Content Scrollable Area
             html.Div(

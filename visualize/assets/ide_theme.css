@@ -37,7 +37,7 @@ body {
 /* Layout Grid */
 .ide-container {
     display: grid;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 76px 1fr;
     height: 100vh;
     width: 100vw;
 }
@@ -45,11 +45,25 @@ body {
 .ide-header {
     background-color: var(--ide-header-bg);
     border-bottom: 2px solid var(--primary);
-    padding: 0 16px;
+    padding: 4px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.header-top-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    gap: 12px;
+}
+
+.header-bottom-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .ide-main {
@@ -318,7 +332,7 @@ body {
 /* Scatter Plot Container - hidden by default unless active */
 .scatter-container-fullscreen {
     position: absolute;
-    top: 50px;
+    top: 76px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -336,7 +350,7 @@ body {
 /* Statistics View Container - identical to scatter */
 .stats-container-fullscreen {
     position: absolute;
-    top: 50px;
+    top: 76px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -387,4 +401,86 @@ details>summary::-webkit-details-marker {
 /* Sidebar resizer accent on hover */
 .sidebar-resizer:hover {
     background-color: var(--primary);
+}
+
+/* ── Filter Panel (index.html-style minimal design) ── */
+.filter-panel {
+    padding: 10px 16px;
+    background: var(--card-bg, #fff);
+    border-bottom: 1px solid var(--border, #e0e0e0);
+}
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 6px 0;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.filter-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text, #333);
+    white-space: nowrap;
+    margin: 0;
+}
+
+.filter-input {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    border: none;
+    border-bottom: 2px solid var(--border, #e0e0e0);
+    background: var(--bg, #fafafa);
+    color: var(--text, #333);
+    outline: none;
+    transition: border-color 0.2s;
+    border-radius: 0;
+    width: 200px;
+}
+
+.filter-input:focus {
+    border-bottom-color: var(--primary, #f5a623);
+}
+
+.filter-dropdown {
+    font-size: 0.85rem;
+}
+
+.filter-radio .form-check {
+    font-size: 0.82rem;
+    padding-left: 1.4em;
+}
+
+.filter-radio .form-check-label {
+    font-size: 0.82rem;
+}
+
+.code-type-buttons .code-type-btn {
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    border: 1px solid var(--border, #e0e0e0);
+    background: var(--bg, #fafafa);
+    border-radius: var(--radius, 6px);
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text, #333);
+}
+
+.code-type-buttons .code-type-btn:hover {
+    border-color: var(--primary, #f5a623);
+    color: var(--primary, #f5a623);
+}
+
+.code-type-buttons .code-type-btn.active {
+    background: var(--primary, #f5a623);
+    color: #fff;
+    border-color: var(--primary, #f5a623);
 }

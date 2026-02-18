@@ -256,12 +256,12 @@ def _generate_visualization_csv(
     if services_json_path.exists():
         log.write("  Services JSON cache found, skipping ms_detection.\n")
     else:
-        log.write("  Running microservice detection...\n")
-        modules.identify_microservice.analyze_repo(url, name, str(workdir))
-        ms_detection_csv = ms_detection_dir / f"{name}.csv"
-        if not ms_detection_csv.exists() and not services_json_path.exists():
+        log.write("  Running microservice detection (snapshot mode)...\n")
+        modules.identify_microservice.analyze_repo_snapshot(url, name, str(workdir))
+        if not services_json_path.exists():
             log.write(
-                f"  [warn] ms_detection CSV was not generated: {ms_detection_csv}\n"
+                "  [warn] services JSON was not generated, "
+                "no docker-compose found?\n"
             )
             return
 

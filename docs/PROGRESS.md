@@ -1,5 +1,55 @@
 # Progress Log
 
+## 02-20-00:30 マイクロサービス検出の高速化: スナップショットモード導入
+
+### 変更ファイル
+
+- src/modules/identify_microservice.py — `analyze_repo_snapshot()` を新規追加. CLAIMの `claim()` (単一スナップショット) を使い, コミット履歴走査なしで現在のワークツリーからマイクロサービスを検出. `Microservice` → `ServiceContext` の変換ロジック含む (context 優先, なければ Dockerfile パスから推定).
+- src/web/app.py — `_generate_visualization_csv()` のマイクロサービス検出呼び出しを `analyze_repo()` (フル履歴走査) から `analyze_repo_snapshot()` (スナップショット) に変更. 不要になった ms_detection CSV 存在チェックを services_json 存在チェックに簡素化.
+
+### テスト結果
+
+- `pytest tests/ -q` — 33 passed in 0.11s
+
+### 判断メモ
+
+- ボトルネック: `dc_choice.analyze_repo()` + `ms_detection.analyze_repo()` が全コミット履歴を2回走査 (各コミットで `git checkout` + `rglob` + YAML/Dockerfile パース). 4340コミットで20時間以上.
+- CLAIMライブラリには `claim(name, workdir)` が元から存在し, 現在のワークツリーのみを解析して `set[Microservice]` を返す (数秒).
+- 可視化CSVに必要なのは「最新スナップショットでのサービス境界」のみであり, コミット履歴の変遷は不要. よってスナップショットモードで十分.
+- `analyze_repo()` (フル走査) は `analyze_dataset()` バッチ処理用にそのまま残存.
+
+### 残課題
+
+- TODO(gen): スナップショットモードの統合テスト (実リポジトリでの動作確認)
+- TODO(gen): `analyze_repo()` のフル走査も将来的にスナップショットに置き換えるか検討
+
+## 02-19-04:00 UI改善: フィルタパネル簡素化・日本語テキスト英語化・ヘッダー整理・マイグレーションスクリプト
+
+### 変更ファイル
+
+- scripts/migrate_ms_detection_to_json.py — 新規: 既存 ms_detection CSV → services_json JSON 一括変換 CLI スクリプト (--force, --dry-run, --ms-detection-dir, --services-json-dir 対応)
+- visualize/components.py — Detection Method フィルタを非表示化 (hidden, value="all" 固定). フィルタパネルを CSS クラスベースの2行レイアウトに簡素化 (filter-panel/filter-row/filter-group). ヘッダーを2行構造に変更 (上段: タイトル+ナビ, 下段: プロジェクト選択+ビュースイッチ). 全ユーザー向け日本語テキスト (60箇所以上) を英語に置換
+- visualize/callbacks.py — 全ユーザー向け日本語テキストを英語に置換 ("所有"→"All", "条件に一致するクローンはありません"→"No matching clones", "クローンのみ"→"clones only" 等)
+- visualize/assets/ide_theme.css — filter-panel/filter-row/filter-group/filter-label/filter-input/filter-dropdown/filter-radio/code-type-buttons の CSS 追加. ヘッダーを76px 2行レイアウトに変更 (header-top-row/header-bottom-row). scatter/stats コンテナの top を76pxに更新
+- visualize/assets/i18n.js — filterDetection キー削除. filterComod/filterScope/filterCodeType/filterCloneId/filterManyServices のラベルからコロン除去. Multi-Service Clones ラベルに統一
+
+### テスト結果
+
+- `pytest tests/ -q` — 33 passed in 0.06s
+- `python -c "import ast; ast.parse(...)"` — components.py, callbacks.py 構文チェックOK
+
+### 判断メモ
+
+- Detection Method は UI から非表示にするが, コールバック互換性のため hidden div として残した (3つのコールバックが Input として参照しているため, 完全削除するとDashエラーになる)
+- ヘッダー2行化: 上段にタイトル+Back/Language, 下段にProject/Dataset+ViewSwitcher の分離で視認性向上
+- 日本語テキスト置換: docstring/コメント内の日本語は維持. "日本語" ラベル (言語切替オプション) も意図的に維持
+
+### 残課題
+
+- TODO(gen): visualize/test_ui_logic.py は pandas 未インストールで collect error (前回からの継続)
+- TODO(gen): CSV list dropdown (old tab layout, lines 900-1000) にもまだ日本語ラベルあり ("プロジェクトを選択:", "全言語" 等を修正済み)
+- TODO(gen): ブラウザでの動作確認が必要 (dash 環境が必要)
+
 ## 02-19-01:00 services_json キャッシュ・2段階プロジェクト選択
 
 ### 変更ファイル

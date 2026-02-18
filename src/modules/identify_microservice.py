@@ -22,11 +22,14 @@ sys.path.append(str(project_root))
 sys.path.append(str(project_root / "src"))
 import modules.CLAIM.dc_choice as dc_choice
 import modules.CLAIM.ms_detection as ms_detection
+from lib.CLAIM.src.claim import claim as claim_snapshot
 from lib.CLAIM.src.utils.print_utils import print_progress, print_major_step, print_info
 from lib.CLAIM.src.utils.repo import clear_repo
 from modules.github_linguist import run_github_linguist
 from modules.visualization.service_mapping import (
+    ServiceContext,
     load_claim_service_contexts_for_repo,
+    normalize_repo_relative_path,
     save_service_contexts_to_json,
 )
 from config import BASED_DATASET
@@ -95,6 +98,82 @@ def _save_services_json_cache(url: str, name: str) -> None:
         save_service_contexts_to_json(contexts, url, output_path)
     except Exception as e:
         logger.warning("Failed to save services JSON cache for %s: %s", name, e)
+
+
+def analyze_repo_snapshot(url: str, name: str, workdir: str) -> Path:
+    """CLAIM の単一スナップショットモードでマイクロサービスを検出する.
+
+    コミット履歴を走査せず, 現在のワークツリーのみを解析するため
+    数秒で完了する（フル履歴走査の ``analyze_repo_by_clim`` は数時間かかる）.
+
+    結果は ``dest/services_json/<name>.json`` に保存される.
+
+    Args:
+        url: リポジトリの URL.
+        name: owner.repo 形式のリポジトリ名.
+        workdir: ローカルリポジトリのパス.
+
+    Returns:
+        保存した JSON ファイルのパス.
+
+    Raises:
+        RuntimeError: CLAIM 解析に失敗した場合.
+    """
+    try:
+        microservices = claim_snapshot(name, workdir)
+    except Exception as e:
+        raise RuntimeError(
+            f"CLAIM snapshot analysis failed: repo={name}, url={url}"
+        ) from e
+
+    contexts: list[ServiceContext] = []
+    for ms in microservices:
+        service_name = (ms.name or "").strip()
+        if not service_name:
+            continue
+
+        build = ms.build
+        if build is not None and build.context:
+            raw = str(build.context).strip()
+            if raw and raw not in {".", "None"}:
+                ctx = normalize_repo_relative_path(raw, repo_dir=None)
+                if ctx:
+                    contexts.append(
+                        ServiceContext(
+                            service_name=service_name,
+                            context=ctx,
+                            source="claim:snapshot",
+                        )
+                    )
+                    continue
+
+            # context が "." や空の場合, Dockerfile パスから推定
+            if build.rel_dockerfile:
+                rel = normalize_repo_relative_path(
+                    str(build.rel_dockerfile), repo_dir=None
+                )
+                parent = str(Path(rel).parent).replace("\\", "/").strip("/")
+                if parent and parent != ".":
+                    contexts.append(
+                        ServiceContext(
+                            service_name=service_name,
+                            context=parent,
+                            source="claim:snapshot:dockerfile",
+                        )
+                    )
+
+    if not contexts:
+        logger.warning(
+            "No service contexts detected by snapshot for %s", name
+        )
+
+    services_json_dir = project_root / "dest" / "services_json"
+    output_path = services_json_dir / f"{name}.json"
+    save_service_contexts_to_json(contexts, url, output_path)
+    logger.info(
+        "Snapshot analysis complete: %s (%d services)", name, len(contexts)
+    )
+    return output_path
 
 
 def analyze_repo(url: str, name: str, workdir: str):
