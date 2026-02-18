@@ -1,5 +1,30 @@
 # Progress Log
 
+## 2026-02-18: Web UI Run Analysis に可視化CSV生成ステップを追加
+
+### 変更ファイル
+
+- src/modules/visualization/naming.py — 新規作成. 可視化CSVの命名規則に基づくファイル名生成・パース関数を実装
+- src/modules/visualization/build_scatter_dataset.py — `build_scatter_dataset_for_language()` に `output_csv_stem` パラメータを追加. カスタムファイル名での出力に対応
+- src/web/app.py — ステップ6「可視化CSV生成」を追加. ms_detection 実行後に `build_scatter_dataset_for_language()` を呼び出し, 命名規則に従ったCSVを `dest/scatter/<project>/csv/` に出力. import追加: `identify_microservice`, `build_scatter_dataset_for_language`, `build_visualization_csv_filename_from_params`
+- tests/test_naming.py — 新規作成. naming.py の単体テスト32件
+
+### テスト結果
+
+- `.venv/bin/python -m pytest tests/ -q` → 34 passed in 0.03s
+
+### 判断メモ
+
+- Web UI の import フィルタはソースファイルに直接適用されるため, 出力CSVの名前は `<language>.csv` (filter_type=None). scatter CSV側の命名規則で `filtered`/`nofilter` を区別する
+- 可視化CSV生成の失敗は分析全体を止めない設計とした (警告ログのみ出力)
+- `output_csv_stem` は言語サフィックス (`_Java` 等) を含む形で渡す設計. 1つの実行設定で複数言語のCSVが同じstem下に並ぶ
+- `parse_visualization_csv_filename()` を逆変換用に実装. 将来の可視化スクリプト改修で使用予定
+
+### 残課題
+
+- TODO(gen): 既存の `visualize/` 可視化スクリプト (data_loader.py 等) を新命名規則に対応させる
+- TODO(gen): Docker 環境で実際のリポジトリに対して Web UI からの可視化CSVエンドツーエンド生成を確認する
+
 ## 2026-02-17: 可視化CSV生成パイプラインの修正
 
 ### 変更ファイル

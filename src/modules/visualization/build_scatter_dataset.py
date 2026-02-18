@@ -458,6 +458,7 @@ def build_scatter_dataset_for_language(
     project_root: Path,
     out_dir: Path,
     ms_detection_dir: Path | None = None,
+    output_csv_stem: str | None = None,
 ) -> tuple[Path, Path]:
     """1プロジェクト×1言語の散布図データセットを生成する.
 
@@ -468,6 +469,10 @@ def build_scatter_dataset_for_language(
         filter_type: None/import/tks.
         project_root: リポジトリroot.
         out_dir: 出力ディレクトリ（プロジェクト別の下に作る）.
+        ms_detection_dir: ms_detection CSV のディレクトリ.
+        output_csv_stem: 出力CSVの拡張子なしファイル名.
+            指定時はこの名前で resolved/unknown を出力する.
+            省略時は従来の "{csv_prefix}{language}_scatter" 形式を使う.
 
     Returns:
         (resolved_csv_path, unknown_csv_path)
@@ -536,8 +541,12 @@ def build_scatter_dataset_for_language(
         )
 
     out_project_dir = out_dir / project_name / "csv"
-    resolved_csv_path = out_project_dir / f"{csv_prefix}{language}_scatter.csv"
-    unknown_csv_path = out_project_dir / f"{csv_prefix}{language}_scatter_unknown.csv"
+    if output_csv_stem:
+        resolved_csv_path = out_project_dir / f"{output_csv_stem}.csv"
+        unknown_csv_path = out_project_dir / f"{output_csv_stem}_unknown.csv"
+    else:
+        resolved_csv_path = out_project_dir / f"{csv_prefix}{language}_scatter.csv"
+        unknown_csv_path = out_project_dir / f"{csv_prefix}{language}_scatter_unknown.csv"
     out_project_dir.mkdir(parents=True, exist_ok=True)
 
     resolved_count = 0

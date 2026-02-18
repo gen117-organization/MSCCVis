@@ -34,6 +34,11 @@ import modules.clone_repo
 import modules.collect_datas
 import modules.analyze_cc
 import modules.analyze_modification
+import modules.identify_microservice
+from modules.visualization.build_scatter_dataset import (
+    build_scatter_dataset_for_language,
+)
+from modules.visualization.naming import build_visualization_csv_filename_from_params
 from commands.pipeline import determine_analyzed_commits as dac
 
 # ---------------------------------------------------------------------------
@@ -214,6 +219,73 @@ def _clear_previous_results(repo_name: str) -> None:
         analyzed_file.unlink()
 
 
+def _generate_visualization_csv(
+    *,
+    project: dict,
+    name: str,
+    url: str,
+    params: dict,
+    workdir: Path,
+    log: _LogCapture,
+) -> None:
+    """分析結果から可視化用CSV (散布図データセット) を生成する.
+
+    Args:
+        project: {"URL": ..., "languages": {...}} 形式のプロジェクト辞書.
+        name: <owner>.<repo> 形式の識別子.
+        url: GitHub リポジトリURL.
+        params: Web UIで検証済みのパラメータ辞書.
+        workdir: ローカルリポジトリのパス.
+        log: ログ出力先.
+    """
+    languages = project.get("languages", {})
+    if not languages:
+        log.write("  No languages found, skipping visualization CSV.\n")
+        return
+
+    # ms_detection の実行
+    log.write("  Running microservice detection...\n")
+    ms_detection_dir = project_root / "dest/ms_detection"
+    ms_detection_dir.mkdir(parents=True, exist_ok=True)
+    modules.identify_microservice.analyze_repo(url, name, str(workdir))
+    ms_detection_csv = ms_detection_dir / f"{name}.csv"
+    if not ms_detection_csv.exists():
+        log.write(f"  [warn] ms_detection CSV was not generated: {ms_detection_csv}\n")
+        return
+
+    # 命名規則に基づくファイル名の生成
+    csv_stem = build_visualization_csv_filename_from_params(params)
+    out_dir = project_root / "dest/scatter"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Web UIではimportフィルタは実行時にソースに適用済みのため,
+    # 入力CSVは常にフィルタなし名 (<language>.csv) で格納されている.
+    filter_type: str | None = None
+
+    generated_count = 0
+    for language in languages.keys():
+        try:
+            log.write(f"  Generating scatter CSV: language={language}...\n")
+            resolved_path, unknown_path = build_scatter_dataset_for_language(
+                project=project,
+                project_name=name,
+                language=language,
+                filter_type=filter_type,
+                project_root=project_root,
+                out_dir=out_dir,
+                ms_detection_dir=ms_detection_dir,
+                output_csv_stem=f"{csv_stem}_{language}",
+            )
+            generated_count += 1
+            log.write(f"  Done: {resolved_path.name}\n")
+        except FileNotFoundError as exc:
+            log.write(f"  [warn] Skip scatter CSV (missing input): {exc}\n")
+        except Exception as exc:
+            log.write(f"  [warn] Failed scatter CSV for {language}: {exc}\n")
+
+    log.write(f"  Generated {generated_count}/{len(languages)} visualization CSVs.\n")
+
+
 def _run_job(job_id: str, params: dict):
     """Execute the full pipeline for a single repo URL with given params."""
     job = _jobs[job_id]
@@ -246,14 +318,14 @@ def _run_job(job_id: str, params: dict):
             # ------------------------------------------------------------------
             # 1. Clone repository
             # ------------------------------------------------------------------
-            log.write("[step 1/5] Cloning repository...\n")
+            log.write("[step 1/6] Cloning repository...\n")
             modules.clone_repo.clone_repo(url)
             workdir = project_root / "dest/projects" / name
 
             # ------------------------------------------------------------------
             # 2. Determine analysed commits  (overriding config values at runtime)
             # ------------------------------------------------------------------
-            log.write("[step 2/5] Determining analysed commits...\n")
+            log.write("[step 2/6] Determining analysed commits...\n")
             analysis_method: str = params.get("analysis_method", "merge_commit")
             search_depth: int = int(params.get("search_depth", -1))
             max_commits: int = int(params.get("max_analyzed_commits", -1))
@@ -309,7 +381,7 @@ def _run_job(job_id: str, params: dict):
             # ------------------------------------------------------------------
             # 3. Collect data (clone detection + moving lines)
             # ------------------------------------------------------------------
-            log.write("[step 3/5] Collecting clone data...\n")
+            log.write("[step 3/6] Collecting clone data...\n")
 
             # Runtime options for collect/detect
             min_tokens: int = int(params.get("min_tokens", 50))
@@ -324,14 +396,31 @@ def _run_job(job_id: str, params: dict):
             # ------------------------------------------------------------------
             # 4. Analyse code clones
             # ------------------------------------------------------------------
-            log.write("[step 4/5] Analysing code clones...\n")
+            log.write("[step 4/6] Analysing code clones...\n")
             modules.analyze_cc.analyze_repo(project)
 
             # ------------------------------------------------------------------
             # 5. Analyse co-modification
             # ------------------------------------------------------------------
-            log.write("[step 5/5] Analysing co-modification...\n")
+            log.write("[step 5/6] Analysing co-modification...\n")
             modules.analyze_modification.analyze_repo(project)
+
+            # ------------------------------------------------------------------
+            # 6. Generate visualization CSV
+            # ------------------------------------------------------------------
+            log.write("[step 6/6] Generating visualization CSV...\n")
+            try:
+                _generate_visualization_csv(
+                    project=project,
+                    name=name,
+                    url=url,
+                    params=params,
+                    workdir=workdir,
+                    log=log,
+                )
+            except Exception as exc:
+                # 可視化CSV生成の失敗は全体を止めない
+                log.write(f"[warn] Visualization CSV generation failed: {exc}\n")
 
             log.write("[job] All steps completed successfully.\n")
             job["status"] = "completed"
