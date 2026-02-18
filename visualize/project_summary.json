@@ -1,0 +1,3534 @@
+{
+  "generated_at": "2025-09-20T20:44:16.947434",
+  "total_projects": 50,
+  "projects": {
+    "Microservice-API-Patterns.LakesideMutual": {
+      "project_name": "Microservice-API-Patterns.LakesideMutual",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 19844,
+            "total_clones_raw": 684024,
+            "duplicate_count": 632718,
+            "unique_files": 225,
+            "inter_clones": 12823,
+            "intra_clones": 7021,
+            "original_clone_count": 56261,
+            "services": {
+              "customer-core": {
+                "files": 38,
+                "total_lines": 2699,
+                "code_lines": 1909
+              },
+              "customer-management-backend": {
+                "files": 34,
+                "total_lines": 1571,
+                "code_lines": 1141
+              },
+              "customer-self-service-backend": {
+                "files": 73,
+                "total_lines": 4469,
+                "code_lines": 3218
+              },
+              "policy-management-backend": {
+                "files": 79,
+                "total_lines": 5377,
+                "code_lines": 3838
+              },
+              "spring-boot-admin": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 42.1,
+            "service_count": 9,
+            "total_files": 225,
+            "total_lines": 14133,
+            "code_lines": 10117
+          },
+          "csv_file": "Microservice-API-Patterns.LakesideMutual_latest_Java_all.csv"
+        },
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 21038747,
+            "total_clones_raw": 97493,
+            "duplicate_count": 1,
+            "unique_files": 95,
+            "inter_clones": 10519685,
+            "intra_clones": 10519062,
+            "original_clone_count": 21038752,
+            "services": {
+              "customer-management-frontend": {
+                "files": 40,
+                "total_lines": 10658,
+                "code_lines": 9028
+              },
+              "customer-self-service-frontend": {
+                "files": 46,
+                "total_lines": 11575,
+                "code_lines": 9891
+              },
+              "policy-management-frontend": {
+                "files": 6,
+                "total_lines": 358,
+                "code_lines": 326
+              },
+              "risk-management-server": {
+                "files": 3,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 270.1,
+            "service_count": 9,
+            "total_files": 95,
+            "total_lines": 23077,
+            "code_lines": 19678
+          },
+          "csv_file": "Microservice-API-Patterns.LakesideMutual_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/Microservice-API-Patterns/LakesideMutual",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 148798,
+        "unique_files": 267,
+        "inter_clones": 148489,
+        "intra_clones": 309,
+        "original_clone_count": 21095013,
+        "service_count": 4,
+        "avg_clone_size": 130.7
+      }
+    },
+    "mvs-org.explorer": {
+      "project_name": "mvs-org.explorer",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 63856,
+            "total_clones_raw": 36675,
+            "duplicate_count": 3690,
+            "unique_files": 141,
+            "inter_clones": 30249,
+            "intra_clones": 33607,
+            "original_clone_count": 55569,
+            "services": {
+              "explorer-api": {
+                "files": 63,
+                "total_lines": 17853,
+                "code_lines": 12053
+              },
+              "harvester": {
+                "files": 78,
+                "total_lines": 22499,
+                "code_lines": 15495
+              }
+            },
+            "avg_clone_size": 30.8,
+            "service_count": 2,
+            "total_files": 141,
+            "total_lines": 40352,
+            "code_lines": 27548
+          },
+          "csv_file": "mvs-org.explorer_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/mvs-org/explorer",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 32985,
+        "unique_files": 98,
+        "inter_clones": 31946,
+        "intra_clones": 1039,
+        "original_clone_count": 55569,
+        "service_count": 2,
+        "avg_clone_size": 17.1
+      }
+    },
+    "MathieuB1.KOREK": {
+      "project_name": "MathieuB1.KOREK",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 4,
+            "total_clones_raw": 4,
+            "duplicate_count": 0,
+            "unique_files": 31,
+            "inter_clones": 4,
+            "intra_clones": 0,
+            "original_clone_count": 4,
+            "services": {
+              "django-notifier": {
+                "files": 12,
+                "total_lines": 471,
+                "code_lines": 326
+              },
+              "django-rest-swagger": {
+                "files": 19,
+                "total_lines": 2698,
+                "code_lines": 1857
+              }
+            },
+            "avg_clone_size": 89.2,
+            "service_count": 2,
+            "total_files": 31,
+            "total_lines": 3169,
+            "code_lines": 2183
+          },
+          "csv_file": "MathieuB1.KOREK_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/MathieuB1/KOREK",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 4,
+        "unique_files": 2,
+        "inter_clones": 4,
+        "intra_clones": 0,
+        "original_clone_count": 4,
+        "service_count": 2,
+        "avg_clone_size": 44.6
+      }
+    },
+    "Donders-Institute.streamer": {
+      "project_name": "Donders-Institute.streamer",
+      "languages": {
+        "TypeScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 21,
+            "total_clones_raw": 21,
+            "duplicate_count": 0,
+            "unique_files": 33,
+            "inter_clones": 0,
+            "intra_clones": 21,
+            "original_clone_count": 21,
+            "services": {
+              "streamer-ui": {
+                "files": 33,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 61.0,
+            "service_count": 2,
+            "total_files": 33,
+            "total_lines": 0,
+            "code_lines": 0
+          },
+          "csv_file": "Donders-Institute.streamer_latest_TypeScript_all.csv"
+        },
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 136,
+            "total_clones_raw": 154,
+            "duplicate_count": 14,
+            "unique_files": 27,
+            "inter_clones": 0,
+            "intra_clones": 136,
+            "original_clone_count": 140,
+            "services": {
+              "streamer": {
+                "files": 13,
+                "total_lines": 8221,
+                "code_lines": 6497
+              },
+              "streamer-ui": {
+                "files": 14,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 24.0,
+            "service_count": 2,
+            "total_files": 27,
+            "total_lines": 8221,
+            "code_lines": 6497
+          },
+          "csv_file": "Donders-Institute.streamer_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/Donders-Institute/streamer",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 161,
+        "unique_files": 21,
+        "inter_clones": 4,
+        "intra_clones": 157,
+        "original_clone_count": 161,
+        "service_count": 2,
+        "avg_clone_size": 14.8
+      }
+    },
+    "Hygieia.ExecDashboard": {
+      "project_name": "Hygieia.ExecDashboard",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 617,
+            "total_clones_raw": 98010,
+            "duplicate_count": 51246,
+            "unique_files": 79,
+            "inter_clones": 155,
+            "intra_clones": 462,
+            "original_clone_count": 102559,
+            "services": {
+              "exec-analysis": {
+                "files": 22,
+                "total_lines": 2782,
+                "code_lines": 2302
+              },
+              "exec-api": {
+                "files": 57,
+                "total_lines": 5224,
+                "code_lines": 3654
+              }
+            },
+            "avg_clone_size": 24.1,
+            "service_count": 4,
+            "total_files": 79,
+            "total_lines": 8006,
+            "code_lines": 5956
+          },
+          "csv_file": "Hygieia.ExecDashboard_latest_Java_all.csv"
+        },
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "unique_files": 4,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "service_count": 4,
+            "avg_clone_size": 0,
+            "total_files": 4,
+            "services": {
+              "exec-db": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "exec-ui": {
+                "files": 3,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/Hygieia/ExecDashboard",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 46764,
+        "unique_files": 62,
+        "inter_clones": 45952,
+        "intra_clones": 812,
+        "original_clone_count": 102559,
+        "service_count": 2,
+        "avg_clone_size": 7.9
+      }
+    },
+    "atulmy.fullstack-javascript-architecture": {
+      "project_name": "atulmy.fullstack-javascript-architecture",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 20,
+            "total_clones_raw": 28,
+            "duplicate_count": 0,
+            "unique_files": 118,
+            "inter_clones": 1,
+            "intra_clones": 19,
+            "original_clone_count": 28,
+            "services": {
+              "backend/api": {
+                "files": 29,
+                "total_lines": 1229,
+                "code_lines": 907
+              },
+              "frontend/app/web": {
+                "files": 64,
+                "total_lines": 2442,
+                "code_lines": 1841
+              },
+              "frontend/landing": {
+                "files": 25,
+                "total_lines": 853,
+                "code_lines": 677
+              }
+            },
+            "avg_clone_size": 38.1,
+            "service_count": 3,
+            "total_files": 118,
+            "total_lines": 4524,
+            "code_lines": 3425
+          },
+          "csv_file": "atulmy.fullstack-javascript-architecture_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/atulmy/fullstack-javascript-architecture",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 28,
+        "unique_files": 19,
+        "inter_clones": 2,
+        "intra_clones": 26,
+        "original_clone_count": 28,
+        "service_count": 3,
+        "avg_clone_size": 19.0
+      }
+    },
+    "piomin.sample-spring-microservices": {
+      "project_name": "piomin.sample-spring-microservices",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 4,
+            "total_clones_raw": 20,
+            "duplicate_count": 6,
+            "unique_files": 17,
+            "inter_clones": 4,
+            "intra_clones": 0,
+            "original_clone_count": 14,
+            "services": {
+              "account-service": {
+                "files": 5,
+                "total_lines": 147,
+                "code_lines": 118
+              },
+              "customer-service": {
+                "files": 8,
+                "total_lines": 195,
+                "code_lines": 153
+              },
+              "gateway-service": {
+                "files": 2,
+                "total_lines": 30,
+                "code_lines": 24
+              },
+              "discovery-service": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "zipkin-service": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 31.0,
+            "service_count": 5,
+            "total_files": 17,
+            "total_lines": 403,
+            "code_lines": 317
+          },
+          "csv_file": "piomin.sample-spring-microservices_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/piomin/sample-spring-microservices",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 14,
+        "unique_files": 10,
+        "inter_clones": 10,
+        "intra_clones": 4,
+        "original_clone_count": 14,
+        "service_count": 3,
+        "avg_clone_size": 11.9
+      }
+    },
+    "teffland.FoodborneNYC": {
+      "project_name": "teffland.FoodborneNYC",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 2,
+            "total_clones_raw": 2,
+            "duplicate_count": 0,
+            "unique_files": 9,
+            "inter_clones": 1,
+            "intra_clones": 1,
+            "original_clone_count": 2,
+            "services": {
+              "src/twitter-classify": {
+                "files": 1,
+                "total_lines": 43,
+                "code_lines": 35
+              },
+              "src/twitter-service": {
+                "files": 4,
+                "total_lines": 177,
+                "code_lines": 146
+              },
+              "src/yelp-classify": {
+                "files": 1,
+                "total_lines": 50,
+                "code_lines": 42
+              },
+              "src/flask-app": {
+                "files": 2,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/yelp-service": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 33.0,
+            "service_count": 5,
+            "total_files": 9,
+            "total_lines": 554,
+            "code_lines": 464
+          },
+          "csv_file": "teffland.FoodborneNYC_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/teffland/FoodborneNYC",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 2,
+        "unique_files": 4,
+        "inter_clones": 1,
+        "intra_clones": 1,
+        "original_clone_count": 2,
+        "service_count": 3,
+        "avg_clone_size": 16.5
+      }
+    },
+    "bcgov.von-bc-registries": {
+      "project_name": "bcgov.von-bc-registries",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 36009633,
+            "total_clones_raw": 247006,
+            "duplicate_count": 19875,
+            "unique_files": 82,
+            "inter_clones": 0,
+            "intra_clones": 36009633,
+            "original_clone_count": 35960516,
+            "services": {
+              "data-pipeline": {
+                "files": 78,
+                "total_lines": 28405,
+                "code_lines": 25983
+              },
+              "bcreg-aca": {
+                "files": 4,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 402.0,
+            "service_count": 2,
+            "total_files": 82,
+            "total_lines": 30424,
+            "code_lines": 27604
+          },
+          "csv_file": "bcgov.von-bc-registries_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/bcgov/von-bc-registries",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 227131,
+        "unique_files": 57,
+        "inter_clones": 0,
+        "intra_clones": 227131,
+        "original_clone_count": 35960516,
+        "service_count": 1,
+        "avg_clone_size": 207.4
+      }
+    },
+    "grin-pool.grin-pool": {
+      "project_name": "grin-pool.grin-pool",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 644,
+            "total_clones_raw": 868,
+            "duplicate_count": 135,
+            "unique_files": 100,
+            "inter_clones": 0,
+            "intra_clones": 644,
+            "original_clone_count": 733,
+            "services": {
+              "grin-js/webui": {
+                "files": 99,
+                "total_lines": 8523,
+                "code_lines": 7316
+              },
+              "grin-js/api": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 20.9,
+            "service_count": 5,
+            "total_files": 100,
+            "total_lines": 11244,
+            "code_lines": 9535
+          },
+          "csv_file": "grin-pool.grin-pool_latest_JavaScript_all.csv"
+        },
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 298,
+            "total_clones_raw": 298,
+            "duplicate_count": 8,
+            "unique_files": 65,
+            "inter_clones": 10,
+            "intra_clones": 288,
+            "original_clone_count": 290,
+            "services": {
+              "grin": {
+                "files": 1,
+                "total_lines": 9092,
+                "code_lines": 6197
+              },
+              "grin-js/api": {
+                "files": 3,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "grin-py": {
+                "files": 61,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 26.6,
+            "service_count": 5,
+            "total_files": 65,
+            "total_lines": 9092,
+            "code_lines": 6197
+          },
+          "csv_file": "grin-pool.grin-pool_latest_Python_all.csv"
+        },
+        "TypeScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 234,
+            "total_clones_raw": 274,
+            "duplicate_count": 4,
+            "unique_files": 26,
+            "inter_clones": 0,
+            "intra_clones": 234,
+            "original_clone_count": 270,
+            "services": {
+              "grin-js/api": {
+                "files": 26,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 32.5,
+            "service_count": 5,
+            "total_files": 26,
+            "total_lines": 0,
+            "code_lines": 0
+          },
+          "csv_file": "grin-pool.grin-pool_latest_TypeScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/grin-pool/grin-pool",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 1293,
+        "unique_files": 105,
+        "inter_clones": 10,
+        "intra_clones": 1283,
+        "original_clone_count": 1293,
+        "service_count": 3,
+        "avg_clone_size": 12.4
+      }
+    },
+    "dms98br.nest-microservices": {
+      "project_name": "dms98br.nest-microservices",
+      "languages": {
+        "TypeScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 59,
+            "total_clones_raw": 1540,
+            "duplicate_count": 940,
+            "unique_files": 101,
+            "inter_clones": 42,
+            "intra_clones": 17,
+            "original_clone_count": 600,
+            "services": {
+              "api": {
+                "files": 26,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "media-service": {
+                "files": 42,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "user-management-service": {
+                "files": 33,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 27.1,
+            "service_count": 3,
+            "total_files": 101,
+            "total_lines": 0,
+            "code_lines": 0
+          },
+          "csv_file": "dms98br.nest-microservices_latest_TypeScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/dms98br/nest-microservices",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 600,
+        "unique_files": 52,
+        "inter_clones": 586,
+        "intra_clones": 14,
+        "original_clone_count": 600,
+        "service_count": 3,
+        "avg_clone_size": 9.7
+      }
+    },
+    "nquocnghia.microcalc": {
+      "project_name": "nquocnghia.microcalc",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 3,
+            "total_clones_raw": 4,
+            "duplicate_count": 0,
+            "unique_files": 2,
+            "inter_clones": 3,
+            "intra_clones": 0,
+            "original_clone_count": 4,
+            "services": {
+              "services/add": {
+                "files": 1,
+                "total_lines": 43,
+                "code_lines": 36
+              },
+              "services/pow": {
+                "files": 1,
+                "total_lines": 104,
+                "code_lines": 89
+              }
+            },
+            "avg_clone_size": 18.3,
+            "service_count": 4,
+            "total_files": 2,
+            "total_lines": 147,
+            "code_lines": 125
+          },
+          "csv_file": "nquocnghia.microcalc_latest_JavaScript_all.csv"
+        },
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 1,
+            "total_clones_raw": 3,
+            "duplicate_count": 0,
+            "unique_files": 14,
+            "inter_clones": 0,
+            "intra_clones": 1,
+            "original_clone_count": 3,
+            "services": {
+              "services/parser": {
+                "files": 11,
+                "total_lines": 467,
+                "code_lines": 394
+              },
+              "services/mod": {
+                "files": 3,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 26.0,
+            "service_count": 4,
+            "total_files": 14,
+            "total_lines": 672,
+            "code_lines": 564
+          },
+          "csv_file": "nquocnghia.microcalc_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/nquocnghia/microcalc",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 7,
+        "unique_files": 6,
+        "inter_clones": 4,
+        "intra_clones": 3,
+        "original_clone_count": 7,
+        "service_count": 2,
+        "avg_clone_size": 9.0
+      }
+    },
+    "PecanProject.BETYdb-YABA": {
+      "project_name": "PecanProject.BETYdb-YABA",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 29,
+            "total_clones_raw": 30,
+            "duplicate_count": 0,
+            "unique_files": 28,
+            "inter_clones": 0,
+            "intra_clones": 29,
+            "original_clone_count": 30,
+            "services": {
+              "interface": {
+                "files": 25,
+                "total_lines": 2130,
+                "code_lines": 1909
+              },
+              "visualization": {
+                "files": 3,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 40.5,
+            "service_count": 4,
+            "total_files": 28,
+            "total_lines": 2705,
+            "code_lines": 2442
+          },
+          "csv_file": "PecanProject.BETYdb-YABA_latest_JavaScript_all.csv"
+        },
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "unique_files": 5,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "service_count": 4,
+            "avg_clone_size": 0,
+            "total_files": 5,
+            "services": {
+              "client": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "app": {
+                "files": 4,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/PecanProject/BETYdb-YABA",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 30,
+        "unique_files": 14,
+        "inter_clones": 0,
+        "intra_clones": 30,
+        "original_clone_count": 30,
+        "service_count": 1,
+        "avg_clone_size": 20.4
+      }
+    },
+    "DaisukeHirata.express-typescript-openapi3": {
+      "project_name": "DaisukeHirata.express-typescript-openapi3",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 59558,
+            "total_clones_raw": 44500,
+            "duplicate_count": 16762,
+            "unique_files": 41,
+            "inter_clones": 1,
+            "intra_clones": 59557,
+            "original_clone_count": 37804,
+            "services": {
+              "cinema-catalog-service": {
+                "files": 38,
+                "total_lines": 44519,
+                "code_lines": 32767
+              },
+              "movies-service": {
+                "files": 2,
+                "total_lines": 1452,
+                "code_lines": 1217
+              },
+              "search-service": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 24.8,
+            "service_count": 3,
+            "total_files": 41,
+            "total_lines": 47260,
+            "code_lines": 35063
+          },
+          "csv_file": "DaisukeHirata.express-typescript-openapi3_latest_JavaScript_all.csv"
+        },
+        "TypeScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 591,
+            "total_clones_raw": 1674,
+            "duplicate_count": 1052,
+            "unique_files": 79,
+            "inter_clones": 461,
+            "intra_clones": 130,
+            "original_clone_count": 622,
+            "services": {
+              "cinema-catalog-service": {
+                "files": 25,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "movies-service": {
+                "files": 30,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "search-service": {
+                "files": 24,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 31.9,
+            "service_count": 3,
+            "total_files": 79,
+            "total_lines": 0,
+            "code_lines": 0
+          },
+          "csv_file": "DaisukeHirata.express-typescript-openapi3_latest_TypeScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/DaisukeHirata/express-typescript-openapi3",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 28360,
+        "unique_files": 95,
+        "inter_clones": 620,
+        "intra_clones": 27740,
+        "original_clone_count": 38426,
+        "service_count": 3,
+        "avg_clone_size": 15.8
+      }
+    },
+    "lightstep.opentelemetry-examples": {
+      "project_name": "lightstep.opentelemetry-examples",
+      "languages": {
+        "Go": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 60,
+            "total_clones_raw": 180,
+            "duplicate_count": 113,
+            "unique_files": 8,
+            "inter_clones": 47,
+            "intra_clones": 13,
+            "original_clone_count": 67,
+            "services": {
+              "go/opentelemetry/collector/client": {
+                "files": 1,
+                "total_lines": 163,
+                "code_lines": 113
+              },
+              "go/opentelemetry/collector/server": {
+                "files": 1,
+                "total_lines": 194,
+                "code_lines": 138
+              },
+              "go/opentelemetry/otlp/client": {
+                "files": 2,
+                "total_lines": 304,
+                "code_lines": 237
+              },
+              "go/opentelemetry/otlp/server": {
+                "files": 2,
+                "total_lines": 375,
+                "code_lines": 287
+              },
+              "go/opentracing/client": {
+                "files": 1,
+                "total_lines": 103,
+                "code_lines": 79
+              },
+              "go/opentracing/server": {
+                "files": 1,
+                "total_lines": 112,
+                "code_lines": 90
+              }
+            },
+            "avg_clone_size": 72.4,
+            "service_count": 15,
+            "total_files": 8,
+            "total_lines": 1251,
+            "code_lines": 944
+          },
+          "csv_file": "lightstep.opentelemetry-examples_latest_Go_all.csv"
+        },
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 10,
+            "total_clones_raw": 16,
+            "duplicate_count": 6,
+            "unique_files": 10,
+            "inter_clones": 10,
+            "intra_clones": 0,
+            "original_clone_count": 10,
+            "services": {
+              "python/opentelemetry/auto_instrumentation": {
+                "files": 2,
+                "total_lines": 147,
+                "code_lines": 75
+              },
+              "python/opentelemetry/manual_instrumentation": {
+                "files": 3,
+                "total_lines": 184,
+                "code_lines": 117
+              },
+              "python/opentracing": {
+                "files": 2,
+                "total_lines": 136,
+                "code_lines": 88
+              },
+              "demo-client/otlp": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "tools/integration": {
+                "files": 2,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 41.5,
+            "service_count": 15,
+            "total_files": 10,
+            "total_lines": 716,
+            "code_lines": 448
+          },
+          "csv_file": "lightstep.opentelemetry-examples_latest_Python_all.csv"
+        },
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 8,
+            "total_clones_raw": 55,
+            "duplicate_count": 13,
+            "unique_files": 18,
+            "inter_clones": 4,
+            "intra_clones": 4,
+            "original_clone_count": 42,
+            "services": {
+              "java/client": {
+                "files": 1,
+                "total_lines": 35,
+                "code_lines": 30
+              },
+              "java/microdonuts": {
+                "files": 12,
+                "total_lines": 746,
+                "code_lines": 600
+              },
+              "java/otlp": {
+                "files": 3,
+                "total_lines": 244,
+                "code_lines": 204
+              },
+              "java/server": {
+                "files": 2,
+                "total_lines": 68,
+                "code_lines": 58
+              }
+            },
+            "avg_clone_size": 26.5,
+            "service_count": 15,
+            "total_files": 18,
+            "total_lines": 1093,
+            "code_lines": 892
+          },
+          "csv_file": "lightstep.opentelemetry-examples_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/lightstep/opentelemetry-examples",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 119,
+        "unique_files": 23,
+        "inter_clones": 106,
+        "intra_clones": 13,
+        "original_clone_count": 119,
+        "service_count": 6,
+        "avg_clone_size": 24.7
+      }
+    },
+    "flowant.website": {
+      "project_name": "flowant.website",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 605,
+            "total_clones_raw": 52277,
+            "duplicate_count": 26403,
+            "unique_files": 68,
+            "inter_clones": 1,
+            "intra_clones": 604,
+            "original_clone_count": 26233,
+            "services": {
+              "authserver": {
+                "files": 18,
+                "total_lines": 1007,
+                "code_lines": 799
+              },
+              "backend": {
+                "files": 45,
+                "total_lines": 3760,
+                "code_lines": 3017
+              },
+              "gateway": {
+                "files": 3,
+                "total_lines": 73,
+                "code_lines": 53
+              },
+              "registry": {
+                "files": 2,
+                "total_lines": 31,
+                "code_lines": 25
+              }
+            },
+            "avg_clone_size": 24.1,
+            "service_count": 4,
+            "total_files": 68,
+            "total_lines": 4871,
+            "code_lines": 3894
+          },
+          "csv_file": "flowant.website_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/flowant/website",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 25874,
+        "unique_files": 58,
+        "inter_clones": 16764,
+        "intra_clones": 9110,
+        "original_clone_count": 26233,
+        "service_count": 4,
+        "avg_clone_size": 6.5
+      }
+    },
+    "stackroute.ibm-wave7-lifeline": {
+      "project_name": "stackroute.ibm-wave7-lifeline",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 321,
+            "total_clones_raw": 32786,
+            "duplicate_count": 30330,
+            "unique_files": 109,
+            "inter_clones": 226,
+            "intra_clones": 95,
+            "original_clone_count": 2456,
+            "services": {
+              "chat-service": {
+                "files": 6,
+                "total_lines": 150,
+                "code_lines": 121
+              },
+              "config-server": {
+                "files": 2,
+                "total_lines": 33,
+                "code_lines": 25
+              },
+              "donor-profile-service": {
+                "files": 22,
+                "total_lines": 1124,
+                "code_lines": 900
+              },
+              "eureka-server": {
+                "files": 2,
+                "total_lines": 32,
+                "code_lines": 24
+              },
+              "login-service": {
+                "files": 19,
+                "total_lines": 1039,
+                "code_lines": 724
+              },
+              "recepient-profile-service": {
+                "files": 17,
+                "total_lines": 874,
+                "code_lines": 685
+              },
+              "reportservice": {
+                "files": 14,
+                "total_lines": 581,
+                "code_lines": 398
+              },
+              "search-service": {
+                "files": 24,
+                "total_lines": 847,
+                "code_lines": 679
+              },
+              "zuul-api": {
+                "files": 3,
+                "total_lines": 67,
+                "code_lines": 53
+              }
+            },
+            "avg_clone_size": 23.9,
+            "service_count": 9,
+            "total_files": 109,
+            "total_lines": 4747,
+            "code_lines": 3609
+          },
+          "csv_file": "stackroute.ibm-wave7-lifeline_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/stackroute/ibm-wave7-lifeline",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 2456,
+        "unique_files": 89,
+        "inter_clones": 2421,
+        "intra_clones": 35,
+        "original_clone_count": 2456,
+        "service_count": 9,
+        "avg_clone_size": 7.2
+      }
+    },
+    "dpukhkaiev.BRISE2": {
+      "project_name": "dpukhkaiev.BRISE2",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 791,
+            "total_clones_raw": 791,
+            "duplicate_count": 134,
+            "unique_files": 162,
+            "inter_clones": 4,
+            "intra_clones": 787,
+            "original_clone_count": 657,
+            "services": {
+              "main_node": {
+                "files": 147,
+                "total_lines": 11895,
+                "code_lines": 9647
+              },
+              "worker": {
+                "files": 14,
+                "total_lines": 1621,
+                "code_lines": 1345
+              },
+              "worker_service": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 25.3,
+            "service_count": 3,
+            "total_files": 162,
+            "total_lines": 13516,
+            "code_lines": 10992
+          },
+          "csv_file": "dpukhkaiev.BRISE2_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/dpukhkaiev/BRISE2",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 657,
+        "unique_files": 74,
+        "inter_clones": 4,
+        "intra_clones": 653,
+        "original_clone_count": 657,
+        "service_count": 3,
+        "avg_clone_size": 13.9
+      }
+    },
+    "MuizMahdi.EHR-Route": {
+      "project_name": "MuizMahdi.EHR-Route",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "total_clones_raw": 19,
+            "duplicate_count": 7,
+            "unique_files": 17,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "original_clone_count": 12,
+            "services": {
+              "config-server": {
+                "files": 2,
+                "total_lines": 29,
+                "code_lines": 20
+              },
+              "patient-service": {
+                "files": 3,
+                "total_lines": 69,
+                "code_lines": 50
+              },
+              "provider-service": {
+                "files": 5,
+                "total_lines": 122,
+                "code_lines": 83
+              },
+              "discovery-service": {
+                "files": 2,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "gateway-service": {
+                "files": 5,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 0,
+            "service_count": 5,
+            "total_files": 17,
+            "total_lines": 396,
+            "code_lines": 265
+          },
+          "csv_file": "MuizMahdi.EHR-Route_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/MuizMahdi/EHR-Route",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 12,
+        "unique_files": 6,
+        "inter_clones": 12,
+        "intra_clones": 0,
+        "original_clone_count": 12,
+        "service_count": 3,
+        "avg_clone_size": 8.8
+      }
+    },
+    "icebob.catalyst": {
+      "project_name": "icebob.catalyst",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 69,
+            "total_clones_raw": 607,
+            "duplicate_count": 495,
+            "unique_files": 75,
+            "inter_clones": 51,
+            "intra_clones": 18,
+            "original_clone_count": 112,
+            "services": {
+              "admin": {
+                "files": 64,
+                "total_lines": 3152,
+                "code_lines": 2627
+              },
+              "api": {
+                "files": 4,
+                "total_lines": 1160,
+                "code_lines": 814
+              },
+              "email": {
+                "files": 1,
+                "total_lines": 306,
+                "code_lines": 143
+              },
+              "user": {
+                "files": 3,
+                "total_lines": 1020,
+                "code_lines": 727
+              },
+              "verification_code": {
+                "files": 3,
+                "total_lines": 763,
+                "code_lines": 522
+              }
+            },
+            "avg_clone_size": 88.4,
+            "service_count": 5,
+            "total_files": 75,
+            "total_lines": 6401,
+            "code_lines": 4833
+          },
+          "csv_file": "icebob.catalyst_latest_JavaScript_all.csv"
+        },
+        "TypeScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 37,
+            "total_clones_raw": 132,
+            "duplicate_count": 96,
+            "unique_files": 19,
+            "inter_clones": 34,
+            "intra_clones": 3,
+            "original_clone_count": 36,
+            "services": {
+              "api": {
+                "files": 4,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "email": {
+                "files": 3,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "user": {
+                "files": 6,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "verification_code": {
+                "files": 6,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 90.8,
+            "service_count": 5,
+            "total_files": 19,
+            "total_lines": 0,
+            "code_lines": 0
+          },
+          "csv_file": "icebob.catalyst_latest_TypeScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/icebob/catalyst",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 148,
+        "unique_files": 39,
+        "inter_clones": 91,
+        "intra_clones": 57,
+        "original_clone_count": 148,
+        "service_count": 5,
+        "avg_clone_size": 34.5
+      }
+    },
+    "cod1ng-earth.coding-earth": {
+      "project_name": "cod1ng-earth.coding-earth",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 1,
+            "total_clones_raw": 3,
+            "duplicate_count": 0,
+            "unique_files": 40,
+            "inter_clones": 1,
+            "intra_clones": 0,
+            "original_clone_count": 3,
+            "services": {
+              "coordinator": {
+                "files": 4,
+                "total_lines": 208,
+                "code_lines": 167
+              },
+              "rssreader": {
+                "files": 11,
+                "total_lines": 438,
+                "code_lines": 364
+              },
+              "tweets": {
+                "files": 9,
+                "total_lines": 273,
+                "code_lines": 226
+              },
+              "frontend": {
+                "files": 16,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 26.0,
+            "service_count": 4,
+            "total_files": 40,
+            "total_lines": 1583,
+            "code_lines": 1289
+          },
+          "csv_file": "cod1ng-earth.coding-earth_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/cod1ng-earth/coding-earth",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 3,
+        "unique_files": 6,
+        "inter_clones": 3,
+        "intra_clones": 0,
+        "original_clone_count": 3,
+        "service_count": 3,
+        "avg_clone_size": 13.2
+      }
+    },
+    "FightPandemics.FightPandemics": {
+      "project_name": "FightPandemics.FightPandemics",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 33034,
+            "total_clones_raw": 54668,
+            "duplicate_count": 7540,
+            "unique_files": 428,
+            "inter_clones": 3126,
+            "intra_clones": 29908,
+            "original_clone_count": 48700,
+            "services": {
+              "backend": {
+                "files": 58,
+                "total_lines": 7953,
+                "code_lines": 6916
+              },
+              "client": {
+                "files": 321,
+                "total_lines": 39788,
+                "code_lines": 36271
+              },
+              "cypresse2e": {
+                "files": 35,
+                "total_lines": 3359,
+                "code_lines": 2791
+              },
+              "mocha": {
+                "files": 14,
+                "total_lines": 903,
+                "code_lines": 813
+              }
+            },
+            "avg_clone_size": 37.3,
+            "service_count": 4,
+            "total_files": 428,
+            "total_lines": 52003,
+            "code_lines": 46791
+          },
+          "csv_file": "FightPandemics.FightPandemics_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/FightPandemics/FightPandemics",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 47128,
+        "unique_files": 207,
+        "inter_clones": 8279,
+        "intra_clones": 38849,
+        "original_clone_count": 48700,
+        "service_count": 4,
+        "avg_clone_size": 17.9
+      }
+    },
+    "dgutman.webix_image_organizer": {
+      "project_name": "dgutman.webix_image_organizer",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 55926553,
+            "total_clones_raw": 400501,
+            "duplicate_count": 325498,
+            "unique_files": 403,
+            "inter_clones": 22475405,
+            "intra_clones": 33451148,
+            "original_clone_count": 12701858,
+            "services": {
+              "faceted_search": {
+                "files": 198,
+                "total_lines": 147307,
+                "code_lines": 112386
+              },
+              "rcm": {
+                "files": 42,
+                "total_lines": 2434,
+                "code_lines": 2118
+              },
+              "tagger": {
+                "files": 163,
+                "total_lines": 21771,
+                "code_lines": 19059
+              }
+            },
+            "avg_clone_size": 65.2,
+            "service_count": 3,
+            "total_files": 403,
+            "total_lines": 171512,
+            "code_lines": 133563
+          },
+          "csv_file": "dgutman.webix_image_organizer_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/dgutman/webix_image_organizer",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 75003,
+        "unique_files": 194,
+        "inter_clones": 33312,
+        "intra_clones": 41691,
+        "original_clone_count": 12701858,
+        "service_count": 3,
+        "avg_clone_size": 44.2
+      }
+    },
+    "javieroc.docker-microservices": {
+      "project_name": "javieroc.docker-microservices",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 53,
+            "total_clones_raw": 58,
+            "duplicate_count": 0,
+            "unique_files": 41,
+            "inter_clones": 0,
+            "intra_clones": 53,
+            "original_clone_count": 58,
+            "services": {
+              "api-node": {
+                "files": 20,
+                "total_lines": 548,
+                "code_lines": 477
+              },
+              "frontend": {
+                "files": 21,
+                "total_lines": 1290,
+                "code_lines": 1155
+              }
+            },
+            "avg_clone_size": 30.4,
+            "service_count": 2,
+            "total_files": 41,
+            "total_lines": 1838,
+            "code_lines": 1632
+          },
+          "csv_file": "javieroc.docker-microservices_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/javieroc/docker-microservices",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 58,
+        "unique_files": 11,
+        "inter_clones": 0,
+        "intra_clones": 58,
+        "original_clone_count": 58,
+        "service_count": 2,
+        "avg_clone_size": 14.8
+      }
+    },
+    "gs1.GS1_DigitalLink_Resolver_CE": {
+      "project_name": "gs1.GS1_DigitalLink_Resolver_CE",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 9,
+            "total_clones_raw": 9,
+            "duplicate_count": 0,
+            "unique_files": 14,
+            "inter_clones": 9,
+            "intra_clones": 0,
+            "original_clone_count": 9,
+            "services": {
+              "data_entry_server": {
+                "files": 6,
+                "total_lines": 858,
+                "code_lines": 542
+              },
+              "test_suite": {
+                "files": 2,
+                "total_lines": 280,
+                "code_lines": 224
+              },
+              "web_server": {
+                "files": 6,
+                "total_lines": 1343,
+                "code_lines": 904
+              }
+            },
+            "avg_clone_size": 37.4,
+            "service_count": 3,
+            "total_files": 14,
+            "total_lines": 2481,
+            "code_lines": 1670
+          },
+          "csv_file": "gs1.GS1_DigitalLink_Resolver_CE_latest_Python_all.csv"
+        },
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 250593,
+            "unique_files": 12,
+            "inter_clones": 170994,
+            "intra_clones": 79599,
+            "service_count": 3,
+            "avg_clone_size": 203.9,
+            "total_files": 12,
+            "services": {
+              "web_server": {
+                "files": 5,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "data_entry_server": {
+                "files": 4,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "test_suite": {
+                "files": 3,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/gs1/GS1_DigitalLink_Resolver_CE",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 9,
+        "unique_files": 11,
+        "inter_clones": 9,
+        "intra_clones": 0,
+        "original_clone_count": 9,
+        "service_count": 3,
+        "avg_clone_size": 18.7
+      }
+    },
+    "microservices-patterns.ftgo-application": {
+      "project_name": "microservices-patterns.ftgo-application",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 539,
+            "total_clones_raw": 3899590,
+            "duplicate_count": 3858090,
+            "unique_files": 255,
+            "inter_clones": 415,
+            "intra_clones": 124,
+            "original_clone_count": 53409,
+            "services": {
+              "ftgo-accounting-service": {
+                "files": 23,
+                "total_lines": 678,
+                "code_lines": 515
+              },
+              "ftgo-api-gateway": {
+                "files": 20,
+                "total_lines": 606,
+                "code_lines": 459
+              },
+              "ftgo-consumer-service": {
+                "files": 18,
+                "total_lines": 574,
+                "code_lines": 438
+              },
+              "ftgo-delivery-service": {
+                "files": 26,
+                "total_lines": 1211,
+                "code_lines": 912
+              },
+              "ftgo-kitchen-service": {
+                "files": 32,
+                "total_lines": 1102,
+                "code_lines": 858
+              },
+              "ftgo-order-history-service": {
+                "files": 24,
+                "total_lines": 1495,
+                "code_lines": 1108
+              },
+              "ftgo-order-service": {
+                "files": 94,
+                "total_lines": 4262,
+                "code_lines": 3307
+              },
+              "ftgo-restaurant-service": {
+                "files": 18,
+                "total_lines": 580,
+                "code_lines": 440
+              }
+            },
+            "avg_clone_size": 31.8,
+            "service_count": 8,
+            "total_files": 255,
+            "total_lines": 10508,
+            "code_lines": 8037
+          },
+          "csv_file": "microservices-patterns.ftgo-application_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/microservices-patterns/ftgo-application",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 41500,
+        "unique_files": 169,
+        "inter_clones": 41262,
+        "intra_clones": 238,
+        "original_clone_count": 53409,
+        "service_count": 8,
+        "avg_clone_size": 5.7
+      }
+    },
+    "instedd.oasis": {
+      "project_name": "instedd.oasis",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 8766,
+            "total_clones_raw": 5753,
+            "duplicate_count": 3454,
+            "unique_files": 51,
+            "inter_clones": 3919,
+            "intra_clones": 4847,
+            "original_clone_count": 4242,
+            "services": {
+              "backend": {
+                "files": 5,
+                "total_lines": 72,
+                "code_lines": 44
+              },
+              "frontend": {
+                "files": 46,
+                "total_lines": 6136,
+                "code_lines": 5500
+              }
+            },
+            "avg_clone_size": 20.3,
+            "service_count": 2,
+            "total_files": 51,
+            "total_lines": 6208,
+            "code_lines": 5544
+          },
+          "csv_file": "instedd.oasis_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/instedd/oasis",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 2299,
+        "unique_files": 25,
+        "inter_clones": 2147,
+        "intra_clones": 152,
+        "original_clone_count": 4242,
+        "service_count": 2,
+        "avg_clone_size": 15.6
+      }
+    },
+    "TibebeJS.masterlance": {
+      "project_name": "TibebeJS.masterlance",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 67,
+            "total_clones_raw": 133,
+            "duplicate_count": 66,
+            "unique_files": 62,
+            "inter_clones": 19,
+            "intra_clones": 48,
+            "original_clone_count": 67,
+            "services": {
+              "services/auth": {
+                "files": 12,
+                "total_lines": 315,
+                "code_lines": 256
+              },
+              "services/core": {
+                "files": 13,
+                "total_lines": 386,
+                "code_lines": 324
+              },
+              "services/facade": {
+                "files": 24,
+                "total_lines": 1505,
+                "code_lines": 1269
+              },
+              "services/transaction": {
+                "files": 6,
+                "total_lines": 494,
+                "code_lines": 376
+              },
+              "services/im": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 31.7,
+            "service_count": 5,
+            "total_files": 62,
+            "total_lines": 2875,
+            "code_lines": 2370
+          },
+          "csv_file": "TibebeJS.masterlance_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/TibebeJS/masterlance",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 67,
+        "unique_files": 22,
+        "inter_clones": 19,
+        "intra_clones": 48,
+        "original_clone_count": 67,
+        "service_count": 4,
+        "avg_clone_size": 16.3
+      }
+    },
+    "rodrigorodrigues.microservices-design-patterns": {
+      "project_name": "rodrigorodrigues.microservices-design-patterns",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 3177,
+            "total_clones_raw": 3374,
+            "duplicate_count": 291,
+            "unique_files": 86,
+            "inter_clones": 0,
+            "intra_clones": 3177,
+            "original_clone_count": 3083,
+            "services": {
+              "nodejs-service": {
+                "files": 42,
+                "total_lines": 4774,
+                "code_lines": 3132
+              },
+              "react-webapp": {
+                "files": 44,
+                "total_lines": 6704,
+                "code_lines": 6124
+              }
+            },
+            "avg_clone_size": 22.4,
+            "service_count": 2,
+            "total_files": 86,
+            "total_lines": 11478,
+            "code_lines": 9256
+          },
+          "csv_file": "rodrigorodrigues.microservices-design-patterns_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/rodrigorodrigues/microservices-design-patterns",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 3083,
+        "unique_files": 47,
+        "inter_clones": 0,
+        "intra_clones": 3083,
+        "original_clone_count": 3083,
+        "service_count": 2,
+        "avg_clone_size": 11.6
+      }
+    },
+    "FUB-HCC.IKON-backend": {
+      "project_name": "FUB-HCC.IKON-backend",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 4,
+            "total_clones_raw": 4,
+            "duplicate_count": 0,
+            "unique_files": 19,
+            "inter_clones": 2,
+            "intra_clones": 2,
+            "original_clone_count": 4,
+            "services": {
+              "src/sharing": {
+                "files": 4,
+                "total_lines": 131,
+                "code_lines": 110
+              },
+              "src/topicextraction": {
+                "files": 15,
+                "total_lines": 367,
+                "code_lines": 285
+              }
+            },
+            "avg_clone_size": 33.0,
+            "service_count": 3,
+            "total_files": 19,
+            "total_lines": 498,
+            "code_lines": 395
+          },
+          "csv_file": "FUB-HCC.IKON-backend_latest_Python_all.csv"
+        },
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "unique_files": 6,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "service_count": 3,
+            "avg_clone_size": 0,
+            "total_files": 6,
+            "services": {
+              "src/mwc": {
+                "files": 4,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/topicextraction": {
+                "files": 2,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/FUB-HCC/IKON-backend",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 4,
+        "unique_files": 4,
+        "inter_clones": 2,
+        "intra_clones": 2,
+        "original_clone_count": 4,
+        "service_count": 2,
+        "avg_clone_size": 16.5
+      }
+    },
+    "adorsys.xs2a": {
+      "project_name": "adorsys.xs2a",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 22451,
+            "total_clones_raw": 320841,
+            "duplicate_count": 192709,
+            "unique_files": 95,
+            "inter_clones": 4730,
+            "intra_clones": 17721,
+            "original_clone_count": 226829,
+            "services": {
+              "aspsp-profile/aspsp-profile-server": {
+                "files": 7,
+                "total_lines": 328,
+                "code_lines": 152
+              },
+              "consent-management/cms-standalone-service": {
+                "files": 27,
+                "total_lines": 3616,
+                "code_lines": 2525
+              },
+              "xs2a-standalone-starter": {
+                "files": 38,
+                "total_lines": 7063,
+                "code_lines": 5439
+              },
+              "certificate-generator": {
+                "files": 23,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 20.4,
+            "service_count": 4,
+            "total_files": 95,
+            "total_lines": 11007,
+            "code_lines": 8116
+          },
+          "csv_file": "adorsys.xs2a_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/adorsys/xs2a",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 128132,
+        "unique_files": 64,
+        "inter_clones": 105865,
+        "intra_clones": 22267,
+        "original_clone_count": 226829,
+        "service_count": 3,
+        "avg_clone_size": 6.5
+      }
+    },
+    "aliyun.alibabacloud-microservice-demo": {
+      "project_name": "aliyun.alibabacloud-microservice-demo",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 585,
+            "total_clones_raw": 44080,
+            "duplicate_count": 40825,
+            "unique_files": 62,
+            "inter_clones": 391,
+            "intra_clones": 194,
+            "original_clone_count": 3255,
+            "services": {
+              "src/cartservice": {
+                "files": 11,
+                "total_lines": 410,
+                "code_lines": 294
+              },
+              "src/checkoutservice": {
+                "files": 10,
+                "total_lines": 551,
+                "code_lines": 351
+              },
+              "src/frontend": {
+                "files": 23,
+                "total_lines": 1913,
+                "code_lines": 1419
+              },
+              "src/productservice": {
+                "files": 18,
+                "total_lines": 1020,
+                "code_lines": 729
+              }
+            },
+            "avg_clone_size": 45.9,
+            "service_count": 4,
+            "total_files": 62,
+            "total_lines": 3894,
+            "code_lines": 2793
+          },
+          "csv_file": "aliyun.alibabacloud-microservice-demo_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/aliyun/alibabacloud-microservice-demo",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 3255,
+        "unique_files": 47,
+        "inter_clones": 3156,
+        "intra_clones": 99,
+        "original_clone_count": 3255,
+        "service_count": 4,
+        "avg_clone_size": 8.9
+      }
+    },
+    "raster-foundry.raster-foundry": {
+      "project_name": "raster-foundry.raster-foundry",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 943,
+            "total_clones_raw": 943,
+            "duplicate_count": 20,
+            "unique_files": 49,
+            "inter_clones": 365,
+            "intra_clones": 578,
+            "original_clone_count": 923,
+            "services": {
+              "app-hitl": {
+                "files": 24,
+                "total_lines": 1208,
+                "code_lines": 967
+              },
+              "app-tasks": {
+                "files": 25,
+                "total_lines": 1853,
+                "code_lines": 1513
+              }
+            },
+            "avg_clone_size": 21.9,
+            "service_count": 2,
+            "total_files": 49,
+            "total_lines": 3061,
+            "code_lines": 2480
+          },
+          "csv_file": "raster-foundry.raster-foundry_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/raster-foundry/raster-foundry",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 923,
+        "unique_files": 16,
+        "inter_clones": 886,
+        "intra_clones": 37,
+        "original_clone_count": 923,
+        "service_count": 2,
+        "avg_clone_size": 11.0
+      }
+    },
+    "MTG.freesound": {
+      "project_name": "MTG.freesound",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 9,
+            "total_clones_raw": 9,
+            "duplicate_count": 0,
+            "unique_files": 20,
+            "inter_clones": 5,
+            "intra_clones": 4,
+            "original_clone_count": 9,
+            "services": {
+              "similarity": {
+                "files": 7,
+                "total_lines": 1564,
+                "code_lines": 1151
+              },
+              "tagrecommendation": {
+                "files": 13,
+                "total_lines": 1243,
+                "code_lines": 753
+              }
+            },
+            "avg_clone_size": 21.7,
+            "service_count": 2,
+            "total_files": 20,
+            "total_lines": 2807,
+            "code_lines": 1904
+          },
+          "csv_file": "MTG.freesound_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/MTG/freesound",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 9,
+        "unique_files": 3,
+        "inter_clones": 6,
+        "intra_clones": 3,
+        "original_clone_count": 9,
+        "service_count": 2,
+        "avg_clone_size": 10.8
+      }
+    },
+    "OpenLiberty.liberty-bikes": {
+      "project_name": "OpenLiberty.liberty-bikes",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 18,
+            "total_clones_raw": 3351,
+            "duplicate_count": 2125,
+            "unique_files": 57,
+            "inter_clones": 5,
+            "intra_clones": 13,
+            "original_clone_count": 1226,
+            "services": {
+              "auth-service": {
+                "files": 14,
+                "total_lines": 798,
+                "code_lines": 591
+              },
+              "game-service": {
+                "files": 31,
+                "total_lines": 3145,
+                "code_lines": 2509
+              },
+              "player-service": {
+                "files": 12,
+                "total_lines": 797,
+                "code_lines": 638
+              }
+            },
+            "avg_clone_size": 15.3,
+            "service_count": 3,
+            "total_files": 57,
+            "total_lines": 4740,
+            "code_lines": 3738
+          },
+          "csv_file": "OpenLiberty.liberty-bikes_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/OpenLiberty/liberty-bikes",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 1226,
+        "unique_files": 39,
+        "inter_clones": 1144,
+        "intra_clones": 82,
+        "original_clone_count": 1226,
+        "service_count": 3,
+        "avg_clone_size": 7.6
+      }
+    },
+    "Viveckh.Veniqa": {
+      "project_name": "Viveckh.Veniqa",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 21773,
+            "total_clones_raw": 25157,
+            "duplicate_count": 15831,
+            "unique_files": 183,
+            "inter_clones": 10223,
+            "intra_clones": 11550,
+            "original_clone_count": 9326,
+            "services": {
+              "management-server": {
+                "files": 55,
+                "total_lines": 3801,
+                "code_lines": 3038
+              },
+              "management-webclient": {
+                "files": 25,
+                "total_lines": 1809,
+                "code_lines": 1559
+              },
+              "shopping-server": {
+                "files": 59,
+                "total_lines": 3602,
+                "code_lines": 2830
+              },
+              "shopping-webclient": {
+                "files": 44,
+                "total_lines": 3097,
+                "code_lines": 2452
+              }
+            },
+            "avg_clone_size": 22.9,
+            "service_count": 4,
+            "total_files": 183,
+            "total_lines": 12309,
+            "code_lines": 9879
+          },
+          "csv_file": "Viveckh.Veniqa_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/Viveckh/Veniqa",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 9326,
+        "unique_files": 143,
+        "inter_clones": 8922,
+        "intra_clones": 404,
+        "original_clone_count": 9326,
+        "service_count": 4,
+        "avg_clone_size": 12.1
+      }
+    },
+    "remp2020.remp": {
+      "project_name": "remp2020.remp",
+      "languages": {
+        "Go": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 205,
+            "total_clones_raw": 205,
+            "duplicate_count": 16,
+            "unique_files": 30,
+            "inter_clones": 56,
+            "intra_clones": 149,
+            "original_clone_count": 189,
+            "services": {
+              "Beam/go/cmd/segments": {
+                "files": 15,
+                "total_lines": 3582,
+                "code_lines": 2957
+              },
+              "Beam/go/cmd/tracker": {
+                "files": 15,
+                "total_lines": 1844,
+                "code_lines": 1521
+              }
+            },
+            "avg_clone_size": 27.0,
+            "service_count": 2,
+            "total_files": 30,
+            "total_lines": 5426,
+            "code_lines": 4478
+          },
+          "csv_file": "remp2020.remp_latest_Go_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/remp2020/remp",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 189,
+        "unique_files": 17,
+        "inter_clones": 70,
+        "intra_clones": 119,
+        "original_clone_count": 189,
+        "service_count": 2,
+        "avg_clone_size": 13.5
+      }
+    },
+    "CaliOpen.Caliopen": {
+      "project_name": "CaliOpen.Caliopen",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 81454,
+            "total_clones_raw": 335172,
+            "duplicate_count": 302426,
+            "unique_files": 487,
+            "inter_clones": 59934,
+            "intra_clones": 21520,
+            "original_clone_count": 1856292,
+            "services": {
+              "src/backend": {
+                "files": 33,
+                "total_lines": 34389,
+                "code_lines": 24412
+              },
+              "src/frontend/web_application": {
+                "files": 454,
+                "total_lines": 46019,
+                "code_lines": 39335
+              }
+            },
+            "avg_clone_size": 4.3,
+            "service_count": 2,
+            "total_files": 487,
+            "total_lines": 80408,
+            "code_lines": 63747
+          },
+          "csv_file": "CaliOpen.Caliopen_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/CaliOpen/Caliopen",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 32746,
+        "unique_files": 171,
+        "inter_clones": 4846,
+        "intra_clones": 27900,
+        "original_clone_count": 1856292,
+        "service_count": 2,
+        "avg_clone_size": 25.5
+      }
+    },
+    "tisboyo.Twitch_Bot": {
+      "project_name": "tisboyo.Twitch_Bot",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 458,
+            "total_clones_raw": 458,
+            "duplicate_count": 79,
+            "unique_files": 100,
+            "inter_clones": 0,
+            "intra_clones": 458,
+            "original_clone_count": 379,
+            "services": {
+              "bot": {
+                "files": 77,
+                "total_lines": 7145,
+                "code_lines": 5140
+              },
+              "web": {
+                "files": 22,
+                "total_lines": 2580,
+                "code_lines": 1908
+              },
+              "mqtt_logger": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 22.8,
+            "service_count": 3,
+            "total_files": 100,
+            "total_lines": 9800,
+            "code_lines": 7096
+          },
+          "csv_file": "tisboyo.Twitch_Bot_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/tisboyo/Twitch_Bot",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 379,
+        "unique_files": 49,
+        "inter_clones": 0,
+        "intra_clones": 379,
+        "original_clone_count": 379,
+        "service_count": 2,
+        "avg_clone_size": 11.2
+      }
+    },
+    "bcgov.aries-vcr-issuer-controller": {
+      "project_name": "bcgov.aries-vcr-issuer-controller",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 29,
+            "total_clones_raw": 29,
+            "duplicate_count": 0,
+            "unique_files": 42,
+            "inter_clones": 0,
+            "intra_clones": 29,
+            "original_clone_count": 29,
+            "services": {
+              "issuer_pipeline": {
+                "files": 32,
+                "total_lines": 1896,
+                "code_lines": 1464
+              },
+              "issuer_controller": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 21.7,
+            "service_count": 2,
+            "total_files": 42,
+            "total_lines": 4589,
+            "code_lines": 3618
+          },
+          "csv_file": "bcgov.aries-vcr-issuer-controller_latest_Python_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/bcgov/aries-vcr-issuer-controller",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 29,
+        "unique_files": 6,
+        "inter_clones": 0,
+        "intra_clones": 29,
+        "original_clone_count": 29,
+        "service_count": 1,
+        "avg_clone_size": 10.9
+      }
+    },
+    "rithinch.Event-Driven-Microservices-Sample": {
+      "project_name": "rithinch.Event-Driven-Microservices-Sample",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 1208,
+            "total_clones_raw": 3870,
+            "duplicate_count": 2723,
+            "unique_files": 84,
+            "inter_clones": 953,
+            "intra_clones": 255,
+            "original_clone_count": 1147,
+            "services": {
+              "services/articles-management": {
+                "files": 21,
+                "total_lines": 1070,
+                "code_lines": 802
+              },
+              "services/authentication": {
+                "files": 7,
+                "total_lines": 147,
+                "code_lines": 112
+              },
+              "services/events-management": {
+                "files": 16,
+                "total_lines": 912,
+                "code_lines": 676
+              },
+              "services/notification": {
+                "files": 20,
+                "total_lines": 549,
+                "code_lines": 458
+              },
+              "services/user-management": {
+                "files": 20,
+                "total_lines": 1063,
+                "code_lines": 799
+              }
+            },
+            "avg_clone_size": 27.7,
+            "service_count": 5,
+            "total_files": 84,
+            "total_lines": 3741,
+            "code_lines": 2847
+          },
+          "csv_file": "rithinch.Event-Driven-Microservices-Sample_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/rithinch/Event-Driven-Microservices-Sample",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 1147,
+        "unique_files": 60,
+        "inter_clones": 1146,
+        "intra_clones": 1,
+        "original_clone_count": 1147,
+        "service_count": 5,
+        "avg_clone_size": 14.2
+      }
+    },
+    "tgrall.redis-microservices-demo": {
+      "project_name": "tgrall.redis-microservices-demo",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 137,
+            "total_clones_raw": 891,
+            "duplicate_count": 639,
+            "unique_files": 27,
+            "inter_clones": 115,
+            "intra_clones": 22,
+            "original_clone_count": 252,
+            "services": {
+              "caching-service": {
+                "files": 6,
+                "total_lines": 650,
+                "code_lines": 427
+              },
+              "db-to-streams-service": {
+                "files": 5,
+                "total_lines": 397,
+                "code_lines": 273
+              },
+              "sql-rest-api": {
+                "files": 5,
+                "total_lines": 322,
+                "code_lines": 246
+              },
+              "streams-to-redisearch-service": {
+                "files": 8,
+                "total_lines": 1276,
+                "code_lines": 901
+              },
+              "streams-to-redisgraph-service": {
+                "files": 3,
+                "total_lines": 386,
+                "code_lines": 295
+              }
+            },
+            "avg_clone_size": 22.5,
+            "service_count": 8,
+            "total_files": 27,
+            "total_lines": 3031,
+            "code_lines": 2142
+          },
+          "csv_file": "tgrall.redis-microservices-demo_latest_Java_all.csv"
+        },
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 18,
+            "total_clones_raw": 18,
+            "duplicate_count": 4,
+            "unique_files": 18,
+            "inter_clones": 1,
+            "intra_clones": 17,
+            "original_clone_count": 14,
+            "services": {
+              "comments-service": {
+                "files": 2,
+                "total_lines": 244,
+                "code_lines": 177
+              },
+              "notifications-service-node": {
+                "files": 1,
+                "total_lines": 34,
+                "code_lines": 22
+              },
+              "ui-redis-front-end/redis-front": {
+                "files": 15,
+                "total_lines": 611,
+                "code_lines": 434
+              }
+            },
+            "avg_clone_size": 48.4,
+            "service_count": 8,
+            "total_files": 18,
+            "total_lines": 889,
+            "code_lines": 633
+          },
+          "csv_file": "tgrall.redis-microservices-demo_latest_JavaScript_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/tgrall/redis-microservices-demo",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 266,
+        "unique_files": 33,
+        "inter_clones": 234,
+        "intra_clones": 32,
+        "original_clone_count": 266,
+        "service_count": 5,
+        "avg_clone_size": 10.8
+      }
+    },
+    "FudanSELab.train-ticket": {
+      "project_name": "FudanSELab.train-ticket",
+      "languages": {
+        "JavaScript": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 99048,
+            "total_clones_raw": 643171,
+            "duplicate_count": 443636,
+            "unique_files": 816,
+            "inter_clones": 74902,
+            "intra_clones": 24146,
+            "original_clone_count": 37527688,
+            "services": {
+              "ts-ticket-office-service": {
+                "files": 746,
+                "total_lines": 256598,
+                "code_lines": 164403
+              },
+              "ts-ui-dashboard": {
+                "files": 70,
+                "total_lines": 59222,
+                "code_lines": 37050
+              }
+            },
+            "avg_clone_size": 54.0,
+            "service_count": 37,
+            "total_files": 816,
+            "total_lines": 315820,
+            "code_lines": 201453
+          },
+          "csv_file": "FudanSELab.train-ticket_latest_JavaScript_all.csv"
+        },
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 164867,
+            "unique_files": 376,
+            "inter_clones": 150045,
+            "intra_clones": 14822,
+            "service_count": 37,
+            "avg_clone_size": 17.8,
+            "total_files": 376,
+            "services": {
+              "ts-station-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-basic-service": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-admin-order-service": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-assurance-service": {
+                "files": 13,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-cancel-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-security-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-inside-payment-service": {
+                "files": 21,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-preserve-other-service": {
+                "files": 9,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-user-service": {
+                "files": 13,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-route-plan-service": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-contacts-service": {
+                "files": 11,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-rebook-service": {
+                "files": 8,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-order-other-service": {
+                "files": 12,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-admin-user-service": {
+                "files": 8,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-travel-service": {
+                "files": 13,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-admin-route-service": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-route-service": {
+                "files": 11,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-notification-service": {
+                "files": 16,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-order-service": {
+                "files": 12,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-food-service": {
+                "files": 13,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-price-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-verification-code-service": {
+                "files": 8,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-auth-service": {
+                "files": 24,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-preserve-service": {
+                "files": 9,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-train-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-config-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-admin-travel-service": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-payment-service": {
+                "files": 12,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-seat-service": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-travel2-service": {
+                "files": 13,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-travel-plan-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-consign-service": {
+                "files": 13,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-execute-service": {
+                "files": 7,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-consign-price-service": {
+                "files": 10,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "ts-admin-basic-info-service": {
+                "files": 8,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/FudanSELab/train-ticket",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 199535,
+        "unique_files": 505,
+        "inter_clones": 79363,
+        "intra_clones": 120172,
+        "original_clone_count": 37527688,
+        "service_count": 2,
+        "avg_clone_size": 66.5
+      }
+    },
+    "asc-lab.micronaut-microservices-poc": {
+      "project_name": "asc-lab.micronaut-microservices-poc",
+      "languages": {
+        "Java": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 161,
+            "total_clones_raw": 239549,
+            "duplicate_count": 224960,
+            "unique_files": 189,
+            "inter_clones": 14,
+            "intra_clones": 147,
+            "original_clone_count": 14589,
+            "services": {
+              "agent-portal-gateway": {
+                "files": 17,
+                "total_lines": 432,
+                "code_lines": 346
+              },
+              "auth-service": {
+                "files": 12,
+                "total_lines": 407,
+                "code_lines": 316
+              },
+              "chat-service": {
+                "files": 2,
+                "total_lines": 68,
+                "code_lines": 55
+              },
+              "dashboard-service": {
+                "files": 38,
+                "total_lines": 1551,
+                "code_lines": 1273
+              },
+              "payment-service": {
+                "files": 20,
+                "total_lines": 695,
+                "code_lines": 545
+              },
+              "policy-search-service": {
+                "files": 21,
+                "total_lines": 570,
+                "code_lines": 458
+              },
+              "policy-service": {
+                "files": 46,
+                "total_lines": 1742,
+                "code_lines": 1378
+              },
+              "pricing-service": {
+                "files": 18,
+                "total_lines": 756,
+                "code_lines": 576
+              },
+              "product-service": {
+                "files": 14,
+                "total_lines": 553,
+                "code_lines": 457
+              },
+              "documents-service": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "avg_clone_size": 30.1,
+            "service_count": 10,
+            "total_files": 189,
+            "total_lines": 6787,
+            "code_lines": 5414
+          },
+          "csv_file": "asc-lab.micronaut-microservices-poc_latest_Java_all.csv"
+        }
+      },
+      "metadata": {
+        "url": "https://github.com/asc-lab/micronaut-microservices-poc",
+        "stars": 0,
+        "forks": 0,
+        "size_kb": 0,
+        "language": "",
+        "description": "",
+        "topics": []
+      },
+      "total_stats": {
+        "total_clones": 14589,
+        "unique_files": 154,
+        "inter_clones": 14200,
+        "intra_clones": 389,
+        "original_clone_count": 14589,
+        "service_count": 9,
+        "avg_clone_size": 4.1
+      }
+    },
+    "EdwinVW.pitstop": {
+      "project_name": "EdwinVW.pitstop",
+      "languages": {
+        "C#": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 259,
+            "unique_files": 156,
+            "inter_clones": 190,
+            "intra_clones": 69,
+            "service_count": 9,
+            "avg_clone_size": 28.9,
+            "total_files": 156,
+            "services": {
+              "src/NotificationService": {
+                "files": 13,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/AuditlogService": {
+                "files": 4,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/WorkshopManagementAPI": {
+                "files": 47,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/VehicleManagementAPI": {
+                "files": 11,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/CustomerManagementAPI": {
+                "files": 11,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/InvoiceService": {
+                "files": 14,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/WorkshopManagementEventHandler": {
+                "files": 15,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/TimeService": {
+                "files": 4,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/WebApp": {
+                "files": 37,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "Phyks.medonay": {
+      "project_name": "Phyks.medonay",
+      "languages": {
+        "Ruby": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "unique_files": 2,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "service_count": 2,
+            "avg_clone_size": 0,
+            "total_files": 2,
+            "services": {
+              "parsers/package-tracking": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "viewers/package-tracking": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "phongnguyend.Practical.CleanArchitecture": {
+      "project_name": "phongnguyend.Practical.CleanArchitecture",
+      "languages": {
+        "C#": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 6128,
+            "unique_files": 697,
+            "inter_clones": 821,
+            "intra_clones": 5307,
+            "service_count": 2,
+            "avg_clone_size": 24.9,
+            "total_files": 697,
+            "services": {
+              "src/Microservices": {
+                "files": 427,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "src/IdentityServer/OpenIddict": {
+                "files": 270,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            },
+            "total_lines": 0,
+            "code_lines": 0
+          }
+        }
+      }
+    },
+    "mattkohl.docker-flask-celery-redis": {
+      "project_name": "mattkohl.docker-flask-celery-redis",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "unique_files": 3,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "service_count": 2,
+            "avg_clone_size": 0,
+            "total_files": 3,
+            "services": {
+              "api": {
+                "files": 2,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "celery-queue": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "jpetazzo.container.training": {
+      "project_name": "jpetazzo.container.training",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "unique_files": 2,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "service_count": 2,
+            "avg_clone_size": 0,
+            "total_files": 2,
+            "services": {
+              "dockercoins/worker": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "dockercoins/rng": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "dockersamples.example-voting-app": {
+      "project_name": "dockersamples.example-voting-app",
+      "languages": {
+        "Python": {
+          "commit": "latest",
+          "stats": {
+            "total_clones": 0,
+            "unique_files": 2,
+            "inter_clones": 0,
+            "intra_clones": 0,
+            "service_count": 2,
+            "avg_clone_size": 0,
+            "total_files": 2,
+            "services": {
+              "vote": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              },
+              "seed-data": {
+                "files": 1,
+                "total_lines": 0,
+                "code_lines": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
