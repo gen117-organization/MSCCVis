@@ -56,7 +56,10 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
     dash_app = Dash(
         __name__,
         assets_folder=assets_path,
-        external_stylesheets=[dbc.themes.BOOTSTRAP],
+        external_stylesheets=[
+            dbc.themes.BOOTSTRAP,
+            "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css",
+        ],
         requests_pathname_prefix=normalized_prefix,
         routes_pathname_prefix=routes_prefix,
     )

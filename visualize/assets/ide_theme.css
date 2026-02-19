@@ -1,6 +1,11 @@
-/* IDE Theme - index.html (Clone Detection Settings) style */
+/* ===================================================================
+   MSCCA Tools – Sidebar Navigation Theme
+   Matches BALES CLOUD-style left sidebar + main content layout.
+   Shared design tokens with index.html (Clone Detection Settings).
+   =================================================================== */
+
 :root {
-    /* index.html と共通のデザイントークン */
+    /* Shared tokens (same as index.html) */
     --primary: #f5a623;
     --primary-dark: #e09100;
     --bg: #fafafa;
@@ -10,64 +15,332 @@
     --border: #e0e0e0;
     --radius: 6px;
 
-    --ide-bg: var(--bg);
+    /* Sidebar-specific */
+    --sidebar-width: 220px;
+    --sidebar-collapsed-width: 56px;
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e8e8e8;
+    --sidebar-hover: #f5f5f5;
+    --sidebar-active-bg: #fff5e6;
+    --sidebar-active-text: var(--primary-dark);
+
+    /* IDE explorer (List View) */
     --ide-sidebar-bg: #f3f3f3;
-    --ide-header-bg: var(--card-bg);
     --ide-border: var(--border);
-    --ide-text: var(--text);
-    --ide-accent: var(--primary);
     --ide-hover: #f0ebe3;
     --ide-selection: #fdf3e0;
     --ide-code-bg: #ffffff;
     --ide-line-num-bg: #f5f5f5;
     --ide-line-num-text: #999999;
+
+    /* Content header */
+    --header-height: 52px;
 }
 
+/* ──────────────────────────────
+   Reset & Base
+   ────────────────────────────── */
 body {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--ide-bg);
-    color: var(--ide-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
     overflow: hidden;
-    /* Prevent body scroll, use inner scroll */
     height: 100vh;
 }
 
-/* Layout Grid */
-.ide-container {
+/* ──────────────────────────────
+   App Layout Grid
+   ────────────────────────────── */
+.app-container {
     display: grid;
-    grid-template-rows: 76px 1fr;
+    grid-template-columns: var(--sidebar-width) 1fr;
     height: 100vh;
     width: 100vw;
+    transition: grid-template-columns 0.25s ease;
 }
 
-.ide-header {
-    background-color: var(--ide-header-bg);
-    border-bottom: 2px solid var(--primary);
-    padding: 4px 16px;
+.app-container.sidebar-collapsed {
+    grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+}
+
+/* ──────────────────────────────
+   Navigation Sidebar
+   ────────────────────────────── */
+.app-sidebar {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 2px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    height: 100vh;
+    overflow: hidden;
+    transition: width 0.25s ease;
+    position: relative;
+    z-index: 200;
 }
 
-.header-top-row {
+/* Brand area */
+.sidebar-brand {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--sidebar-border);
+    min-height: 56px;
 }
 
-.header-bottom-row {
+.sidebar-brand-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.sidebar-brand-icon {
+    font-size: 1.2rem;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.sidebar-brand-text {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-help-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.sidebar-help-btn:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: var(--sidebar-active-bg);
+}
+
+/* Navigation list */
+.sidebar-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    flex: 1;
+}
+
+.nav-item {
+    margin: 2px 8px;
+}
+
+.nav-link {
     display: flex;
     align-items: center;
     gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    background: none;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
+.nav-link:hover {
+    background: var(--sidebar-hover);
+    color: var(--text);
+    text-decoration: none;
+}
+
+.nav-link.active {
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-active-text);
+    font-weight: 600;
+}
+
+.nav-link.active .nav-icon {
+    color: var(--primary);
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+    color: var(--text-light);
+    transition: color 0.15s;
+}
+
+.nav-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sidebar footer: language selector + help */
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-top: 1px solid var(--sidebar-border);
+}
+
+/* Collapse toggle (in brand area) */
+.sidebar-collapse-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.sidebar-collapse-btn:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+/* Collapsed state */
+.app-container.sidebar-collapsed .sidebar-brand-text,
+.app-container.sidebar-collapsed .sidebar-help-btn,
+.app-container.sidebar-collapsed .nav-text,
+.app-container.sidebar-collapsed .sidebar-footer .dash-dropdown {
+    display: none;
+}
+
+.app-container.sidebar-collapsed .sidebar-brand {
+    justify-content: center;
+    padding: 16px 0;
+}
+
+.app-container.sidebar-collapsed .sidebar-brand-inner {
+    justify-content: center;
+}
+
+.app-container.sidebar-collapsed .nav-link {
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.app-container.sidebar-collapsed .sidebar-footer {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.app-container.sidebar-collapsed .sidebar-collapse-btn i {
+    transform: rotate(180deg);
+}
+
+/* ──────────────────────────────
+   Main Content Area
+   ────────────────────────────── */
+.app-main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+}
+
+/* Content Header */
+.content-header {
+    height: var(--header-height);
+    min-height: var(--header-height);
+    background: var(--card-bg);
+    border-bottom: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.content-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    white-space: nowrap;
+}
+
+.header-selectors {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.selector-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+
+.selector-separator {
+    color: var(--text-light);
+    margin: 0 4px;
+    font-size: 0.9rem;
+}
+
+/* Content Body (relative container for view panels) */
+.content-body {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ──────────────────────────────
+   View Panels (Scatter / Stats)
+   ────────────────────────────── */
+.view-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 100;
+    overflow: auto;
+    display: none;
+}
+
+.view-panel.active {
+    display: block;
+}
+
+/* ──────────────────────────────
+   IDE Explorer (List View)
+   ────────────────────────────── */
 .ide-main {
     display: flex;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -85,10 +358,10 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: var(--ide-bg);
+    background-color: var(--bg);
 }
 
-/* Sidebar Components */
+/* Sidebar Components (explorer file tree) */
 .sidebar-section {
     display: flex;
     flex-direction: column;
@@ -118,7 +391,7 @@ body {
 }
 
 .sidebar-resizer:hover {
-    background-color: var(--ide-accent);
+    background-color: var(--primary);
 }
 
 /* Tree View */
@@ -152,10 +425,10 @@ body {
 
 .tree-item.active {
     background-color: var(--ide-selection);
-    color: var(--ide-accent);
+    color: var(--primary);
 }
 
-/* Clone List in Sidebar */
+/* Clone List in Explorer Sidebar */
 .clone-list-item {
     padding: 8px 16px;
     border-bottom: 1px solid var(--ide-border);
@@ -250,7 +523,6 @@ body {
 
 .code-line {
     height: 1.5em;
-    /* Ensure consistent height */
 }
 
 .code-line-marker {
@@ -258,7 +530,6 @@ body {
     left: 0;
     right: 0;
     background-color: rgba(144, 238, 144, 0.2);
-    /* Highlight color */
     pointer-events: none;
 }
 
@@ -294,120 +565,13 @@ body {
     width: 100%;
 }
 
-/* Header Controls */
-.header-controls {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-}
-
-.view-switcher {
-    display: flex;
-    background: #e0e0e0;
-    border-radius: 4px;
-    padding: 2px;
-}
-
-.view-btn {
-    padding: 4px 12px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 12px;
-    border-radius: 3px;
-    transition: background 0.2s, color 0.2s;
-}
-
-.view-btn:hover {
-    background: var(--ide-hover);
-}
-
-.view-btn.active {
-    background: var(--primary);
-    color: #fff;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    font-weight: bold;
-}
-
-/* Scatter Plot Container - hidden by default unless active */
-.scatter-container-fullscreen {
-    position: absolute;
-    top: 76px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: white;
-    z-index: 100;
-    overflow: auto;
-    padding: 20px;
-    display: none;
-}
-
-.scatter-container-fullscreen.active {
-    display: block;
-}
-
-/* Statistics View Container - identical to scatter */
-.stats-container-fullscreen {
-    position: absolute;
-    top: 76px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: white;
-    z-index: 100;
-    overflow: auto;
-    padding: 20px;
-    display: none;
-}
-
-.stats-container-fullscreen.active {
-    display: block;
-}
-
-/* Details/Summary overrides for Tree */
-details>summary {
-    list-style: none;
-    cursor: pointer;
-}
-
-details>summary::-webkit-details-marker {
-    display: none;
-}
-
-/* Language bar (matches index.html .lang-bar) */
-.lang-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    color: var(--text-light);
-}
-
-/* Back to settings link */
-.btn-back {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: color 0.2s;
-}
-
-.btn-back:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
-
-/* Sidebar resizer accent on hover */
-.sidebar-resizer:hover {
-    background-color: var(--primary);
-}
-
-/* ── Filter Panel (index.html-style minimal design) ── */
+/* ──────────────────────────────
+   Filter Panel (Scatter View)
+   ────────────────────────────── */
 .filter-panel {
     padding: 10px 16px;
-    background: var(--card-bg, #fff);
-    border-bottom: 1px solid var(--border, #e0e0e0);
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
 }
 
 .filter-row {
@@ -428,7 +592,7 @@ details>summary::-webkit-details-marker {
 .filter-label {
     font-size: 0.82rem;
     font-weight: 600;
-    color: var(--text, #333);
+    color: var(--text);
     white-space: nowrap;
     margin: 0;
 }
@@ -437,9 +601,9 @@ details>summary::-webkit-details-marker {
     padding: 5px 10px;
     font-size: 0.85rem;
     border: none;
-    border-bottom: 2px solid var(--border, #e0e0e0);
-    background: var(--bg, #fafafa);
-    color: var(--text, #333);
+    border-bottom: 2px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
     outline: none;
     transition: border-color 0.2s;
     border-radius: 0;
@@ -447,7 +611,7 @@ details>summary::-webkit-details-marker {
 }
 
 .filter-input:focus {
-    border-bottom-color: var(--primary, #f5a623);
+    border-bottom-color: var(--primary);
 }
 
 .filter-dropdown {
@@ -466,21 +630,33 @@ details>summary::-webkit-details-marker {
 .code-type-buttons .code-type-btn {
     padding: 2px 10px;
     font-size: 0.78rem;
-    border: 1px solid var(--border, #e0e0e0);
-    background: var(--bg, #fafafa);
-    border-radius: var(--radius, 6px);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: var(--radius);
     cursor: pointer;
     transition: all 0.2s;
-    color: var(--text, #333);
+    color: var(--text);
 }
 
 .code-type-buttons .code-type-btn:hover {
-    border-color: var(--primary, #f5a623);
-    color: var(--primary, #f5a623);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 .code-type-buttons .code-type-btn.active {
-    background: var(--primary, #f5a623);
+    background: var(--primary);
     color: #fff;
-    border-color: var(--primary, #f5a623);
+    border-color: var(--primary);
+}
+
+/* ──────────────────────────────
+   Details/Summary overrides
+   ────────────────────────────── */
+details > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+details > summary::-webkit-details-marker {
+    display: none;
 }

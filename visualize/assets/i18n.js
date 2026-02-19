@@ -8,13 +8,12 @@ window.dash_clientside = window.dash_clientside || {};
 
 const VIS_I18N = {
   en: {
-    // Header
-    headerTitle: "MSCCA Tools - Clone Explorer",
-    // View buttons
-    btnScatter: "Scatter Plot",
-    btnExplorer: "Explorer",
-    btnStats: "Statistics",
-    // Sidebar
+    // Sidebar navigation
+    navSettings: "Detection Settings",
+    navScatter: "Scatter Plot",
+    navListView: "List View",
+    navStats: "Statistics",
+    // Sidebar explorer (List View)
     sidebarExplorer: "EXPLORER",
     sidebarCloneOutline: "CLONE OUTLINE",
     editorPlaceholder: "Select a file to view",
@@ -35,17 +34,15 @@ const VIS_I18N = {
     statsCloneStats: "Clone Statistics",
     // Language selector
     langLabel: "Language",
-    // Nav
-    backToSettings: "Back to Settings",
-    // 2-step project selection
+    // Project selectors
     labelProject: "Project:",
     labelDataset: "Dataset:",
   },
   ja: {
-    headerTitle: "MSCCA Tools - クローンエクスプローラ",
-    btnScatter: "散布図",
-    btnExplorer: "エクスプローラ",
-    btnStats: "統計",
+    navSettings: "検出設定",
+    navScatter: "散布図",
+    navListView: "リスト表示",
+    navStats: "統計",
     sidebarExplorer: "エクスプローラ",
     sidebarCloneOutline: "クローンアウトライン",
     editorPlaceholder: "ファイルを選択してください",
@@ -62,7 +59,6 @@ const VIS_I18N = {
     statsServiceInfo: "サービス情報",
     statsCloneStats: "クローン統計",
     langLabel: "言語",
-    backToSettings: "設定画面に戻る",
     labelProject: "プロジェクト:",
     labelDataset: "データセット:",
   },

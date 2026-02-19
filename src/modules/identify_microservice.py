@@ -163,16 +163,12 @@ def analyze_repo_snapshot(url: str, name: str, workdir: str) -> Path:
                     )
 
     if not contexts:
-        logger.warning(
-            "No service contexts detected by snapshot for %s", name
-        )
+        logger.warning("No service contexts detected by snapshot for %s", name)
 
     services_json_dir = project_root / "dest" / "services_json"
     output_path = services_json_dir / f"{name}.json"
     save_service_contexts_to_json(contexts, url, output_path)
-    logger.info(
-        "Snapshot analysis complete: %s (%d services)", name, len(contexts)
-    )
+    logger.info("Snapshot analysis complete: %s (%d services)", name, len(contexts))
     return output_path
 
 

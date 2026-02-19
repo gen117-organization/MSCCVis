@@ -42,8 +42,11 @@ const I18N = {
     labelMaxCommits: "Max Analysed Commits",
     tooltipMaxCommits: "Maximum commits to analyze, independent from SEARCH_DEPTH, -1 means unlimited.",
     runButton: "Run Analysis",
-    openVisualization: "Open Visualization Tool",
     executionLog: "Execution Log",
+    navSettings: "Detection Settings",
+    navScatter: "Scatter Plot",
+    navListView: "List View",
+    navStats: "Statistics",
     statusRunning: "Running...",
     statusInputError: "Input Error",
     statusCompleted: "Completed",
@@ -103,8 +106,11 @@ const I18N = {
     labelMaxCommits: "MAX_ANALYZED_COMMITS",
     tooltipMaxCommits: "実際に分析するコミット数の上限です, -1 で無制限。",
     runButton: "分析を実行",
-    openVisualization: "可視化ツールを開く",
     executionLog: "実行ログ",
+    navSettings: "検出設定",
+    navScatter: "散布図",
+    navListView: "リスト表示",
+    navStats: "統計",
     statusRunning: "実行中...",
     statusInputError: "入力エラー",
     statusCompleted: "完了しました",
@@ -146,9 +152,6 @@ function setText(id, key) {
 function applyLanguage(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
-  setText("lang-label", "langLabel");
-  setText("subtitle", "subtitle");
-  setText("section-repository", "sectionRepository");
   setText("label-repo-url", "labelRepoUrl");
   setText("section-detector", "sectionDetector");
   setText("label-detection-method", "labelDetectionMethod");
@@ -180,8 +183,14 @@ function applyLanguage(lang) {
   setText("label-max-commits", "labelMaxCommits");
   setText("tooltip-max-commits", "tooltipMaxCommits");
   setText("btn-run", "runButton");
-  setText("btn-visualize", "openVisualization");
   setText("execution-log-title", "executionLog");
+  // Sidebar nav items
+  document.querySelectorAll('[data-i18n-key]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-key');
+    if (I18N[lang] && I18N[lang][key]) {
+      el.textContent = I18N[lang][key];
+    }
+  });
   if (!document.getElementById("status-text").className) {
     setText("status-text", "statusRunning");
   }

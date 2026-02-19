@@ -1,5 +1,62 @@
 # Progress Log
 
+## 02-20-04:30 UIバグ修正4件: CSS/ボタン配置/散布図表示/ラベル改善
+
+### 変更ファイル
+
+- src/web/static/index.html — CSS変数 (`--sidebar-width` 等) が `:root` ブロック外に配置されていたバグを修正 (サイドバーが上部に表示される問題). 折りたたみボタンをブランドエリアへ, ヘルプボタンをフッターへ移動
+- visualize/components.py — `_build_nav_sidebar()`: 折りたたみボタン (`sidebar-toggle`) をブランドエリアに配置, ヘルプボタン (`help-btn`) を言語セレクタ横のフッターに移動. Dataset ドロップダウン幅を 520px に拡大, `optionHeight=50` 追加
+- visualize/assets/ide_theme.css — `.sidebar-collapse-btn` を `position: absolute` からインラインフレックスアイテムに変更
+- visualize/data_loader.py — `_build_descriptive_label()` ヘルパー追加. `normal` → `CCFinderSW (Normal)`, `filtered` → `Import Filtered` 等の人間可読マッピング. `get_csv_options_for_project()` と `_gather_scatter_projects()` で使用
+- visualize/plotting.py — `create_scatter_plot()` の `customdata` 構築で `clone_type` をハードコードしていた4箇所を `method_col` 変数に修正 (KeyError: 'clone_type' 解消)
+
+### テスト結果
+
+- `pytest tests/ -q` — 33 passed in 0.09s
+- Docker コンテナでの `create_scatter_plot()` 実行: 460点, 2トレース正常生成
+- `ast.parse` — plotting.py 構文チェック OK
+
+### 判断メモ
+
+- 散布図の KeyError 原因: `plotting.py` が `customdata` で `clone_type` 列を直接参照していたが, scatter CSV フォーマットにはこの列が存在しない. 168行目で既に `method_col` として `detection_method` or `clone_type` を選択していたため, それを使うよう統一
+- Dataset ラベル: パイプ区切りの生値 (`Python|normal|50|filtered|...`) から説明的ラベル (`Language: Python, Detection: CCFinderSW (Normal), ...`) に変更. ドロップダウン幅も拡大
+- CSS変数バグ: `:root {}` の閉じ括弧の後に変数定義が追加されていたため, CSS全体のパースが壊れていた
+
+### 残課題
+
+- TODO(gen): ブラウザでの散布図表示の最終動作確認
+
+## 02-20-02:00 UIリデザイン: BALES CLOUD型サイドバーナビゲーション導入
+
+### 変更ファイル
+
+- visualize/components.py — `create_ide_layout()` を全面書き換え. 左サイドバーナビゲーション (`_build_nav_sidebar()`) + ヘルプモーダル (`_build_help_modal()`) を新規追加. レイアウトを `app-container` グリッド (sidebar + main) に変更. ビュー切替ボタンをサイドバー `nav-link` に移行
+- visualize/assets/ide_theme.css — 全面書き換え (~480行). 旧ヘッダー/ビュースイッチャー削除, `.app-container`, `.app-sidebar`, `.nav-link`, `.content-header`, `.content-body`, `.view-panel` 等のサイドバーレイアウト CSS を追加. CSS変数: `--sidebar-width: 220px`, `--sidebar-collapsed-width: 56px`
+- visualize/callbacks.py — `toggle_view_mode` に7番目の Output (`page-title`) 追加. クラス名を `nav-link`/`view-panel` に変更. ヘルプモーダルトグル・サイドバー折りたたみ (clientside callback) を追加
+- visualize/assets/i18n.js — 旧キー (`headerTitle`, `btnScatter` 等) 削除, サイドバー用キー (`navSettings`, `navScatter`, `navListView`, `navStats`) 追加
+- visualize/scatter.py — Bootstrap Icons CDN を `external_stylesheets` に追加
+- src/web/static/index.html — サイドバーナビゲーション追加 (検出設定ページ統一). `page-layout` グリッド構造, Bootstrap Icons CDN, インラインCSS (~100行) 追加. "可視化ツールを開く" ボタン削除
+- src/web/static/app.js — 削除された要素 (`lang-label`, `btn-visualize`) への `setText` 呼び出しを除去. サイドバーナビの `data-i18n-key` 属性による動的翻訳を追加. I18N辞書に `navSettings`/`navScatter`/`navListView`/`navStats` キー追加
+
+### テスト結果
+
+- `pytest tests/ -q` — 33 passed in 0.08s
+- `python -c "ast.parse(...)"` — components.py, callbacks.py 構文チェック OK
+
+### 判断メモ
+
+- BALES CLOUD (CRM SaaS) のスクリーンショットを参考デザインとして採用. 左サイドバー + メインコンテンツエリアの構成
+- サイドバーは折りたたみ可能 (ClientSide Callback でパフォーマンス最適化)
+- ヘルプボタンは dbc.Modal によるモーダルダイアログ方式を採用
+- 検出設定ページ (index.html) も同一サイドバーレイアウトに統一. インラインCSSで実装 (静的HTMLのため)
+- Explorer → List View (リスト表示) にリネーム
+- 旧 nav ボタン ID (`btn-view-scatter`, `btn-view-explorer`, `btn-view-stats`) はコールバック互換性のため維持
+
+### 残課題
+
+- TODO(gen): ブラウザでの動作確認 (Docker build + run)
+- TODO(gen): サイドバーのレスポンシブ対応の微調整が必要な可能性あり
+
 ## 02-20-00:30 マイクロサービス検出の高速化: スナップショットモード導入
 
 ### 変更ファイル

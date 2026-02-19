@@ -14,6 +14,84 @@ SCATTER_FILE_COMMIT_PREFIX = "scatter_file:"
 # データキャッシュ用のグローバル変数
 _data_cache = {}  # キャッシュをクリア（統一データローダー統合）
 
+# --- ラベル表示用マッピング ---
+_DETECTION_LABELS = {
+    "normal": "CCFinderSW (Normal)",
+}
+
+_FILTER_LABELS = {
+    "filtered": "Import Filtered",
+    "nofilter": "No Filter",
+}
+
+_ANALYSIS_LABELS = {
+    "merge": "Merge Commit",
+    "tag": "Tag",
+}
+
+_COMOD_LABELS = {
+    "cloneset": "Clone Set",
+    "clonepair": "Clone Pair",
+}
+
+
+def _build_descriptive_label(info: dict, *, include_project: bool = False) -> str:
+    """CSVファイル情報から人間が読みやすいラベルを構築する.
+
+    Args:
+        info: _parse_scatter_csv_filename の戻り値.
+        include_project: プロジェクト名をラベルに含めるか.
+
+    Returns:
+        説明的なラベル文字列.
+    """
+    language = str(info.get("language", ""))
+    detection_raw = str(info.get("detection", "unknown"))
+    filter_raw = str(info.get("filter", "unknown"))
+    analysis_raw = str(info.get("analysis", "unknown"))
+    min_tokens = info.get("min_tokens", "?")
+    date_raw = str(info.get("date", ""))
+
+    # TKS12 → "TKS (12)", RNR5 → "RNR (0.5)" etc.
+    if detection_raw.lower().startswith("tks"):
+        detection_label = f"TKS ({detection_raw[3:]})"
+    elif detection_raw.lower().startswith("rnr"):
+        detection_label = f"RNR ({detection_raw[3:]})"
+    else:
+        detection_label = _DETECTION_LABELS.get(detection_raw, detection_raw)
+
+    filter_label = _FILTER_LABELS.get(filter_raw, filter_raw)
+
+    # freq50 → "Frequency (50)"
+    if analysis_raw.startswith("freq"):
+        analysis_label = f"Frequency ({analysis_raw[4:]})"
+    else:
+        analysis_label = _ANALYSIS_LABELS.get(analysis_raw, analysis_raw)
+
+    # 日付の書式を YYYYMMDD → YYYY/MM/DD に
+    if len(date_raw) == 8 and date_raw.isdigit():
+        date_label = f"{date_raw[:4]}/{date_raw[4:6]}/{date_raw[6:]}"
+    else:
+        date_label = date_raw
+
+    parts: list[str] = []
+    if include_project:
+        parts.append(str(info.get("repo", info.get("project", ""))))
+    parts.append(f"Language: {language}")
+    parts.append(f"Detection: {detection_label}")
+    parts.append(f"Filter: {filter_label}")
+    parts.append(f"Analysis: {analysis_label}")
+    parts.append(f"Min Tokens: {min_tokens}")
+
+    if info.get("search_depth") is not None:
+        parts.append(f"Search Depth: {info['search_depth']}")
+    if info.get("max_analyzed_commits") is not None:
+        parts.append(f"Max Commits: {info['max_analyzed_commits']}")
+
+    parts.append(f"Date: {date_label}")
+
+    return ", ".join(parts)
+
 
 # @lru_cache(maxsize=32)  # 一時的に無効化
 def load_service_file_ranges_cached(services_json_path: str, language: str):
@@ -300,20 +378,7 @@ def get_csv_options_for_project(project_name: str) -> list[dict]:
         if not language:
             continue
 
-        label_parts = [
-            language,
-            str(info.get("detection", "unknown")),
-            str(info.get("filter", "unknown")),
-            str(info.get("analysis", "unknown")),
-            f"min{info.get('min_tokens', '?')}",
-            str(info.get("date", "")),
-        ]
-        if info.get("search_depth") is not None:
-            label_parts.append(f"sd{info['search_depth']}")
-        if info.get("max_analyzed_commits") is not None:
-            label_parts.append(f"mac{info['max_analyzed_commits']}")
-
-        label = " | ".join([p for p in label_parts if p])
+        label = _build_descriptive_label(info)
         value = (
             f"{project_name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
         )
@@ -365,22 +430,8 @@ def _gather_scatter_projects():
             if not language:
                 continue
 
-            label_parts = [
-                f"{project_dir.name}",
-                f"{language}",
-                str(info.get("detection", "unknown")),
-                str(info.get("filter", "unknown")),
-                str(info.get("analysis", "unknown")),
-                f"min{info.get('min_tokens', '?')}",
-                str(info.get("date", "")),
-            ]
-
-            if info.get("search_depth") is not None:
-                label_parts.append(f"sd{info['search_depth']}")
-            if info.get("max_analyzed_commits") is not None:
-                label_parts.append(f"mac{info['max_analyzed_commits']}")
-
-            label = " | ".join([p for p in label_parts if p])
+            info["project"] = project_dir.name
+            label = _build_descriptive_label(info, include_project=True)
             value = f"{project_dir.name}|||{SCATTER_FILE_COMMIT_PREFIX}{csv_path.name}|||{language}"
             file_options.append(
                 {

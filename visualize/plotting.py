@@ -206,7 +206,7 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
             intra_data['file_id_y'],
             intra_data['service_relative_path_x'],
             intra_data['service_relative_path_y'],
-            intra_data['clone_type']
+            intra_data[method_col]
         ))
         trace_args['hovertemplate'] = '<b>サービス内クローン (Normal)</b><br>' + \
                         'Clone ID: %{customdata[1]}<br>' + \
@@ -250,7 +250,7 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
             inter_data['file_id_y'],
             inter_data['service_relative_path_x'],
             inter_data['service_relative_path_y'],
-            inter_data['clone_type']
+            inter_data[method_col]
         ))
         trace_args['hovertemplate'] = '<b>サービス間クローン (Normal)</b><br>' + \
                         'Clone ID: %{customdata[1]}<br>' + \
@@ -293,7 +293,7 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
             tks_intra_data['file_id_y'],
             tks_intra_data['service_relative_path_x'],
             tks_intra_data['service_relative_path_y'] if 'service_relative_path_y' in tks_intra_data.columns else tks_intra_data['service_relative_path_x'],
-            tks_intra_data['clone_type']
+            tks_intra_data[method_col]
         ))
         trace_args['hovertemplate'] = '<b>サービス内クローン (TKS)</b><br>' + \
                         'Clone ID: %{customdata[1]}<br>' + \
@@ -337,7 +337,7 @@ def create_scatter_plot(df, file_ranges, project_name, language, static_mode=Fal
             tks_inter_data['file_id_y'],
             tks_inter_data['service_relative_path_x'],
             tks_inter_data['service_relative_path_y'] if 'service_relative_path_y' in tks_inter_data.columns else tks_inter_data['service_relative_path_x'],
-            tks_inter_data['clone_type']
+            tks_inter_data[method_col]
         ))
         trace_args['hovertemplate'] = '<b>サービス間クローン (TKS)</b><br>' + \
                         'Clone ID: %{customdata[1]}<br>' + \

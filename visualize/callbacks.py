@@ -1168,6 +1168,7 @@ def register_callbacks(app):
             Output("btn-view-scatter", "className"),
             Output("btn-view-explorer", "className"),
             Output("btn-view-stats", "className"),
+            Output("page-title", "children"),
         ],
         [
             Input("btn-view-scatter", "n_clicks"),
@@ -1179,55 +1180,48 @@ def register_callbacks(app):
     def toggle_view_mode(btn_scatter, btn_explorer, btn_stats, current_class):
         ctx = dash.callback_context
 
-        # Default state (initial load): Scatter active
+        # View definitions: (scatter_cls, ide_style, stats_cls, nav_scatter, nav_explorer, nav_stats, title)
+        scatter_state = (
+            "view-panel active",
+            {"display": "none"},
+            "view-panel",
+            "nav-link active",
+            "nav-link",
+            "nav-link",
+            "Scatter Plot",
+        )
+        explorer_state = (
+            "view-panel",
+            {"display": "flex"},
+            "view-panel",
+            "nav-link",
+            "nav-link active",
+            "nav-link",
+            "List View",
+        )
+        stats_state = (
+            "view-panel",
+            {"display": "none"},
+            "view-panel active",
+            "nav-link",
+            "nav-link",
+            "nav-link active",
+            "Statistics",
+        )
+
         if not ctx.triggered:
-            return (
-                "scatter-container-fullscreen active",
-                {"display": "none"},
-                "stats-container-fullscreen",
-                "view-btn active",
-                "view-btn",
-                "view-btn",
-            )
+            return scatter_state
 
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
         if button_id == "btn-view-scatter":
-            return (
-                "scatter-container-fullscreen active",
-                {"display": "none"},
-                "stats-container-fullscreen",
-                "view-btn active",
-                "view-btn",
-                "view-btn",
-            )
+            return scatter_state
         elif button_id == "btn-view-explorer":
-            return (
-                "scatter-container-fullscreen",
-                {"display": "flex"},
-                "stats-container-fullscreen",
-                "view-btn",
-                "view-btn active",
-                "view-btn",
-            )
+            return explorer_state
         elif button_id == "btn-view-stats":
-            return (
-                "scatter-container-fullscreen",
-                {"display": "none"},
-                "stats-container-fullscreen active",
-                "view-btn",
-                "view-btn",
-                "view-btn active",
-            )
+            return stats_state
 
-        return (
-            "scatter-container-fullscreen active",
-            {"display": "none"},
-            "stats-container-fullscreen",
-            "view-btn active",
-            "view-btn",
-            "view-btn",
-        )
+        return scatter_state
 
     # Update store via client-side or server-side when button clicked
     @app.callback(
@@ -1672,3 +1666,30 @@ def register_callbacks(app):
         except Exception as e:
             logger.error("Error updating cross service options: %s", e)
             return [{"label": "All", "value": "all"}]
+
+    # ── Help Modal ──
+    @app.callback(
+        Output("help-modal", "is_open"),
+        [Input("help-btn", "n_clicks")],
+        [State("help-modal", "is_open")],
+        prevent_initial_call=True,
+    )
+    def toggle_help_modal(n_clicks, is_open):
+        if n_clicks:
+            return not is_open
+        return is_open
+
+    # ── Sidebar Collapse (clientside for performance) ──
+    app.clientside_callback(
+        """
+        function(n_clicks) {
+            var container = document.querySelector('.app-container');
+            if (!container) return '';
+            container.classList.toggle('sidebar-collapsed');
+            return '';
+        }
+        """,
+        Output("sidebar-toggle", "title"),
+        Input("sidebar-toggle", "n_clicks"),
+        prevent_initial_call=True,
+    )

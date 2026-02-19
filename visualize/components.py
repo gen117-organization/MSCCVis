@@ -268,7 +268,9 @@ def build_clone_selector(overlapping_indices, df):
 
     # 重複除去の情報を表示
     removed_count = clone_count - len(clone_data)
-    header_text = f"{len(clone_data)} overlapping clones found. Select a clone to display:"
+    header_text = (
+        f"{len(clone_data)} overlapping clones found. Select a clone to display:"
+    )
     if removed_count > 0:
         header_text += f" ({removed_count} duplicates removed)"
 
@@ -814,9 +816,7 @@ def create_layout(
                             ),
                             dcc.Dropdown(
                                 id="clone-id-filter",
-                                options=[
-                                    {"label": "Show all clones", "value": "all"}
-                                ],
+                                options=[{"label": "Show all clones", "value": "all"}],
                                 value="all",
                                 placeholder="Filter by Clone ID...",
                                 style={
@@ -864,9 +864,7 @@ def create_layout(
                     html.Div(
                         id="clone-details-table",
                         children=[
-                            html.P(
-                                "Click a point on the graph to view clone details."
-                            )
+                            html.P("Click a point on the graph to view clone details.")
                         ],
                     ),
                 ],
@@ -1618,9 +1616,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
             clone_stats.extend([("Clone Ratio:", f"{project_clone_ratio:.2f}%")])
         except Exception as e:
             logger.error("Error calculating project clone ratio: %s", e)
-            clone_stats.extend(
-                                [("Project Clone Ratio:", "Could not be calculated")]
-            )
+            clone_stats.extend([("Project Clone Ratio:", "Could not be calculated")])
 
         # Import preprocessing statistics (if available from project summary)
         # This replaces the old import_heavy detection with preprocessed comparison data
@@ -1669,9 +1665,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
         if language_info and "stats" in language_info:
             stats = language_info["stats"]
             if stats.get("total_files", 0) > 0:
-                project_stats_info.append(
-                    ("Total Files:", f"{stats['total_files']:,}")
-                )
+                project_stats_info.append(("Total Files:", f"{stats['total_files']:,}"))
 
                 if "total_lines" in stats:
                     project_stats_info.append(
@@ -1876,7 +1870,11 @@ def create_project_clone_ratio_display(project_name: str) -> html.Div:
             [
                 html.H3("Project Clone Ratio", className="clone-ratio-title"),
                 html.Div(
-                    [html.Span("Could not be calculated", className="clone-ratio-error")],
+                    [
+                        html.Span(
+                            "Could not be calculated", className="clone-ratio-error"
+                        )
+                    ],
                     className="clone-ratio-container",
                 ),
             ],
@@ -2251,6 +2249,210 @@ def _legend_chip(label, color):
     )
 
 
+def _build_nav_sidebar(lang_selector):
+    """左側ナビゲーションサイドバーを構築する.
+
+    Args:
+        lang_selector: 言語選択用の Dropdown コンポーネント.
+
+    Returns:
+        html.Nav コンポーネント.
+    """
+    return html.Nav(
+        id="app-sidebar",
+        className="app-sidebar",
+        children=[
+            # Brand area (with collapse toggle)
+            html.Div(
+                className="sidebar-brand",
+                children=[
+                    html.Div(
+                        [
+                            html.I(className="bi bi-search sidebar-brand-icon"),
+                            html.Span("MSCCA Tools", className="sidebar-brand-text"),
+                        ],
+                        className="sidebar-brand-inner",
+                    ),
+                    html.Button(
+                        html.I(
+                            className="bi bi-chevron-left",
+                            id="sidebar-toggle-icon",
+                        ),
+                        id="sidebar-toggle",
+                        className="sidebar-collapse-btn",
+                        n_clicks=0,
+                        title="Toggle sidebar",
+                    ),
+                ],
+            ),
+            # Navigation items
+            html.Ul(
+                className="sidebar-nav-list",
+                children=[
+                    html.Li(
+                        html.A(
+                            [
+                                html.I(className="bi bi-gear nav-icon"),
+                                html.Span(
+                                    "Detection Settings",
+                                    className="nav-text",
+                                    **{"data-i18n": "navSettings"},
+                                ),
+                            ],
+                            href="/",
+                            className="nav-link",
+                        ),
+                        className="nav-item",
+                    ),
+                    html.Li(
+                        html.Button(
+                            [
+                                html.I(className="bi bi-graph-up nav-icon"),
+                                html.Span(
+                                    "Scatter Plot",
+                                    className="nav-text",
+                                    **{"data-i18n": "navScatter"},
+                                ),
+                            ],
+                            id="btn-view-scatter",
+                            className="nav-link active",
+                            n_clicks=0,
+                        ),
+                        className="nav-item",
+                    ),
+                    html.Li(
+                        html.Button(
+                            [
+                                html.I(className="bi bi-list-ul nav-icon"),
+                                html.Span(
+                                    "List View",
+                                    className="nav-text",
+                                    **{"data-i18n": "navListView"},
+                                ),
+                            ],
+                            id="btn-view-explorer",
+                            className="nav-link",
+                            n_clicks=0,
+                        ),
+                        className="nav-item",
+                    ),
+                    html.Li(
+                        html.Button(
+                            [
+                                html.I(className="bi bi-bar-chart-line nav-icon"),
+                                html.Span(
+                                    "Statistics",
+                                    className="nav-text",
+                                    **{"data-i18n": "navStats"},
+                                ),
+                            ],
+                            id="btn-view-stats",
+                            className="nav-link",
+                            n_clicks=0,
+                        ),
+                        className="nav-item",
+                    ),
+                ],
+            ),
+            # Footer: language selector + help button
+            html.Div(
+                className="sidebar-footer",
+                children=[
+                    html.I(className="bi bi-globe2 nav-icon"),
+                    lang_selector,
+                    html.Button(
+                        html.I(className="bi bi-question-circle"),
+                        id="help-btn",
+                        className="sidebar-help-btn",
+                        n_clicks=0,
+                        title="About this tool",
+                    ),
+                ],
+            ),
+        ],
+    )
+
+
+def _build_help_modal():
+    """ヘルプモーダルダイアログを構築する.
+
+    Returns:
+        dbc.Modal コンポーネント.
+    """
+    return dbc.Modal(
+        id="help-modal",
+        is_open=False,
+        size="lg",
+        centered=True,
+        children=[
+            dbc.ModalHeader(
+                dbc.ModalTitle("MSCCA Tools — Clone Explorer"),
+                close_button=True,
+            ),
+            dbc.ModalBody(
+                [
+                    html.H5("About", className="mb-3"),
+                    html.P(
+                        "MSCCA Tools (Microservice Code Clone Analyzer) is a toolset "
+                        "for detecting and analyzing code clones across microservice "
+                        "repositories. It integrates CCFinderSW for clone detection "
+                        "and CLAIM for microservice boundary identification.",
+                    ),
+                    html.Hr(),
+                    html.H6("Views"),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Scatter Plot"),
+                                    html.Span(
+                                        " — Visualizes clone pairs as points. "
+                                        "Filter by co-modification, scope, and code type."
+                                    ),
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("List View"),
+                                    html.Span(
+                                        " — Browse repository files and "
+                                        "inspect clone fragments side-by-side."
+                                    ),
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Statistics"),
+                                    html.Span(
+                                        " — Project summary with service mapping, "
+                                        "clone ratio, and co-modification metrics."
+                                    ),
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.Hr(),
+                    html.H6("Tips"),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "Click a point on the scatter plot to see clone details."
+                            ),
+                            html.Li(
+                                "Use the sidebar to switch between views."
+                            ),
+                            html.Li(
+                                "Collapse the sidebar with the toggle button "
+                                "for more screen space."
+                            ),
+                        ]
+                    ),
+                ]
+            ),
+        ],
+    )
+
+
 def create_ide_layout(
     available_projects,
     available_languages,
@@ -2260,189 +2462,80 @@ def create_ide_layout(
     *,
     project_names=None,
 ):
-    """IDE風レイアウトを作成する (index.html 風デザイン + 英語/日本語切替対応)"""
+    """サイドバーナビゲーション + メインコンテンツのレイアウトを作成する."""
 
-    # Project Name Selector (Step 1: プロジェクト選択)
+    # Project Name Selector (Step 1)
     project_name_selector = dcc.Dropdown(
         id="project-name-selector",
         options=project_names or [],
         value=None,
         placeholder="Select Project",
-        style={"width": "220px"},
+        style={"width": "200px"},
         clearable=False,
     )
 
-    # CSV File Selector (Step 2: CSVファイル選択)
-    # ID は既存コールバックとの互換性のため "project-selector" を維持
+    # CSV File Selector (Step 2) — ID は既存コールバック互換のため維持
     project_selector = dcc.Dropdown(
         id="project-selector",
         options=available_projects,
         value=default_project,
-        placeholder="Select CSV",
-        style={"width": "400px"},
+        placeholder="Select Dataset",
+        style={"width": "520px", "fontSize": "0.82rem"},
         clearable=False,
         disabled=True,
+        optionHeight=50,
+        maxHeight=400,
     )
 
-    # View Switcher (Tabs)
-    view_switcher = html.Div(
-        [
-            html.Button(
+    # Language Selector
+    lang_dropdown = dcc.Dropdown(
+        id="vis-lang-select",
+        options=[
+            {"label": "English", "value": "en"},
+            {"label": "日本語", "value": "ja"},
+        ],
+        value="en",
+        clearable=False,
+        searchable=False,
+        style={"width": "100px", "fontSize": "0.82rem"},
+    )
+
+    # ── Navigation Sidebar ──
+    nav_sidebar = _build_nav_sidebar(lang_dropdown)
+
+    # ── Content Header (project selectors) ──
+    content_header = html.Div(
+        className="content-header",
+        children=[
+            html.H2(
                 "Scatter Plot",
-                id="btn-view-scatter",
-                className="view-btn active",
-                n_clicks=0,
-                **{"data-i18n": "btnScatter"},
+                id="page-title",
+                className="content-title",
+                **{"data-i18n": "navScatter"},
             ),
-            html.Button(
-                "Explorer",
-                id="btn-view-explorer",
-                className="view-btn",
-                n_clicks=0,
-                **{"data-i18n": "btnExplorer"},
-            ),
-            html.Button(
-                "Statistics",
-                id="btn-view-stats",
-                className="view-btn",
-                n_clicks=0,
-                **{"data-i18n": "btnStats"},
-            ),
-        ],
-        className="view-switcher",
-        style={"marginLeft": "20px"},
-    )
-
-    # Language Selector (index.html 風)
-    lang_selector = html.Div(
-        [
-            html.Span(
-                "Language",
-                id="vis-lang-label",
-                style={
-                    "fontSize": "0.85rem",
-                    "color": "#777",
-                },
-                **{"data-i18n": "langLabel"},
-            ),
-            dcc.Dropdown(
-                id="vis-lang-select",
-                options=[
-                    {"label": "English", "value": "en"},
-                    {"label": "日本語", "value": "ja"},
-                ],
-                value="en",
-                clearable=False,
-                searchable=False,
-                style={"width": "110px", "fontSize": "0.85rem"},
-            ),
-        ],
-        className="lang-bar",
-        style={
-            "display": "flex",
-            "alignItems": "center",
-            "gap": "8px",
-            "marginLeft": "auto",
-            "flexShrink": "0",
-        },
-    )
-
-    # Back to Settings link
-    back_link = html.A(
-        "Back to Settings",
-        href="/",
-        id="back-to-settings-link",
-        className="btn-back",
-        **{"data-i18n": "backToSettings"},
-        style={
-            "fontSize": "0.85rem",
-            "color": "var(--primary, #f5a623)",
-            "textDecoration": "none",
-            "fontWeight": "600",
-            "marginRight": "16px",
-            "whiteSpace": "nowrap",
-        },
-    )
-
-    # Header (2-row layout: title/nav on top, selectors/views on bottom)
-    header = html.Div(
-        [
-            # Top row: Title + Back link + Language
             html.Div(
-                [
-                    html.Div(
-                        "MSCCA Tools - Clone Explorer",
-                        style={
-                            "fontWeight": "bold",
-                            "color": "var(--primary, #f5a623)",
-                            "fontSize": "1rem",
-                            "whiteSpace": "nowrap",
-                        },
-                        **{"data-i18n": "headerTitle"},
+                className="header-selectors",
+                children=[
+                    html.Span(
+                        "Project:",
+                        className="selector-label",
+                        **{"data-i18n": "labelProject"},
                     ),
-                    html.Div(
-                        [back_link, lang_selector],
-                        style={
-                            "display": "flex",
-                            "alignItems": "center",
-                            "gap": "16px",
-                        },
+                    project_name_selector,
+                    html.Span("▸", className="selector-separator"),
+                    html.Span(
+                        "Dataset:",
+                        className="selector-label",
+                        **{"data-i18n": "labelDataset"},
                     ),
+                    project_selector,
                 ],
-                className="header-top-row",
-            ),
-            # Bottom row: Project ▸ Dataset + View switcher
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            html.Span(
-                                "Project:",
-                                style={
-                                    "fontSize": "0.8rem",
-                                    "color": "#888",
-                                    "marginRight": "4px",
-                                    "whiteSpace": "nowrap",
-                                },
-                                **{"data-i18n": "labelProject"},
-                            ),
-                            project_name_selector,
-                            html.Span(
-                                "▸",
-                                style={
-                                    "color": "#888",
-                                    "margin": "0 6px",
-                                    "fontSize": "0.9rem",
-                                },
-                            ),
-                            html.Span(
-                                "Dataset:",
-                                style={
-                                    "fontSize": "0.8rem",
-                                    "color": "#888",
-                                    "marginRight": "4px",
-                                    "whiteSpace": "nowrap",
-                                },
-                                **{"data-i18n": "labelDataset"},
-                            ),
-                            project_selector,
-                        ],
-                        style={
-                            "display": "flex",
-                            "alignItems": "center",
-                            "gap": "4px",
-                        },
-                    ),
-                    view_switcher,
-                ],
-                className="header-bottom-row",
             ),
         ],
-        className="ide-header",
     )
 
-    # Sidebar
-    sidebar = html.Div(
+    # ── Explorer (List View) ──
+    explorer_sidebar = html.Div(
         [
             html.Div(
                 [
@@ -2477,10 +2570,8 @@ def create_ide_layout(
         className="ide-sidebar",
     )
 
-    # Main Area
-    main_content = html.Div(
+    editor_content = html.Div(
         [
-            # Editor Header (Breadcrumbs etc)
             html.Div(
                 id="editor-header",
                 className="editor-header",
@@ -2488,7 +2579,6 @@ def create_ide_layout(
                     "Select a file to view", **{"data-i18n": "editorPlaceholder"}
                 ),
             ),
-            # Editor Content
             html.Div(
                 id="editor-content",
                 className="editor-content",
@@ -2513,10 +2603,10 @@ def create_ide_layout(
         className="ide-content",
     )
 
-    # Scatter Plot Overlay (Initially Hidden)
-    scatter_overlay = html.Div(
+    # ── Scatter View ──
+    scatter_view = html.Div(
         [
-            # Hidden: Detection Method (kept for callback compatibility, default="all")
+            # Hidden: Detection Method (callback 互換用)
             html.Div(
                 dbc.RadioItems(
                     id="detection-method-radio",
@@ -2525,13 +2615,12 @@ def create_ide_layout(
                 ),
                 style={"display": "none"},
             ),
-            # Filter Section — simplified, index.html style
+            # Filter Panel
             html.Div(
                 [
                     # Row 1: Co-modification / Scope / Code Type
                     html.Div(
                         [
-                            # Co-modification
                             html.Div(
                                 [
                                     html.Label(
@@ -2553,7 +2642,6 @@ def create_ide_layout(
                                 ],
                                 className="filter-group",
                             ),
-                            # Scope
                             html.Div(
                                 [
                                     html.Label(
@@ -2575,7 +2663,6 @@ def create_ide_layout(
                                 ],
                                 className="filter-group",
                             ),
-                            # Code Type
                             html.Div(
                                 [
                                     html.Label(
@@ -2642,15 +2729,17 @@ def create_ide_layout(
                             ),
                         ],
                         className="filter-row",
-                        style={"borderTop": "1px solid var(--border, #e0e0e0)", "paddingTop": "8px"},
+                        style={
+                            "borderTop": "1px solid var(--border, #e0e0e0)",
+                            "paddingTop": "8px",
+                        },
                     ),
                 ],
                 className="filter-panel",
             ),
-            # Main Content Scrollable Area
+            # Graph + Clone Details
             html.Div(
                 [
-                    # Stats Header
                     html.Div(
                         id="scatter-stats-header",
                         style={
@@ -2660,7 +2749,6 @@ def create_ide_layout(
                             "minHeight": "30px",
                         },
                     ),
-                    # Graph
                     html.Div(
                         [
                             dcc.Loading(
@@ -2673,7 +2761,7 @@ def create_ide_layout(
                                         style={
                                             "height": "125vh",
                                             "minHeight": "500px",
-                                        },  # Fixed minimum height
+                                        },
                                         config={"responsive": True},
                                     )
                                 ],
@@ -2681,7 +2769,6 @@ def create_ide_layout(
                         ],
                         style={"padding": "10px"},
                     ),
-                    # Clone Details Panel (Below Scatter Plot, Natural Flow)
                     html.Div(
                         [
                             html.Div(
@@ -2692,7 +2779,8 @@ def create_ide_layout(
                                 id="clone-details-table",
                                 children=[
                                     html.P(
-                                        "Click a point on the graph to view clone details and code comparison here.",
+                                        "Click a point on the graph to view clone "
+                                        "details and code comparison here.",
                                         **{"data-i18n": "scatterClickHint"},
                                     )
                                 ],
@@ -2709,12 +2797,12 @@ def create_ide_layout(
             ),
         ],
         id="scatter-container",
-        className="scatter-container-fullscreen active",
+        className="view-panel active",
         style={"padding": "0", "overflowY": "auto"},
     )
 
-    # Statistics View Container (Initially Hidden)
-    stats_container = html.Div(
+    # ── Statistics View ──
+    stats_view = html.Div(
         [
             html.Div(
                 initial_summary,
@@ -2723,34 +2811,52 @@ def create_ide_layout(
             )
         ],
         id="stats-container",
-        className="stats-container-fullscreen",
+        className="view-panel",
         style={"padding": "0", "overflowY": "auto"},
     )
 
-    # Stores
+    # ── Help Modal ──
+    help_modal = _build_help_modal()
+
+    # ── Stores ──
     stores = html.Div(
         [
-            dcc.Store(id="file-tree-data-store"),  # Tree structure data
-            dcc.Store(id="selected-file-store"),  # Currently selected file path
-            dcc.Store(id="clone-data-store"),  # Clone data for current project
-            dcc.Store(id="lang-store", data="en"),  # UI language (en / ja)
-            html.Div(
-                id="i18n-dummy", style={"display": "none"}
-            ),  # clientside callback output
+            dcc.Store(id="file-tree-data-store"),
+            dcc.Store(id="selected-file-store"),
+            dcc.Store(id="clone-data-store"),
+            dcc.Store(id="lang-store", data="en"),
+            html.Div(id="i18n-dummy", style={"display": "none"}),
         ]
     )
 
     return html.Div(
-        [
-            header,
+        className="app-container",
+        children=[
+            nav_sidebar,
             html.Div(
-                [sidebar, main_content], id="ide-main-container", className="ide-main"
+                className="app-main",
+                children=[
+                    content_header,
+                    html.Div(
+                        className="content-body",
+                        children=[
+                            # Explorer view (natural flow, hidden by default)
+                            html.Div(
+                                [explorer_sidebar, editor_content],
+                                id="ide-main-container",
+                                className="ide-main",
+                            ),
+                            # Scatter overlay
+                            scatter_view,
+                            # Stats overlay
+                            stats_view,
+                        ],
+                    ),
+                ],
             ),
-            scatter_overlay,
-            stats_container,
+            help_modal,
             stores,
         ],
-        className="ide-container",
     )
 
 
