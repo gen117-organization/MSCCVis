@@ -2438,9 +2438,7 @@ def _build_help_modal():
                             html.Li(
                                 "Click a point on the scatter plot to see clone details."
                             ),
-                            html.Li(
-                                "Use the sidebar to switch between views."
-                            ),
+                            html.Li("Use the sidebar to switch between views."),
                             html.Li(
                                 "Collapse the sidebar with the toggle button "
                                 "for more screen space."
