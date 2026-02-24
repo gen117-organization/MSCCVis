@@ -1,5 +1,26 @@
 # Progress Log
 
+## 02-25 ブランドアイコン削除・言語ドロップダウン修正
+
+### 変更ファイル
+
+- `src/visualize/components/layout.py` — `bi-braces` アイコン削除, 折りたたみ時用の短縮ブランド "M" 追加
+- `src/web/static/index.html` — 設定画面側の `bi-braces` アイコン削除
+- `src/visualize/assets/02_ide_theme.css` — `.sidebar-brand-icon` → `.sidebar-brand-short` に変更 (通常時非表示, 折りたたみ時表示). `.sidebar-footer` に `position: relative` 追加. 言語ドロップダウンが上方向に開くCSS追加 (`.Select-menu-outer { bottom: 100%; top: auto; }`)
+
+### テスト結果
+
+- `pytest -q` — 2 passed
+
+### 判断メモ
+
+- アイコン削除後,折りたたみ時にブランド領域が空になるため,短縮テキスト "M" を表示する方式を採用
+- 言語ドロップダウンが画面外に出る根本原因は `.app-sidebar { overflow: hidden }` で下方向のメニューがクリップされていたこと. `overflow` を変更するとサイドバー全体に影響するため,ドロップダウン自体を上方向に開く方式で対処
+
+### 残課題
+
+- TODO(gen): 設定画面 (index.html) の言語セレクタはネイティブ `<select>` のため今回の修正対象外
+
 ## 02-24 CSS読み込み順序修正・サイドバー表示統一
 
 ### 変更ファイル

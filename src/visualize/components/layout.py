@@ -284,7 +284,9 @@ def _build_nav_sidebar(lang_selector):
                 children=[
                     html.Div(
                         [
-                            html.I(className="bi bi-braces sidebar-brand-icon"),
+                            html.Span(
+                                "M", className="sidebar-brand-short"
+                            ),
                             html.Span("MSCCVis", className="sidebar-brand-text"),
                         ],
                         className="sidebar-brand-inner",

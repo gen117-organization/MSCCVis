@@ -99,9 +99,11 @@ body {
     overflow: hidden;
 }
 
-.sidebar-brand-icon {
-    font-size: 1.2rem;
+.sidebar-brand-short {
+    font-weight: 700;
+    font-size: 1.1rem;
     color: var(--primary);
+    display: none;
     flex-shrink: 0;
 }
 
@@ -204,6 +206,14 @@ body {
     gap: 10px;
     padding: 12px 14px;
     border-top: 1px solid var(--sidebar-border);
+    position: relative;
+}
+
+/* Language dropdown opens upward inside sidebar footer */
+.sidebar-footer .dash-dropdown .Select-menu-outer {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: 4px;
 }
 
 /* Collapse toggle (in brand area) */
@@ -235,6 +245,10 @@ body {
 .app-container.sidebar-collapsed .nav-text,
 .app-container.sidebar-collapsed .sidebar-footer .dash-dropdown {
     display: none;
+}
+
+.app-container.sidebar-collapsed .sidebar-brand-short {
+    display: inline;
 }
 
 .app-container.sidebar-collapsed .sidebar-brand {
