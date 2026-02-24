@@ -1,5 +1,31 @@
 # Progress Log
 
+## 02-25 クローンメトリクス計算モジュール実装
+
+### 変更ファイル
+
+- `src/modules/visualization/compute_clone_metrics.py` — **新規**: enriched_fragments.csv から 3 粒度 (サービス/クローンセット/ファイル) のクローンメトリクスを計算するモジュール. pandas groupby ベースの純粋関数群
+- `tests/test_compute_clone_metrics.py` — **新規**: compute_clone_metrics の単体テスト (27件). 各粒度の基本計算, エッジケース (空データ, 未解決サービス), 統合テスト
+- `src/visualize/clone_analytics.py` — プレースホルダー (`return 0.0`) を compute_service_metrics の ROC 平均値に置き換え
+- `docs/compute_clone_metrics.md` — **新規**: クローンメトリクス計算モジュールの設計ドキュメント
+
+### テスト結果
+
+- `pytest -v` — 44 passed (0.85s), 既存17件 + 新規27件
+
+### 判断メモ
+
+- 同時修正の定義: 既存 calculate_comodification_rate.py を踏襲. 同一コミットで 2 つ以上のフラグメントが修正されている場合を「同時修正」とカウント
+- クロスサービス判定: service が空文字 (未解決) のフラグメントはサービス数カウントから除外. 2 サービス以上に跨る場合にクロスサービスと判定
+- ROC の分母: enriched_fragments.csv にはクローン断片のみ含まれるため, services.json の language_stats.total_loc を使用
+- modified_commits の JSON パース: iterrows + json.loads によるパースのため大規模データではボトルネックになり得るが, 現時点では十分な性能
+
+### 残課題
+
+- TODO(gen): compute_all_metrics の出力を CSV/JSON に保存するパイプライン統合
+- TODO(gen): 可視化 UI (Stats ビュー) でのメトリクス表示
+- TODO(gen): 大規模データでの modified_commits パース性能最適化
+
 ## 02-25 散布図CSV生成トグル追加
 
 ### 変更ファイル
