@@ -54,7 +54,7 @@ def calculate_project_average_clone_ratio(project_name: str) -> float:
         # filter prefix を除去
         for prefix in ("import_", "tks_"):
             if language.startswith(prefix):
-                language = language[len(prefix):]
+                language = language[len(prefix) :]
                 break
         try:
             df = load_enriched_fragments(csv_path)
@@ -66,7 +66,9 @@ def calculate_project_average_clone_ratio(project_name: str) -> float:
         except Exception as exc:
             logger.warning(
                 "failed to compute ROC for %s/%s: %s",
-                project_name, csv_path.name, exc,
+                project_name,
+                csv_path.name,
+                exc,
             )
 
     if not all_rocs:

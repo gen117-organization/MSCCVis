@@ -120,9 +120,7 @@ def load_enriched_fragments(csv_path: Path) -> pd.DataFrame:
     return df
 
 
-def load_language_stats(
-    services_json_path: Path, language: str
-) -> dict[str, Any]:
+def load_language_stats(services_json_path: Path, language: str) -> dict[str, Any]:
     """services.json から指定言語の language_stats を読み込む.
 
     Args:
@@ -445,7 +443,9 @@ def _compute_single_file(
     sharing_count = len(sharing_services)
     cross_cs_count = len(cross_clone_sets)
     cross_cs_ratio = cross_cs_count / total_clone_sets if total_clone_sets > 0 else 0.0
-    sharing_ratio = sharing_count / total_service_count if total_service_count > 0 else 0.0
+    sharing_ratio = (
+        sharing_count / total_service_count if total_service_count > 0 else 0.0
+    )
 
     # 同時修正 (クロスサービスのクローンセットに限定)
     cross_comod_count = 0
@@ -511,8 +511,10 @@ def compute_all_metrics(
     # total_service_count: language_stats の services 数,
     # なければ DataFrame 内のユニークサービス数で代替
     services_section = lang_stats.get("services", {})
-    total_svc = len(services_section) if services_section else len(
-        {s for s in df["service"].unique() if s}
+    total_svc = (
+        len(services_section)
+        if services_section
+        else len({s for s in df["service"].unique() if s})
     )
     file_metrics = compute_file_metrics(df, total_svc)
 
