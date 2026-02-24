@@ -1,5 +1,39 @@
 # Progress Log
 
+## 07-04 web/visualize パッケージ構造リファクタリング (5段階)
+
+### 変更ファイル
+
+- `visualize/` → `src/visualize/` — パッケージを src/ 配下に移動,インポートパスを統一
+- `src/visualize/components.py` (3135行) → `src/visualize/components/` パッケージに分割
+  - `clone_metrics.py` (297行), `summary.py` (1480行), `layout.py` (876行), `clone_detail.py` (380行), `explorer.py` (148行)
+- `src/visualize/callbacks.py` (1696行) → `src/visualize/callbacks/` パッケージに分割
+  - `scatter_callbacks.py` (624行), `explorer_callbacks.py` (260行), `nav_callbacks.py` (125行), `filter_callbacks.py` (542行)
+  - デッドコード約200行を削除 (旧on_dashboard_click, update_network_graph_callback)
+- `src/visualize/data_loader.py` (1568行) → `src/visualize/data_loader/` パッケージに分割
+  - `project_discovery.py` (548行), `csv_loader.py` (991行), `file_tree.py` (59行)
+- `src/web/app.py` (496行→109行) — パイプライン実行とバリデーションを分離
+  - `src/web/pipeline_runner.py` (319行): 分析パイプライン実行ロジック
+  - `src/web/validation.py` (115行): パラメータ検証・型変換
+- 各パッケージの `__init__.py` で後方互換性のためシンボルを再エクスポート
+
+### テスト結果
+
+- `pytest src/visualize/test_ui_logic.py -q` — 2 passed (各ステップ後に確認)
+- インポートテスト: `src.visualize.scatter.create_dash_app`, `src.visualize.callbacks`, `src.visualize.data_loader`, `src.web.pipeline_runner` 全てOK
+
+### 判断メモ
+
+- web と visualize は統合しない判断: FastAPI (REST/WebSocket) と Dash (可視化) で責務が異なるため維持
+- 分割しない方針の例: csv_loader.py (991行) はデータ読み込みチェーンが密結合しているため細分化せず
+- callbacks分割時,デッドコード (return文の後のコメントアウト済みコードブロック) を発見・削除
+- pipeline_runner.py は外部モジュール (modules.*) を遅延インポートに変更し依存チェーンを軽減
+
+### 残課題
+
+- TODO(gen): csv_loader.py (991行) の一部関数が50行超 — load_from_no_imports_json (161行), load_from_project_csv (189行) の内部リファクタリングは将来課題
+- TODO(gen): summary.py の build_project_summary (730行) も巨大 — 段階的な分割を検討
+
 ## 02-20-04:30 UIバグ修正4件: CSS/ボタン配置/散布図表示/ラベル改善
 
 ### 変更ファイル
