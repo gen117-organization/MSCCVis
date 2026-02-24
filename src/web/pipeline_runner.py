@@ -4,6 +4,7 @@ Web UIから起動される分析パイプラインの全ステップを管理�
 各ステップ: リポジトリクローン → コミット選定 → クローン検出 →
 分析 → 同時修正分析 → 可視化CSV生成.
 """
+
 import json
 import logging
 import shutil
@@ -111,7 +112,9 @@ def _generate_visualization_csv(
             return
 
     # 命名規則に基づくファイル名の生成
-    from modules.visualization.naming import build_visualization_csv_filename_from_params
+    from modules.visualization.naming import (
+        build_visualization_csv_filename_from_params,
+    )
 
     csv_stem = build_visualization_csv_filename_from_params(params)
     out_dir = project_root / "dest/scatter"
@@ -121,32 +124,39 @@ def _generate_visualization_csv(
     # 入力CSVは常にフィルタなし名 (<language>.csv) で格納されている.
     filter_type: str | None = None
 
-    generated_count = 0
-    for language in languages.keys():
-        try:
-            log.write(f"  Generating scatter CSV: language={language}...\n")
-            from modules.visualization.build_scatter_dataset import (
-                build_scatter_dataset_for_language,
-            )
+    generate_scatter = params.get("generate_scatter_csv", True)
 
-            resolved_path, unknown_path = build_scatter_dataset_for_language(
-                project=project,
-                project_name=name,
-                language=language,
-                filter_type=filter_type,
-                project_root=project_root,
-                out_dir=out_dir,
-                ms_detection_dir=ms_detection_dir,
-                output_csv_stem=f"{csv_stem}_{language}",
-            )
-            generated_count += 1
-            log.write(f"  Done: {resolved_path.name}\n")
-        except FileNotFoundError as exc:
-            log.write(f"  [warn] Skip scatter CSV (missing input): {exc}\n")
-        except Exception as exc:
-            log.write(f"  [warn] Failed scatter CSV for {language}: {exc}\n")
+    if generate_scatter:
+        generated_count = 0
+        for language in languages.keys():
+            try:
+                log.write(f"  Generating scatter CSV: language={language}...\n")
+                from modules.visualization.build_scatter_dataset import (
+                    build_scatter_dataset_for_language,
+                )
 
-    log.write(f"  Generated {generated_count}/{len(languages)} visualization CSVs.\n")
+                resolved_path, unknown_path = build_scatter_dataset_for_language(
+                    project=project,
+                    project_name=name,
+                    language=language,
+                    filter_type=filter_type,
+                    project_root=project_root,
+                    out_dir=out_dir,
+                    ms_detection_dir=ms_detection_dir,
+                    output_csv_stem=f"{csv_stem}_{language}",
+                )
+                generated_count += 1
+                log.write(f"  Done: {resolved_path.name}\n")
+            except FileNotFoundError as exc:
+                log.write(f"  [warn] Skip scatter CSV (missing input): {exc}\n")
+            except Exception as exc:
+                log.write(f"  [warn] Failed scatter CSV for {language}: {exc}\n")
+
+        log.write(
+            f"  Generated {generated_count}/{len(languages)} visualization CSVs.\n"
+        )
+    else:
+        log.write("  Scatter CSV generation skipped (disabled by user).\n")
 
     # enriched_fragments.csv 生成 + services.json 拡充
     enriched_dir = project_root / "dest/enriched_fragments"
@@ -154,9 +164,7 @@ def _generate_visualization_csv(
     enriched_count = 0
     for language in languages.keys():
         try:
-            log.write(
-                f"  Generating enriched fragments: language={language}...\n"
-            )
+            log.write(f"  Generating enriched fragments: language={language}...\n")
             from modules.visualization.build_enriched_fragments import (
                 build_enriched_fragments_for_language,
             )
@@ -172,13 +180,9 @@ def _generate_visualization_csv(
             enriched_count += 1
             log.write(f"  Done: {enriched_path.name}\n")
         except FileNotFoundError as exc:
-            log.write(
-                f"  [warn] Skip enriched fragments (missing input): {exc}\n"
-            )
+            log.write(f"  [warn] Skip enriched fragments (missing input): {exc}\n")
         except Exception as exc:
-            log.write(
-                f"  [warn] Failed enriched fragments for {language}: {exc}\n"
-            )
+            log.write(f"  [warn] Failed enriched fragments for {language}: {exc}\n")
 
     log.write(
         f"  Generated {enriched_count}/{len(languages)} enriched fragment CSVs.\n"

@@ -553,6 +553,19 @@
         If filters or parameters changed, ignore previous outputs and rerun.
       </div>
     </div>
+
+    <div class="field">
+      <div class="toggle-row">
+        <span class="toggle-label" id="label-generate-scatter-csv">Generate scatter plot CSV</span>
+        <label class="switch">
+          <input type="checkbox" id="generate_scatter_csv" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div id="desc-generate-scatter-csv" style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">
+        When disabled, scatter CSV generation is skipped to reduce detection time. Enriched fragments CSV is always generated.
+      </div>
+    </div>
   </div>
 
   <!-- ===== Co-modification Analysis ===== -->

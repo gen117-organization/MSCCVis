@@ -1,5 +1,28 @@
 # Progress Log
 
+## 02-25 散布図CSV生成トグル追加
+
+### 変更ファイル
+
+- `src/web/static/index.html` — 「散布図用CSVを生成」トグルスイッチを force_recompute の下に追加
+- `src/web/static/app.js` — i18n (en/ja) エントリ追加, `applyLanguage()` にラベル・説明文の反映追加, `startAnalysis()` のパラメータ収集に `generate_scatter_csv` 追加
+- `src/web/validation.py` — `generate_scatter_csv` を `_parse_bool()` でバリデーション, 戻り値辞書に追加
+- `src/web/pipeline_runner.py` — `_generate_visualization_csv()` 内で `generate_scatter_csv` フラグを参照し, false の場合は scatter CSV 生成をスキップ. enriched fragments CSV は常に生成
+
+### テスト結果
+
+- `pytest -v` — 17 passed (0.89s)
+
+### 判断メモ
+
+- enriched fragments CSV はメトリクス計算の基盤データであり常に必要なため, スキップ対象にしなかった
+- トグルのデフォルトは ON (checked) で後方互換を維持
+- scatter CSV スキップ時はログに明示的にメッセージを出力
+
+### 残課題
+
+- なし
+
 ## 02-25 services.json 拡充・enriched_fragments.csv 新設
 
 ### 変更ファイル

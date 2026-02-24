@@ -115,19 +115,21 @@ def build_enriched_fragment(
 
 def _write_row(writer: csv.writer, frag: EnrichedFragment) -> None:
     """EnrichedFragment を CSV に 1 行書き込む."""
-    writer.writerow([
-        frag.clone_id,
-        frag.fragment_index,
-        frag.file_path,
-        frag.file_id,
-        frag.service,
-        frag.start_line,
-        frag.end_line,
-        frag.line_count,
-        frag.file_type,
-        frag.modified_commits,
-        frag.modified_count,
-    ])
+    writer.writerow(
+        [
+            frag.clone_id,
+            frag.fragment_index,
+            frag.file_path,
+            frag.file_id,
+            frag.service,
+            frag.start_line,
+            frag.end_line,
+            frag.line_count,
+            frag.file_type,
+            frag.modified_commits,
+            frag.modified_count,
+        ]
+    )
 
 
 def _load_clones_json(
@@ -148,16 +150,10 @@ def _load_clones_json(
         project_root / "dest/analyzed_commits" / f"{project_name}.json"
     )
     if not analyzed_commits_file.exists():
-        raise FileNotFoundError(
-            f"analyzed_commits not found: {analyzed_commits_file}"
-        )
-    analyzed_commits = json.loads(
-        analyzed_commits_file.read_text(encoding="utf-8")
-    )
+        raise FileNotFoundError(f"analyzed_commits not found: {analyzed_commits_file}")
+    analyzed_commits = json.loads(analyzed_commits_file.read_text(encoding="utf-8"))
     if not isinstance(analyzed_commits, list) or not analyzed_commits:
-        raise ValueError(
-            f"invalid analyzed_commits file: {analyzed_commits_file}"
-        )
+        raise ValueError(f"invalid analyzed_commits file: {analyzed_commits_file}")
     head_commit = str(analyzed_commits[0])
 
     clones_json_path = (
@@ -168,9 +164,7 @@ def _load_clones_json(
         / f"{language}.json"
     )
     if not clones_json_path.exists():
-        raise FileNotFoundError(
-            f"clones_json not found: {clones_json_path}"
-        )
+        raise FileNotFoundError(f"clones_json not found: {clones_json_path}")
     return (
         project_root / "dest/projects" / project_name,
         json.loads(clones_json_path.read_text(encoding="utf-8")),
@@ -201,17 +195,13 @@ def _load_service_contexts(
         try:
             claim_contexts = load_service_contexts_from_json(services_json_path)
         except Exception as exc:
-            logger.warning(
-                "Failed to load services JSON, falling back to CSV: %s", exc
-            )
+            logger.warning("Failed to load services JSON, falling back to CSV: %s", exc)
             claim_contexts = []
 
     if not claim_contexts:
         claim_csv_path = ms_detection_dir / f"{project_name}.csv"
         if not claim_csv_path.exists():
-            raise FileNotFoundError(
-                f"ms_detection csv not found: {claim_csv_path}"
-            )
+            raise FileNotFoundError(f"ms_detection csv not found: {claim_csv_path}")
         try:
             claim_contexts = load_claim_service_contexts_for_repo(
                 project_name, claim_csv_path, chunk="latest"
@@ -263,9 +253,7 @@ def build_enriched_fragments_for_language(
         ValueError: 入力データが不正な場合.
     """
     if ms_detection_dir is None:
-        raise FileNotFoundError(
-            "ms_detection_dir is required for service resolution"
-        )
+        raise FileNotFoundError("ms_detection_dir is required for service resolution")
 
     csv_prefix = f"{filter_type}_" if filter_type else ""
     fragment_csv = (
@@ -275,15 +263,11 @@ def build_enriched_fragments_for_language(
         raise FileNotFoundError(f"fragment csv not found: {fragment_csv}")
 
     # --- 共通セットアップ ---
-    workdir, clones_json = _load_clones_json(
-        project_root, project_name, language
-    )
+    workdir, clones_json = _load_clones_json(project_root, project_name, language)
 
     file_data = clones_json.get("file_data")
     if not isinstance(file_data, list):
-        raise ValueError(
-            f"invalid clones_json file_data: project={project_name}"
-        )
+        raise ValueError(f"invalid clones_json file_data: project={project_name}")
     file_mapper = FileMapper(file_data, str(workdir))
 
     claim_contexts, services_json_path = _load_service_contexts(
@@ -335,7 +319,10 @@ def build_enriched_fragments_for_language(
                     service = service_cache[norm_path]
                 else:
                     ctx = resolve_service_for_file_path(
-                        norm_path, claim_contexts, [], repo_dir=workdir,
+                        norm_path,
+                        claim_contexts,
+                        [],
+                        repo_dir=workdir,
                     )
                     service = ctx.service_name if ctx else ""
                     service_cache[norm_path] = service
