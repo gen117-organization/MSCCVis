@@ -1,12 +1,6 @@
-/* filepath: assets/2_layout.css */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    color: #2c3e50;
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-}
+/* filepath: assets/01_layout.css
+   NOTE: body styling is handled by 02_ide_theme.css (sidebar layout).
+   Only card/container styles remain here. */
 
 .container {
     /* max-width設定はcustom.cssで管理 */

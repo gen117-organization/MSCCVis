@@ -11,6 +11,8 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
+from .csv_loader import SCATTER_FILE_COMMIT_PREFIX
+
 logger = logging.getLogger(__name__)
 
 # --- ラベル表示用マッピング ---
