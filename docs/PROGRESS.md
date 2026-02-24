@@ -1,5 +1,32 @@
 # Progress Log
 
+## 02-24 CSS読み込み順序修正・サイドバー表示統一
+
+### 変更ファイル
+
+- `src/visualize/assets/` — CSSファイルに番号プレフィックスを付与して読み込み順を制御
+  - `reset.css` → `00_reset.css`, `layout.css` → `01_layout.css`, `ide_theme.css` → `02_ide_theme.css`, `components.css` → `03_components.css`, `custom.css` → `04_custom.css`
+- `src/visualize/assets/01_layout.css` — bodyグラデーション背景・padding・min-heightを削除 (サイドバーレイアウトと衝突)
+- `src/visualize/assets/02_ide_theme.css` — `background-color` → `background` shorthandに変更 (グラデーションを確実にリセット), `line-height: 1.6` 追加
+- `src/visualize/data_loader/project_discovery.py` — `SCATTER_FILE_COMMIT_PREFIX` のインポート漏れを修正 (NameError解消)
+- `src/web/validation.py` — `tks` を `_parse_bool` → `_parse_int` (デフォルト12, >= 1 検証), `rnr` を `_parse_bool` → `_parse_float` (デフォルト0.5, (0,1] 検証), `detection_method` に "rnr" を追加
+
+### テスト結果
+
+- `pytest src/visualize/test_ui_logic.py -q` — 2 passed
+- Dashアプリ起動確認: `create_dash_app('/visualize/')` — OK
+- Docker ビルド・起動: 設定画面・可視化画面共に正常表示
+
+### 判断メモ
+
+- CSS読み込み順序の逆転が根本原因: Dashはassets/をアルファベット順で読み込むため, `reset.css`(r) が `ide_theme.css`(i) の後に読み込まれスタイルをリセットしていた
+- `layout.css` のbodyグラデーション背景は旧レイアウト用で, 現在のサイドバーレイアウトでは不要と判断して削除
+- `background-color` では `background` shorthand (gradient) を上書きできないため,  shorthandに変更
+
+### 残課題
+
+- TODO(gen): 設定画面と可視化画面でカードのbox-shadow/hover効果が異なる — 統一するか要検討
+
 ## 07-04 web/visualize パッケージ構造リファクタリング (5段階)
 
 ### 変更ファイル
