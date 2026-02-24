@@ -2,6 +2,7 @@
 
 パイプライン実行パラメータの型変換と値検証を行う.
 """
+
 import re
 
 
@@ -81,13 +82,17 @@ def validate_run_params(params: dict) -> dict:
         raise ValueError(f"url must start with http:// or https://, got: {url}")
 
     detection_method = params.get("detection_method", "normal")
-    if detection_method not in ("normal", "tks"):
+    if detection_method not in ("normal", "tks", "rnr"):
         raise ValueError(
-            f"detection_method must be 'normal' or 'tks', got: {detection_method}"
+            f"detection_method must be 'normal', 'tks', or 'rnr', got: {detection_method}"
         )
 
-    tks = _parse_bool(params.get("tks", True), "tks")
-    rnr = _parse_bool(params.get("rnr", True), "rnr")
+    tks = _parse_int(params.get("tks", 12), "tks")
+    if tks < 1:
+        raise ValueError(f"tks must be >= 1, got {tks}")
+    rnr = _parse_float(params.get("rnr", 0.5), "rnr")
+    if not 0.0 < rnr <= 1.0:
+        raise ValueError(f"rnr must be in (0, 1], got {rnr}")
     min_tokens = _parse_int(params.get("min_tokens", 50), "min_tokens")
     if min_tokens < 1:
         raise ValueError(f"min_tokens must be >= 1, got {min_tokens}")
