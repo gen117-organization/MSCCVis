@@ -1,5 +1,33 @@
 # Progress Log
 
+## 02-24 サイドバー折りたたみ修正・設計ドキュメント生成
+
+### 変更ファイル
+
+- `src/visualize/components/layout.py` — 折りたたみ時の "M" 短縮テキストを削除. ブランドテキスト自体を非表示にし,トグルボタンのみ表示にする方式に変更
+- `src/visualize/assets/02_ide_theme.css` — `.sidebar-brand-short` スタイル削除. 折りたたみ時に `.sidebar-brand-inner` も非表示にするルール追加
+- `docs/visualize_overview.md` — **新規**: visualize パッケージ概要・data_loader 設計ドキュメント
+- `docs/visualize_callbacks.md` — **新規**: callbacks パッケージ設計ドキュメント (フィルタチェーン, i18n, ビュー切替)
+- `docs/visualize_components.md` — **新規**: components パッケージ設計ドキュメント (レイアウト, 差分比較, メトリクス)
+- `docs/visualize_utilities.md` — **新規**: ユーティリティモジュール設計ドキュメント (plotting, network, utils, clone_analytics)
+- `docs/web_package.md` — **新規**: web パッケージ設計ドキュメント (FastAPI, パイプライン, バリデーション, stdout_proxy)
+
+### テスト結果
+
+- `pytest -q` — 2 passed (4.08s)
+
+### 判断メモ
+
+- 折りたたみ時の "M" テキストはユーザーからの指摘で分かりにくいと判断. トグルボタン (chevron) だけで十分にサイドバーの存在と操作方法が伝わるため,ブランド要素は完全に非表示にする方針に変更
+- ドキュメントは visualize と web の2大パッケージについて,機能単位で5ファイルに分割して作成. 各ファイルは「設計方針・入出力・処理フロー・コード解説・課題」の5セクション構成
+
+### 残課題
+
+- TODO(gen): `summary.py` (1481行) の3機能分割検討
+- TODO(gen): `explorer_callbacks.py` のファイルパス解決改善 (同名ファイルの誤マッチ)
+- TODO(gen): TKS/RNR パイプライン実行の web UI 対応
+- TODO(gen): `clone_analytics.py` のクローン比率計算実装
+
 ## 02-25 ブランドアイコン削除・言語ドロップダウン修正
 
 ### 変更ファイル

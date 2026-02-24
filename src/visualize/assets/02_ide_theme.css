@@ -99,14 +99,6 @@ body {
     overflow: hidden;
 }
 
-.sidebar-brand-short {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--primary);
-    display: none;
-    flex-shrink: 0;
-}
-
 .sidebar-brand-text {
     font-weight: 700;
     font-size: 0.95rem;
@@ -241,14 +233,11 @@ body {
 
 /* Collapsed state */
 .app-container.sidebar-collapsed .sidebar-brand-text,
+.app-container.sidebar-collapsed .sidebar-brand-inner,
 .app-container.sidebar-collapsed .sidebar-help-btn,
 .app-container.sidebar-collapsed .nav-text,
 .app-container.sidebar-collapsed .sidebar-footer .dash-dropdown {
     display: none;
-}
-
-.app-container.sidebar-collapsed .sidebar-brand-short {
-    display: inline;
 }
 
 .app-container.sidebar-collapsed .sidebar-brand {
