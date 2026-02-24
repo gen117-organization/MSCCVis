@@ -225,9 +225,7 @@ def _generate_visualization_csv(
         except Exception as exc:
             log.write(f"  [warn] Failed clone metrics for {language}: {exc}\n")
 
-    log.write(
-        f"  Generated {metrics_count}/{len(languages)} clone metrics JSONs.\n"
-    )
+    log.write(f"  Generated {metrics_count}/{len(languages)} clone metrics JSONs.\n")
 
 
 def run_job(

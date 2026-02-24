@@ -340,9 +340,7 @@ def main(argv: list[str]) -> int:
                             / f"{project_name}_{language}_{filter_type}.csv"
                         )
                         services_json = (
-                            project_root
-                            / "dest/services_json"
-                            / f"{project_name}.json"
+                            project_root / "dest/services_json" / f"{project_name}.json"
                         )
                         if not enriched_csv.exists():
                             logger.warning(
@@ -385,9 +383,7 @@ def main(argv: list[str]) -> int:
                             time.perf_counter() - task_start,
                         )
                     except Exception as e:
-                        logger.error(
-                            "failed clone metrics: %s", e, exc_info=True
-                        )
+                        logger.error("failed clone metrics: %s", e, exc_info=True)
                         continue
 
         logger.info(

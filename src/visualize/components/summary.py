@@ -11,6 +11,7 @@ from ..constants import DetectionMethod
 
 logger = logging.getLogger(__name__)
 
+
 def create_help_section():
     """散布図の見方のセクションを作成する"""
     return html.Details(
@@ -534,7 +535,9 @@ _FILE_COLUMNS = [
 ]
 
 
-def _metrics_datatable(table_id: str, columns: list, data: list) -> dash_table.DataTable:
+def _metrics_datatable(
+    table_id: str, columns: list, data: list
+) -> dash_table.DataTable:
     """メトリクスを Dash DataTable として描画する."""
     return dash_table.DataTable(
         id=table_id,
@@ -606,9 +609,7 @@ def _build_clone_metrics_section(metrics: dict) -> html.Div:
     if file_data:
         items.append(
             dbc.AccordionItem(
-                _metrics_datatable(
-                    "metrics-file-table", _FILE_COLUMNS, file_data
-                ),
+                _metrics_datatable("metrics-file-table", _FILE_COLUMNS, file_data),
                 title=f"📄 File Metrics ({len(file_data)} files)",
             )
         )
@@ -638,7 +639,11 @@ def _build_clone_metrics_section(metrics: dict) -> html.Div:
 
 def build_project_summary(df, file_ranges, project, commit, language):
     """プロジェクトの統計情報サマリーを生成する（services.jsonの事前計算データを優先）"""
-    from ..data_loader import load_project_summary, load_full_services_json, load_clone_metrics
+    from ..data_loader import (
+        load_project_summary,
+        load_full_services_json,
+        load_clone_metrics,
+    )
 
     # services.json から詳細統計を読み込む
     services_json_path = f"dest/scatter/{project}/services.json"
@@ -1493,7 +1498,6 @@ def create_project_clone_ratio_display(project_name: str) -> html.Div:
             ],
             className="project-clone-ratio-section",
         )
-
 
 
 def create_stats_header(df_raw, df_display, filters):
