@@ -41,7 +41,7 @@ from modules.visualization.build_scatter_dataset import (
 )
 from modules.visualization.naming import build_visualization_csv_filename_from_params
 from commands.pipeline import determine_analyzed_commits as dac
-from visualize.scatter import create_dash_app
+from src.visualize.scatter import create_dash_app
 
 # ---------------------------------------------------------------------------
 # App

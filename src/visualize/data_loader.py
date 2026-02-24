@@ -123,7 +123,7 @@ def load_service_file_ranges_cached(services_json_path: str, language: str):
     return result
 
 
-def load_project_summary(summary_path="visualize/project_summary.json"):
+def load_project_summary(summary_path="src/visualize/project_summary.json"):
     """プロジェクトサマリーを読み込む"""
     if not os.path.exists(summary_path):
         return None
@@ -559,7 +559,7 @@ def _gather_project_csv_projects():
 
 
 def _gather_legacy_projects():
-    legacy_csv_folder = Path("visualize/csv")
+    legacy_csv_folder = Path("src/visualize/csv")
     options = []
     if not legacy_csv_folder.exists():
         return options
@@ -829,10 +829,10 @@ def _project_csv_sources(project_name: str, language: str):
 
 
 def _legacy_csv_path(project_name: str, commit_hash: str, language: str):
-    legacy = f"visualize/csv/{project_name}_{commit_hash}_{language}_all.csv"
+    legacy = f"src/visualize/csv/{project_name}_{commit_hash}_{language}_all.csv"
     if os.path.exists(legacy):
         return legacy
-    fallback = f"visualize/csv/{project_name}_latest_{language}_all.csv"
+    fallback = f"src/visualize/csv/{project_name}_latest_{language}_all.csv"
     return fallback if os.path.exists(fallback) else None
 
 

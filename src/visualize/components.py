@@ -1517,7 +1517,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
     try:
         if project and language:
             # staticデータ（import行含む）の取得
-            static_csv_file = f"visualize/csv/{project}_{commit}_{language}_all.csv"
+            static_csv_file = f"src/visualize/csv/{project}_{commit}_{language}_all.csv"
             if os.path.exists(static_csv_file):
                 static_df = pd.read_csv(static_csv_file)
                 # staticデータで重複除去
@@ -1610,7 +1610,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
 
         # プロジェクト全体のクローン率を表示
         try:
-            from visualize.clone_analytics import calculate_project_average_clone_ratio
+            from .clone_analytics import calculate_project_average_clone_ratio
 
             project_clone_ratio = calculate_project_average_clone_ratio(project)
             clone_stats.extend([("Clone Ratio:", f"{project_clone_ratio:.2f}%")])
@@ -1843,7 +1843,7 @@ def create_project_clone_ratio_display(project_name: str) -> html.Div:
     プロジェクト全体のクローン率を表示するコンポーネントを作成する。
     """
     try:
-        from visualize.clone_analytics import calculate_project_average_clone_ratio
+        from .clone_analytics import calculate_project_average_clone_ratio
 
         clone_ratio = calculate_project_average_clone_ratio(project_name)
 

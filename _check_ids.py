@@ -1,7 +1,7 @@
 import re
 from collections import Counter
 
-with open("visualize/components.py", encoding="utf-8") as f:
+with open("src/visualize/components.py", encoding="utf-8") as f:
     content = f.read()
 
 start = content.find("def create_ide_layout(")

@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from visualize.data_loader import build_file_tree_data, get_clone_related_files
+from .data_loader import build_file_tree_data, get_clone_related_files
 
 class TestUILogic(unittest.TestCase):
     def test_build_file_tree_data(self):

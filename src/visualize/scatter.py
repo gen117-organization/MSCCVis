@@ -7,19 +7,20 @@ from pathlib import Path
 
 # パッケージ未解決時のためにプロジェクトrootをパスに追加
 if __package__ is None or __package__ == "":
-    project_root = Path(__file__).resolve().parent.parent
+    project_root = Path(__file__).resolve().parent.parent.parent
     sys.path.append(str(project_root))
+    sys.path.append(str(project_root / "src"))
 
 # 可視化モジュール（パッケージとして実行/スクリプト実行の両対応）
-from visualize.data_loader import (
+from .data_loader import (
     get_available_projects_enhanced,
     get_available_languages,
     get_project_names,
     load_and_process_data,
 )
-from visualize.plotting import create_scatter_plot
-from visualize.components import create_layout, build_project_summary, create_ide_layout
-from visualize.callbacks import register_callbacks, app_data
+from .plotting import create_scatter_plot
+from .components import create_layout, build_project_summary, create_ide_layout
+from .callbacks import register_callbacks, app_data
 
 
 def create_dash_app(url_base_pathname: str = "/") -> Dash:
@@ -34,8 +35,8 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
 
     # --- アプリケーションの初期化 ---
     # assetsフォルダへの絶対パスを構築
-    # __file__ はこのファイル(scatter.py)のパス = visualize/scatter.py
-    # assets は同じ visualize/ ディレクトリ配下にある
+    # __file__ はこのファイル(scatter.py)のパス = src/visualize/scatter.py
+    # assets は同じ src/visualize/ ディレクトリ配下にある
     assets_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 
     normalized_prefix = (
