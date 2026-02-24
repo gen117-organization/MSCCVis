@@ -3,6 +3,7 @@
 CSV/JSON 形式のクローン検出結果を読み込み,
 サービスマッピングを適用して可視化用 DataFrame を生成する.
 """
+
 import glob
 import json
 import logging
@@ -21,6 +22,7 @@ SCATTER_FILE_COMMIT_PREFIX = "scatter_file:"
 
 # データキャッシュ用のグローバル変数
 _data_cache = {}
+
 
 def load_service_file_ranges_cached(services_json_path: str, language: str):
     """services.json から言語別の file_ranges を取得する（キャッシュ版）"""
@@ -49,7 +51,6 @@ def load_service_file_ranges_cached(services_json_path: str, language: str):
         result = data.get("file_ranges", {})
     logger.debug("Loaded service ranges: %s", result)
     return result
-
 
 
 def load_full_services_json(services_json_path: str):
@@ -93,9 +94,9 @@ def _unified_sources_exist(project_name: str, language: str) -> bool:
     ) or os.path.exists(f"{project_csv_dir}/tks_{language.lower()}.csv")
 
 
-
-
 def _scatter_sources(project_name: str, language: str, commit_hash: str | None = None):
+    from .project_discovery import _parse_scatter_csv_filename
+
     base_dir = Path("dest/scatter") / project_name / "csv"
     if not base_dir.exists():
         return []
@@ -987,5 +988,3 @@ def clear_data_cache():
     _data_cache.clear()
     # load_service_file_ranges_cached.cache_clear()  # lru_cache無効化のため一時的にコメントアウト
     logger.info("Data cache cleared.")
-
-
