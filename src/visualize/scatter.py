@@ -64,7 +64,7 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
         requests_pathname_prefix=normalized_prefix,
         routes_pathname_prefix=routes_prefix,
     )
-    dash_app.title = "マイクロサービス コードクローン可視化"
+    dash_app.title = "MSCCVis – コードクローン可視化"
     dash_app.config.suppress_callback_exceptions = True  # 動的コンポーネント用の設定
 
     # 利用可能なプロジェクトと言語を取得（改善版）

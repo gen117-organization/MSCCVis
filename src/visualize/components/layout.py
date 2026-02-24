@@ -284,8 +284,8 @@ def _build_nav_sidebar(lang_selector):
                 children=[
                     html.Div(
                         [
-                            html.I(className="bi bi-search sidebar-brand-icon"),
-                            html.Span("MSCCA Tools", className="sidebar-brand-text"),
+                            html.I(className="bi bi-braces sidebar-brand-icon"),
+                            html.Span("MSCCVis", className="sidebar-brand-text"),
                         ],
                         className="sidebar-brand-inner",
                     ),
@@ -402,15 +402,15 @@ def _build_help_modal():
         centered=True,
         children=[
             dbc.ModalHeader(
-                dbc.ModalTitle("MSCCA Tools — Clone Explorer"),
+                dbc.ModalTitle("MSCCVis — Clone Explorer"),
                 close_button=True,
             ),
             dbc.ModalBody(
                 [
                     html.H5("About", className="mb-3"),
                     html.P(
-                        "MSCCA Tools (Microservice Code Clone Analyzer) is a toolset "
-                        "for detecting and analyzing code clones across microservice "
+                        "MSCCVis (Microservice Code Clone Visualizer) is a toolset "
+                        "for detecting and visualizing code clones across microservice "
                         "repositories. It integrates CCFinderSW for clone detection "
                         "and CLAIM for microservice boundary identification.",
                     ),
@@ -484,8 +484,10 @@ def create_ide_layout(
         options=project_names or [],
         value=None,
         placeholder="Select Project",
-        style={"width": "200px"},
+        style={"width": "280px"},
         clearable=False,
+        maxHeight=500,
+        optionHeight=45,
     )
 
     # CSV File Selector (Step 2) — ID は既存コールバック互換のため維持
@@ -494,11 +496,11 @@ def create_ide_layout(
         options=available_projects,
         value=default_project,
         placeholder="Select Dataset",
-        style={"width": "520px", "fontSize": "0.82rem"},
+        style={"width": "640px", "fontSize": "0.82rem"},
         clearable=False,
         disabled=True,
-        optionHeight=50,
-        maxHeight=400,
+        optionHeight=55,
+        maxHeight=500,
     )
 
     # Language Selector
@@ -835,6 +837,7 @@ def create_ide_layout(
     # ── Stores ──
     stores = html.Div(
         [
+            dcc.Location(id="url-location", refresh=False),
             dcc.Store(id="file-tree-data-store"),
             dcc.Store(id="selected-file-store"),
             dcc.Store(id="clone-data-store"),
