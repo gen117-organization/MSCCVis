@@ -148,6 +148,42 @@ def _generate_visualization_csv(
 
     log.write(f"  Generated {generated_count}/{len(languages)} visualization CSVs.\n")
 
+    # enriched_fragments.csv 生成 + services.json 拡充
+    enriched_dir = project_root / "dest/enriched_fragments"
+    enriched_dir.mkdir(parents=True, exist_ok=True)
+    enriched_count = 0
+    for language in languages.keys():
+        try:
+            log.write(
+                f"  Generating enriched fragments: language={language}...\n"
+            )
+            from modules.visualization.build_enriched_fragments import (
+                build_enriched_fragments_for_language,
+            )
+
+            enriched_path = build_enriched_fragments_for_language(
+                project_name=name,
+                language=language,
+                filter_type=filter_type,
+                project_root=project_root,
+                out_dir=enriched_dir,
+                ms_detection_dir=ms_detection_dir,
+            )
+            enriched_count += 1
+            log.write(f"  Done: {enriched_path.name}\n")
+        except FileNotFoundError as exc:
+            log.write(
+                f"  [warn] Skip enriched fragments (missing input): {exc}\n"
+            )
+        except Exception as exc:
+            log.write(
+                f"  [warn] Failed enriched fragments for {language}: {exc}\n"
+            )
+
+    log.write(
+        f"  Generated {enriched_count}/{len(languages)} enriched fragment CSVs.\n"
+    )
+
 
 def run_job(
     job_id: str,

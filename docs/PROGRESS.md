@@ -1,5 +1,34 @@
 # Progress Log
 
+## 02-25 services.json 拡充・enriched_fragments.csv 新設
+
+### 変更ファイル
+
+- `src/modules/visualization/enrich_services.py` — **新規**: services.json に `language_stats` セクション (サービス別 file_count, total_loc, 未解決ファイル数) を追記するモジュール
+- `src/modules/visualization/build_enriched_fragments.py` — **新規**: フラグメント粒度の enriched CSV を生成するモジュール. scatter CSV の O(n²) ペア展開と異なり, O(n) で断片をそのまま出力
+- `src/web/pipeline_runner.py` — Web UI パイプラインに enriched_fragments 生成ステップを追加
+- `src/commands/csv_build/generate_visualization_csv.py` — CLI バッチにも enriched_fragments 生成ステップを追加. services.json 未実装 TODO を解消
+- `pyproject.toml` — `pythonpath = ["src"]` 追加 (tests/ ディレクトリからのインポート解決)
+- `tests/test_enrich_services.py` — **新規**: enrich_services の単体テスト (6件)
+- `tests/test_build_enriched_fragments.py` — **新規**: build_enriched_fragments の単体・結合テスト (9件)
+
+### テスト結果
+
+- `pytest -v` — 17 passed (3.65s), 既存2件 + 新規15件
+
+### 判断メモ
+
+- scatter CSV はペアベース (散布図専用) で維持. メトリクス計算にはフラグメント粒度が適切なため, 新データソースとして enriched_fragments.csv を並行生成する方針
+- services.json の `language_stats` は言語ごとに追記する形式. 既存の `services` / `URL` キーは一切変更せず後方互換を維持
+- `enrich_services_json()` は `build_enriched_fragments_for_language()` 内で呼び出される設計. 同じ clones_json / service_contexts を共有するためセットアップの重複を回避
+- token_count はユーザー指示により今回スキップ (clones_json の clone_sets がリスト形式の場合に 0 になる既知問題は別途対応)
+
+### 残課題
+
+- TODO(gen): clones_json の clone_sets がリスト形式の場合の token_count パース修正
+- TODO(gen): enriched_fragments.csv を使ったメトリクス計算モジュールの実装
+- TODO(gen): 散布図の座標順序改善 (file_id をサービス密度順ソート)
+
 ## 02-24 サイドバー折りたたみ修正・設計ドキュメント生成
 
 ### 変更ファイル
