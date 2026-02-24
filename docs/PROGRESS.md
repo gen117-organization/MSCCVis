@@ -1,5 +1,32 @@
 # Progress Log
 
+## 02-25 クローンメトリクス パイプライン統合 & Stats ビュー表示
+
+### 変更ファイル
+
+- `src/web/pipeline_runner.py` — enriched_fragments 生成後にクローンメトリクス JSON を `dest/clone_metrics/` へ保存するステップを追加
+- `src/commands/csv_build/generate_visualization_csv.py` — CLI バッチでも同様にクローンメトリクス JSON 生成ステップを追加
+- `src/visualize/data_loader/csv_loader.py` — `load_clone_metrics()` 関数を新規追加. `dest/clone_metrics/{project}_{language}_{filter_type}.json` を読み込む
+- `src/visualize/data_loader/__init__.py` — `load_clone_metrics` をエクスポートに追加
+- `src/visualize/components/summary.py` — `_build_clone_metrics_section()` / `_metrics_datatable()` を新規追加. Stats ビューにサービス/クローンセット/ファイル粒度のメトリクスをアコーディオン形式で表示
+- `tests/test_load_clone_metrics.py` — **新規**: `load_clone_metrics` の単体テスト (4件)
+
+### テスト結果
+
+- `pytest tests/ -q` — 46 passed (0.65s)
+
+### 判断メモ
+
+- メトリクス保存形式: JSON を選択. 3 粒度の辞書構造がそのまま保持でき, Stats ビューで直接読み込める. CSV だと 3 ファイルに分割が必要だった
+- 出力パス: `dest/clone_metrics/{project}_{language}_{filter_type}.json`. enriched_fragments と同じ命名規則に統一
+- UI: Dash Accordion + DataTable を使用. 初期状態は折り畳みで, データ量が多い場合もページネーション (10行/ページ) でパフォーマンス維持
+- summary.py の deadcode (return 後の ~500 行) は今回は触れず, 別途クリーンアップタスクとする
+
+### 残課題
+
+- TODO(gen): summary.py の return 文後の deadcode (~500 行) を削除するクリーンアップ
+- TODO(gen): 大規模データでの modified_commits パース性能最適化
+
 ## 02-25 クローンメトリクス計算モジュール実装
 
 ### 変更ファイル
@@ -22,8 +49,8 @@
 
 ### 残課題
 
-- TODO(gen): compute_all_metrics の出力を CSV/JSON に保存するパイプライン統合
-- TODO(gen): 可視化 UI (Stats ビュー) でのメトリクス表示
+- ~~TODO(gen): compute_all_metrics の出力を CSV/JSON に保存するパイプライン統合~~ → 完了
+- ~~TODO(gen): 可視化 UI (Stats ビュー) でのメトリクス表示~~ → 完了
 - TODO(gen): 大規模データでの modified_commits パース性能最適化
 
 ## 02-25 散布図CSV生成トグル追加

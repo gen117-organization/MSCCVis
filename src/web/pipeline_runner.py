@@ -188,6 +188,47 @@ def _generate_visualization_csv(
         f"  Generated {enriched_count}/{len(languages)} enriched fragment CSVs.\n"
     )
 
+    # クローンメトリクス JSON 生成
+    metrics_dir = project_root / "dest/clone_metrics"
+    metrics_dir.mkdir(parents=True, exist_ok=True)
+    metrics_count = 0
+    for language in languages.keys():
+        try:
+            enriched_csv = enriched_dir / f"{name}_{language}_{filter_type}.csv"
+            services_json = project_root / "dest/services_json" / f"{name}.json"
+            if not enriched_csv.exists():
+                log.write(
+                    f"  [warn] Skip metrics (enriched CSV not found): {enriched_csv}\n"
+                )
+                continue
+            if not services_json.exists():
+                log.write(
+                    f"  [warn] Skip metrics (services.json not found): {services_json}\n"
+                )
+                continue
+
+            log.write(f"  Computing clone metrics: language={language}...\n")
+            from modules.visualization.compute_clone_metrics import (
+                compute_all_metrics,
+            )
+
+            metrics = compute_all_metrics(enriched_csv, services_json, language)
+
+            import json as _json
+
+            metrics_path = metrics_dir / f"{name}_{language}_{filter_type}.json"
+            metrics_path.write_text(
+                _json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            metrics_count += 1
+            log.write(f"  Done: {metrics_path.name}\n")
+        except Exception as exc:
+            log.write(f"  [warn] Failed clone metrics for {language}: {exc}\n")
+
+    log.write(
+        f"  Generated {metrics_count}/{len(languages)} clone metrics JSONs.\n"
+    )
+
 
 def run_job(
     job_id: str,

@@ -492,10 +492,153 @@ def build_dashboard_view(dashboard_data):
     )
 
 
+# ---------------------------------------------------------------------------
+# Clone Metrics (compute_clone_metrics) セクション
+# ---------------------------------------------------------------------------
+
+_SERVICE_COLUMNS = [
+    {"name": "Service", "id": "service"},
+    {"name": "Clone Sets", "id": "clone_set_count", "type": "numeric"},
+    {"name": "Total Lines", "id": "total_clone_line_count", "type": "numeric"},
+    {"name": "Avg Lines", "id": "clone_avg_line_count", "type": "numeric"},
+    {"name": "Files", "id": "clone_file_count", "type": "numeric"},
+    {"name": "ROC", "id": "roc", "type": "numeric"},
+    {"name": "Comod", "id": "comod_count", "type": "numeric"},
+    {"name": "Comod (Other)", "id": "comod_other_service_count", "type": "numeric"},
+]
+
+_CLONE_SET_COLUMNS = [
+    {"name": "Clone ID", "id": "clone_id"},
+    {"name": "Services", "id": "service_count", "type": "numeric"},
+    {"name": "XS Frags", "id": "cross_service_fragment_count", "type": "numeric"},
+    {"name": "XS Ratio", "id": "cross_service_fragment_ratio", "type": "numeric"},
+    {"name": "XS Lines", "id": "cross_service_line_count", "type": "numeric"},
+    {"name": "XS Scale", "id": "cross_service_scale", "type": "numeric"},
+    {"name": "XS Elems", "id": "cross_service_element_count", "type": "numeric"},
+    {"name": "Comod", "id": "comod_count", "type": "numeric"},
+    {"name": "Comod Frags", "id": "comod_fragment_count", "type": "numeric"},
+    {"name": "Comod Ratio", "id": "comod_fragment_ratio", "type": "numeric"},
+]
+
+_FILE_COLUMNS = [
+    {"name": "File", "id": "file_path"},
+    {"name": "Service", "id": "service"},
+    {"name": "Sharing Svcs", "id": "sharing_service_count", "type": "numeric"},
+    {"name": "Total Svcs", "id": "total_service_count", "type": "numeric"},
+    {"name": "XS Clone Sets", "id": "cross_service_clone_set_count", "type": "numeric"},
+    {"name": "XS CS Ratio", "id": "cross_service_clone_set_ratio", "type": "numeric"},
+    {"name": "Share Ratio", "id": "sharing_service_ratio", "type": "numeric"},
+    {"name": "XS Lines", "id": "cross_service_line_count", "type": "numeric"},
+    {"name": "XS Comod", "id": "cross_service_comod_count", "type": "numeric"},
+    {"name": "Comod Svcs", "id": "comod_shared_service_count", "type": "numeric"},
+]
+
+
+def _metrics_datatable(table_id: str, columns: list, data: list) -> dash_table.DataTable:
+    """メトリクスを Dash DataTable として描画する."""
+    return dash_table.DataTable(
+        id=table_id,
+        columns=columns,
+        data=data,
+        page_size=10,
+        sort_action="native",
+        filter_action="native",
+        style_table={"overflowX": "auto"},
+        style_header={
+            "backgroundColor": "#f8f9fa",
+            "fontWeight": "bold",
+            "border": "1px solid #dee2e6",
+        },
+        style_cell={
+            "textAlign": "left",
+            "padding": "8px 12px",
+            "border": "1px solid #dee2e6",
+            "fontSize": "13px",
+            "maxWidth": "250px",
+            "overflow": "hidden",
+            "textOverflow": "ellipsis",
+        },
+        style_data_conditional=[
+            {
+                "if": {"row_index": "odd"},
+                "backgroundColor": "#f8f9fa",
+            }
+        ],
+    )
+
+
+def _build_clone_metrics_section(metrics: dict) -> html.Div:
+    """事前計算済みクローンメトリクス (3 粒度) のアコーディオン UI を構築する.
+
+    Args:
+        metrics: ``compute_all_metrics()`` の JSON 出力.
+            ``{"service": [...], "clone_set": [...], "file": [...]}``.
+
+    Returns:
+        3 つのアコーディオンアイテムを含む Div.
+    """
+    service_data = metrics.get("service", [])
+    clone_set_data = metrics.get("clone_set", [])
+    file_data = metrics.get("file", [])
+
+    items = []
+
+    if service_data:
+        items.append(
+            dbc.AccordionItem(
+                _metrics_datatable(
+                    "metrics-service-table", _SERVICE_COLUMNS, service_data
+                ),
+                title=f"📊 Service Metrics ({len(service_data)} services)",
+            )
+        )
+
+    if clone_set_data:
+        items.append(
+            dbc.AccordionItem(
+                _metrics_datatable(
+                    "metrics-cloneset-table", _CLONE_SET_COLUMNS, clone_set_data
+                ),
+                title=f"🔗 Clone Set Metrics ({len(clone_set_data)} sets)",
+            )
+        )
+
+    if file_data:
+        items.append(
+            dbc.AccordionItem(
+                _metrics_datatable(
+                    "metrics-file-table", _FILE_COLUMNS, file_data
+                ),
+                title=f"📄 File Metrics ({len(file_data)} files)",
+            )
+        )
+
+    if not items:
+        return html.Div()
+
+    return dbc.Row(
+        [
+            dbc.Col(
+                html.Div(
+                    [
+                        html.H5(
+                            "📏 Clone Metrics (Detailed)",
+                            style={"color": "#495057", "marginBottom": "10px"},
+                        ),
+                        dbc.Accordion(items, start_collapsed=True),
+                    ],
+                    className="summary-card",
+                ),
+                width=12,
+                className="mb-3",
+            )
+        ]
+    )
+
 
 def build_project_summary(df, file_ranges, project, commit, language):
     """プロジェクトの統計情報サマリーを生成する（services.jsonの事前計算データを優先）"""
-    from ..data_loader import load_project_summary, load_full_services_json
+    from ..data_loader import load_project_summary, load_full_services_json, load_clone_metrics
 
     # services.json から詳細統計を読み込む
     services_json_path = f"dest/scatter/{project}/services.json"
@@ -963,6 +1106,12 @@ def build_project_summary(df, file_ranges, project, commit, language):
             else:
                 stats_card_content = html.Div()
 
+    # --- クローンメトリクス (compute_clone_metrics) セクション ---
+    metrics_section = html.Div()
+    clone_metrics = load_clone_metrics(project, language)
+    if clone_metrics:
+        metrics_section = _build_clone_metrics_section(clone_metrics)
+
     return dbc.Container(
         [
             dbc.Row(
@@ -972,6 +1121,7 @@ def build_project_summary(df, file_ranges, project, commit, language):
                 ]
             ),
             dbc.Row([dbc.Col(stats_card_content, width=12, className="mb-3")]),
+            metrics_section,
             charts_section,
         ],
         fluid=True,

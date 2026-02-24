@@ -65,6 +65,31 @@ def load_full_services_json(services_json_path: str):
         return None
 
 
+def load_clone_metrics(
+    project: str, language: str, filter_type: str = "all"
+) -> dict | None:
+    """dest/clone_metrics から事前計算済みメトリクス JSON を読み込む.
+
+    Args:
+        project: プロジェクト名 (owner.repo).
+        language: 言語名.
+        filter_type: フィルタタイプ (default: all).
+
+    Returns:
+        ``{"service": [...], "clone_set": [...], "file": [...]}``
+        またはファイルが見つからない場合は ``None``.
+    """
+    metrics_path = Path(f"dest/clone_metrics/{project}_{language}_{filter_type}.json")
+    if not metrics_path.exists():
+        logger.debug("Clone metrics file not found: %s", metrics_path)
+        return None
+    try:
+        return json.loads(metrics_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        logger.error("Error loading clone metrics: %s", e)
+        return None
+
+
 def load_service_file_ranges(services_json_path: str, language: str):
     """services.json から言語別の file_ranges を取得する（レガシー互換性のため）"""
     return load_service_file_ranges_cached(services_json_path, language)

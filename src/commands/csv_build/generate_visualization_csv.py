@@ -326,6 +326,70 @@ def main(argv: list[str]) -> int:
         # 3. JSON生成 (Services JSON) — services.json は enriched fragments 生成時に拡充済み
         logger.info("services json enrichment done (via enriched fragments step)")
 
+        # 4. クローンメトリクス JSON 生成
+        if not args.skip_csv:
+            metrics_dir = project_root / "dest/clone_metrics"
+            metrics_dir.mkdir(parents=True, exist_ok=True)
+            for language in languages.keys():
+                for filter_type in filter_types:
+                    try:
+                        task_start = time.perf_counter()
+                        enriched_csv = (
+                            project_root
+                            / "dest/enriched_fragments"
+                            / f"{project_name}_{language}_{filter_type}.csv"
+                        )
+                        services_json = (
+                            project_root
+                            / "dest/services_json"
+                            / f"{project_name}.json"
+                        )
+                        if not enriched_csv.exists():
+                            logger.warning(
+                                "skip clone metrics (enriched CSV not found): %s",
+                                enriched_csv,
+                            )
+                            continue
+                        if not services_json.exists():
+                            logger.warning(
+                                "skip clone metrics (services.json not found): %s",
+                                services_json,
+                            )
+                            continue
+                        logger.info(
+                            "start clone metrics: project=%s language=%s filter=%s",
+                            project_name,
+                            language,
+                            filter_type,
+                        )
+                        from modules.visualization.compute_clone_metrics import (
+                            compute_all_metrics,
+                        )
+
+                        metrics = compute_all_metrics(
+                            enriched_csv, services_json, language
+                        )
+                        metrics_path = (
+                            metrics_dir
+                            / f"{project_name}_{language}_{filter_type}.json"
+                        )
+                        metrics_path.write_text(
+                            json.dumps(metrics, ensure_ascii=False, indent=2),
+                            encoding="utf-8",
+                        )
+                        logger.info(
+                            "done clone metrics: project=%s language=%s filter=%s elapsed=%.1fs",
+                            project_name,
+                            language,
+                            filter_type,
+                            time.perf_counter() - task_start,
+                        )
+                    except Exception as e:
+                        logger.error(
+                            "failed clone metrics: %s", e, exc_info=True
+                        )
+                        continue
+
         logger.info(
             "done project: %d/%d project=%s elapsed=%.1fs",
             project_index,
