@@ -1,5 +1,34 @@
 # Progress Log
 
+## 02-25 プロジェクト発見ロジック改善 (services.json ベース)
+
+### 変更ファイル
+
+- `src/visualize/data_loader/project_discovery.py` — `get_project_names()` を `dest/scatter` + `dest/services_json` の両方から走査するよう拡張. `get_csv_options_for_project()` に scatter CSV がないプロジェクト向けの services.json `language_stats` フォールバックを追加. `get_available_projects_enhanced()` を scatter + services_json マージに変更. `_gather_services_json_projects()` 新規追加. `get_available_languages()` も services.json を考慮
+- `src/visualize/data_loader/csv_loader.py` — `resolve_services_json_path()` 新規追加 (`dest/services_json/` 優先, `dest/scatter/` フォールバック). `load_and_process_data()` の services.json パスを `resolve_services_json_path` に変更. `load_clone_metrics()` からfilter_type引数を除去 (不要). enriched CSV パスのバグ修正
+- `src/visualize/data_loader/__init__.py` — `resolve_services_json_path` をエクスポートに追加
+- `src/visualize/components/summary.py` — services.json パスを `resolve_services_json_path` に変更
+- `src/web/pipeline_runner.py` — enriched CSV パスを正しい `enriched_dir/name/language.csv` 形式に修正. メトリクス JSON ファイル名を `{name}_{language}.json` に簡略化
+- `src/commands/csv_build/generate_visualization_csv.py` — 同上のパス修正
+- `tests/test_project_discovery.py` — **新規**: プロジェクト発見テスト (4件). services.json のみのプロジェクト発見, 空 dest, フォールバック, scatter 優先
+- `tests/test_load_clone_metrics.py` — filter_type 引数除去に合わせて修正
+
+### テスト結果
+
+- `pytest tests/ -q` — 50 passed (0.66s)
+
+### 判断メモ
+
+- services.json パス統一: `dest/services_json/{project}.json` を主にし `dest/scatter/{project}/services.json` をフォールバックとした. 既存の scatter フローにも対応しつつ, パイプラインで生成される services_json を直接活用可能に
+- プロジェクト発見: scatter CSV がある場合は従来の詳細ラベル, ない場合は services.json の language_stats からサービス数・ファイル数・LOC を表示する簡易ラベル
+- scatter CSV なしのプロジェクトでは散布図は「No data source found」となるが, Stats ビューの clone metrics は表示可能
+- enriched CSV パスバグ: 前セッションで `enriched_dir/name_lang_filter.csv` と書いていたが正しくは `enriched_dir/name/lang.csv`
+
+### 残課題
+
+- TODO(gen): summary.py の return 文後の deadcode (~500 行) を削除するクリーンアップ
+- TODO(gen): 大規模データでの modified_commits パース性能最適化
+
 ## 02-25 クローンメトリクス パイプライン統合 & Stats ビュー表示
 
 ### 変更ファイル

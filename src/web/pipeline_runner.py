@@ -192,9 +192,10 @@ def _generate_visualization_csv(
     metrics_dir = project_root / "dest/clone_metrics"
     metrics_dir.mkdir(parents=True, exist_ok=True)
     metrics_count = 0
+    csv_prefix = f"{filter_type}_" if filter_type else ""
     for language in languages.keys():
         try:
-            enriched_csv = enriched_dir / f"{name}_{language}_{filter_type}.csv"
+            enriched_csv = enriched_dir / name / f"{csv_prefix}{language}.csv"
             services_json = project_root / "dest/services_json" / f"{name}.json"
             if not enriched_csv.exists():
                 log.write(
@@ -216,7 +217,7 @@ def _generate_visualization_csv(
 
             import json as _json
 
-            metrics_path = metrics_dir / f"{name}_{language}_{filter_type}.json"
+            metrics_path = metrics_dir / f"{name}_{language}.json"
             metrics_path.write_text(
                 _json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8"
             )

@@ -334,10 +334,12 @@ def main(argv: list[str]) -> int:
                 for filter_type in filter_types:
                     try:
                         task_start = time.perf_counter()
+                        ef_prefix = f"{filter_type}_" if filter_type else ""
                         enriched_csv = (
                             project_root
                             / "dest/enriched_fragments"
-                            / f"{project_name}_{language}_{filter_type}.csv"
+                            / project_name
+                            / f"{ef_prefix}{language}.csv"
                         )
                         services_json = (
                             project_root / "dest/services_json" / f"{project_name}.json"
@@ -369,7 +371,7 @@ def main(argv: list[str]) -> int:
                         )
                         metrics_path = (
                             metrics_dir
-                            / f"{project_name}_{language}_{filter_type}.json"
+                            / f"{project_name}_{language}.json"
                         )
                         metrics_path.write_text(
                             json.dumps(metrics, ensure_ascii=False, indent=2),

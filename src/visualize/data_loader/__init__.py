@@ -20,6 +20,7 @@ from .project_discovery import (
 from .csv_loader import (
     load_service_file_ranges_cached,
     load_full_services_json,
+    resolve_services_json_path,
     load_clone_metrics,
     load_service_file_ranges,
     file_id_to_service,
@@ -54,6 +55,7 @@ __all__ = [
     # csv_loader
     "load_service_file_ranges_cached",
     "load_full_services_json",
+    "resolve_services_json_path",
     "load_clone_metrics",
     "load_service_file_ranges",
     "file_id_to_service",

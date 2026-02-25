@@ -65,21 +65,42 @@ def load_full_services_json(services_json_path: str):
         return None
 
 
+def resolve_services_json_path(project_name: str) -> str | None:
+    """プロジェクトの services.json パスを解決する.
+
+    優先順位:
+    1. ``dest/services_json/{project_name}.json``
+    2. ``dest/scatter/{project_name}/services.json``
+
+    Args:
+        project_name: プロジェクト名 (owner.repo).
+
+    Returns:
+        見つかったパス文字列. いずれも存在しなければ ``None``.
+    """
+    primary = f"dest/services_json/{project_name}.json"
+    if os.path.exists(primary):
+        return primary
+    fallback = f"dest/scatter/{project_name}/services.json"
+    if os.path.exists(fallback):
+        return fallback
+    return None
+
+
 def load_clone_metrics(
-    project: str, language: str, filter_type: str = "all"
+    project: str, language: str,
 ) -> dict | None:
     """dest/clone_metrics から事前計算済みメトリクス JSON を読み込む.
 
     Args:
         project: プロジェクト名 (owner.repo).
         language: 言語名.
-        filter_type: フィルタタイプ (default: all).
 
     Returns:
         ``{"service": [...], "clone_set": [...], "file": [...]}``
         またはファイルが見つからない場合は ``None``.
     """
-    metrics_path = Path(f"dest/clone_metrics/{project}_{language}_{filter_type}.json")
+    metrics_path = Path(f"dest/clone_metrics/{project}_{language}.json")
     if not metrics_path.exists():
         logger.debug("Clone metrics file not found: %s", metrics_path)
         return None
@@ -350,7 +371,7 @@ def load_and_process_data(project_name: str, commit_hash: str, language: str):
 
     # 0) dest/scatter 出力
     scatter_sources = _scatter_sources(project_name, language, commit_hash)
-    services_json_path = f"dest/scatter/{project_name}/services.json"
+    services_json_path = resolve_services_json_path(project_name) or f"dest/scatter/{project_name}/services.json"
     if scatter_sources:
         result = load_from_scatter_csv(
             scatter_sources, services_json_path, cache_key, language
