@@ -62,10 +62,7 @@ docker run --rm -it \
 ポート 8000 を公開して起動します. コンテナ外のブラウザからアクセスするため `--host 0.0.0.0` を指定します.
 
 ```bash
-docker run --rm -it -p 8000:8000 \
-  -v "$(pwd)/dest:/app/dest" \
-  -v "$(pwd)/dataset:/app/dataset" \
-  msccatools web-ui --host 0.0.0.0
+docker run --rm -it -p 8000:8000 -v "${PWD}/dest:/app/dest" -v "${PWD}/dataset:/app/dataset" msccatools web-ui --host 0.0.0.0
 ```
 
 起動後, ブラウザで `http://localhost:8000` にアクセスしてください.
