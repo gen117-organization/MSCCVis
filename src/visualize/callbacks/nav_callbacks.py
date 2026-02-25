@@ -47,10 +47,11 @@ def register_nav_callbacks(app, app_data):
             Input("btn-view-scatter", "n_clicks"),
             Input("btn-view-explorer", "n_clicks"),
             Input("btn-view-stats", "n_clicks"),
+            Input("url-location", "search"),
         ],
         [State("scatter-container", "className")],
     )
-    def toggle_view_mode(btn_scatter, btn_explorer, btn_stats, current_class):
+    def toggle_view_mode(btn_scatter, btn_explorer, btn_stats, url_search, current_class):
         ctx = dash.callback_context
 
         # View definitions: (scatter_cls, ide_style, stats_cls, nav_scatter, nav_explorer, nav_stats, title)
@@ -82,16 +83,27 @@ def register_nav_callbacks(app, app_data):
             "Statistics",
         )
 
-        if not ctx.triggered:
+        triggered_id = ""
+        if ctx.triggered:
+            triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+        # URL ?view= パラメータによる初期ビュー選択
+        if not ctx.triggered or triggered_id == "url-location":
+            if url_search:
+                from urllib.parse import parse_qs
+                params = parse_qs(url_search.lstrip("?"))
+                view = params.get("view", [""])[0]
+                if view == "explorer":
+                    return explorer_state
+                elif view == "stats":
+                    return stats_state
             return scatter_state
 
-        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
-
-        if button_id == "btn-view-scatter":
+        if triggered_id == "btn-view-scatter":
             return scatter_state
-        elif button_id == "btn-view-explorer":
+        elif triggered_id == "btn-view-explorer":
             return explorer_state
-        elif button_id == "btn-view-stats":
+        elif triggered_id == "btn-view-stats":
             return stats_state
 
         return scatter_state

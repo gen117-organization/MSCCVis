@@ -31,6 +31,9 @@ from config import SELECTED_DATASET
 from modules.visualization.build_scatter_dataset import (
     build_scatter_dataset_for_language,
 )
+from modules.visualization.build_enriched_fragments import (
+    build_enriched_fragments_for_language,
+)
 import modules.visualization.logger_setup as logger_setup
 from modules.identify_microservice import analyze_repo
 
@@ -284,9 +287,103 @@ def main(argv: list[str]) -> int:
         else:
             logger.info("skip scatter csv (requested by --skip-csv)")
 
-        # 2. JSON生成 (Services JSON) — 未実装のためスキップ
-        # TODO(gen): build_services_json モジュール作成後に有効化する
-        logger.info("skip services json (not yet implemented)")
+        # 2. Enriched Fragments CSV 生成 + services.json 拡充
+        if not args.skip_csv:
+            enriched_dir = project_root / "dest/enriched_fragments"
+            enriched_dir.mkdir(parents=True, exist_ok=True)
+            for language in languages.keys():
+                for filter_type in filter_types:
+                    try:
+                        task_start = time.perf_counter()
+                        logger.info(
+                            "start enriched fragments: project=%s language=%s filter=%s",
+                            project_name,
+                            language,
+                            filter_type,
+                        )
+                        build_enriched_fragments_for_language(
+                            project_name=project_name,
+                            language=language,
+                            filter_type=filter_type,
+                            project_root=project_root,
+                            out_dir=enriched_dir,
+                            ms_detection_dir=args.ms_detection_dir,
+                        )
+                        logger.info(
+                            "done enriched fragments: project=%s language=%s filter=%s elapsed=%.1fs",
+                            project_name,
+                            language,
+                            filter_type,
+                            time.perf_counter() - task_start,
+                        )
+                    except FileNotFoundError as e:
+                        logger.warning("skip enriched fragments (missing input): %s", e)
+                        continue
+                    except Exception as e:
+                        logger.error("failed enriched fragments: %s", e, exc_info=True)
+                        continue
+
+        # 3. JSON生成 (Services JSON) — services.json は enriched fragments 生成時に拡充済み
+        logger.info("services json enrichment done (via enriched fragments step)")
+
+        # 4. クローンメトリクス JSON 生成
+        if not args.skip_csv:
+            metrics_dir = project_root / "dest/clone_metrics"
+            metrics_dir.mkdir(parents=True, exist_ok=True)
+            for language in languages.keys():
+                for filter_type in filter_types:
+                    try:
+                        task_start = time.perf_counter()
+                        ef_prefix = f"{filter_type}_" if filter_type else ""
+                        enriched_csv = (
+                            project_root
+                            / "dest/enriched_fragments"
+                            / project_name
+                            / f"{ef_prefix}{language}.csv"
+                        )
+                        services_json = (
+                            project_root / "dest/services_json" / f"{project_name}.json"
+                        )
+                        if not enriched_csv.exists():
+                            logger.warning(
+                                "skip clone metrics (enriched CSV not found): %s",
+                                enriched_csv,
+                            )
+                            continue
+                        if not services_json.exists():
+                            logger.warning(
+                                "skip clone metrics (services.json not found): %s",
+                                services_json,
+                            )
+                            continue
+                        logger.info(
+                            "start clone metrics: project=%s language=%s filter=%s",
+                            project_name,
+                            language,
+                            filter_type,
+                        )
+                        from modules.visualization.compute_clone_metrics import (
+                            compute_all_metrics,
+                        )
+
+                        metrics = compute_all_metrics(
+                            enriched_csv, services_json, language
+                        )
+                        metrics_path = metrics_dir / f"{project_name}_{language}.json"
+                        metrics_path.write_text(
+                            json.dumps(metrics, ensure_ascii=False, indent=2),
+                            encoding="utf-8",
+                        )
+                        logger.info(
+                            "done clone metrics: project=%s language=%s filter=%s elapsed=%.1fs",
+                            project_name,
+                            language,
+                            filter_type,
+                            time.perf_counter() - task_start,
+                        )
+                    except Exception as e:
+                        logger.error("failed clone metrics: %s", e, exc_info=True)
+                        continue
 
         logger.info(
             "done project: %d/%d project=%s elapsed=%.1fs",

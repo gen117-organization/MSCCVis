@@ -4,6 +4,7 @@ Web UIから起動される分析パイプラインの全ステップを管理�
 各ステップ: リポジトリクローン → コミット選定 → クローン検出 →
 分析 → 同時修正分析 → 可視化CSV生成.
 """
+
 import json
 import logging
 import shutil
@@ -64,6 +65,38 @@ def _clear_previous_results(repo_name: str, project_root: Path) -> None:
         analyzed_file.unlink()
 
 
+def _save_analysis_params(
+    name: str, params: dict, project_root: Path, log: LogCapture
+) -> None:
+    """分析パラメータを JSON として保存する.
+
+    ``dest/analysis_params/{name}.json`` に保存される.
+    プロジェクト発見時にラベル構築に使用する.
+    """
+    params_dir = project_root / "dest/analysis_params"
+    params_dir.mkdir(parents=True, exist_ok=True)
+    params_path = params_dir / f"{name}.json"
+
+    # 保存対象のパラメータ (UIから渡される分析条件)
+    save_data = {
+        "detection_method": params.get("detection_method", "normal"),
+        "min_tokens": params.get("min_tokens", 50),
+        "import_filter": params.get("import_filter", True),
+        "comod_method": params.get("comod_method", "clone_set"),
+        "analysis_method": params.get("analysis_method", "merge_commit"),
+        "analysis_frequency": params.get("analysis_frequency", 1),
+        "search_depth": params.get("search_depth", -1),
+        "max_analyzed_commits": params.get("max_analyzed_commits", -1),
+    }
+    try:
+        params_path.write_text(
+            json.dumps(save_data, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        log.write(f"  Saved analysis params: {params_path.name}\n")
+    except Exception as exc:
+        log.write(f"  [warn] Failed to save analysis params: {exc}\n")
+
+
 def _generate_visualization_csv(
     *,
     project: dict,
@@ -111,7 +144,9 @@ def _generate_visualization_csv(
             return
 
     # 命名規則に基づくファイル名の生成
-    from modules.visualization.naming import build_visualization_csv_filename_from_params
+    from modules.visualization.naming import (
+        build_visualization_csv_filename_from_params,
+    )
 
     csv_stem = build_visualization_csv_filename_from_params(params)
     out_dir = project_root / "dest/scatter"
@@ -121,32 +156,109 @@ def _generate_visualization_csv(
     # 入力CSVは常にフィルタなし名 (<language>.csv) で格納されている.
     filter_type: str | None = None
 
-    generated_count = 0
+    generate_scatter = params.get("generate_scatter_csv", True)
+
+    if generate_scatter:
+        generated_count = 0
+        for language in languages.keys():
+            try:
+                log.write(f"  Generating scatter CSV: language={language}...\n")
+                from modules.visualization.build_scatter_dataset import (
+                    build_scatter_dataset_for_language,
+                )
+
+                resolved_path, unknown_path = build_scatter_dataset_for_language(
+                    project=project,
+                    project_name=name,
+                    language=language,
+                    filter_type=filter_type,
+                    project_root=project_root,
+                    out_dir=out_dir,
+                    ms_detection_dir=ms_detection_dir,
+                    output_csv_stem=f"{csv_stem}_{language}",
+                )
+                generated_count += 1
+                log.write(f"  Done: {resolved_path.name}\n")
+            except FileNotFoundError as exc:
+                log.write(f"  [warn] Skip scatter CSV (missing input): {exc}\n")
+            except Exception as exc:
+                log.write(f"  [warn] Failed scatter CSV for {language}: {exc}\n")
+
+        log.write(
+            f"  Generated {generated_count}/{len(languages)} visualization CSVs.\n"
+        )
+    else:
+        log.write("  Scatter CSV generation skipped (disabled by user).\n")
+
+    # enriched_fragments.csv 生成 + services.json 拡充
+    enriched_dir = project_root / "dest/enriched_fragments"
+    enriched_dir.mkdir(parents=True, exist_ok=True)
+    enriched_count = 0
     for language in languages.keys():
         try:
-            log.write(f"  Generating scatter CSV: language={language}...\n")
-            from modules.visualization.build_scatter_dataset import (
-                build_scatter_dataset_for_language,
+            log.write(f"  Generating enriched fragments: language={language}...\n")
+            from modules.visualization.build_enriched_fragments import (
+                build_enriched_fragments_for_language,
             )
 
-            resolved_path, unknown_path = build_scatter_dataset_for_language(
-                project=project,
+            enriched_path = build_enriched_fragments_for_language(
                 project_name=name,
                 language=language,
                 filter_type=filter_type,
                 project_root=project_root,
-                out_dir=out_dir,
+                out_dir=enriched_dir,
                 ms_detection_dir=ms_detection_dir,
-                output_csv_stem=f"{csv_stem}_{language}",
             )
-            generated_count += 1
-            log.write(f"  Done: {resolved_path.name}\n")
+            enriched_count += 1
+            log.write(f"  Done: {enriched_path.name}\n")
         except FileNotFoundError as exc:
-            log.write(f"  [warn] Skip scatter CSV (missing input): {exc}\n")
+            log.write(f"  [warn] Skip enriched fragments (missing input): {exc}\n")
         except Exception as exc:
-            log.write(f"  [warn] Failed scatter CSV for {language}: {exc}\n")
+            log.write(f"  [warn] Failed enriched fragments for {language}: {exc}\n")
 
-    log.write(f"  Generated {generated_count}/{len(languages)} visualization CSVs.\n")
+    log.write(
+        f"  Generated {enriched_count}/{len(languages)} enriched fragment CSVs.\n"
+    )
+
+    # クローンメトリクス JSON 生成
+    metrics_dir = project_root / "dest/clone_metrics"
+    metrics_dir.mkdir(parents=True, exist_ok=True)
+    metrics_count = 0
+    csv_prefix = f"{filter_type}_" if filter_type else ""
+    for language in languages.keys():
+        try:
+            enriched_csv = enriched_dir / name / f"{csv_prefix}{language}.csv"
+            services_json = project_root / "dest/services_json" / f"{name}.json"
+            if not enriched_csv.exists():
+                log.write(
+                    f"  [warn] Skip metrics (enriched CSV not found): {enriched_csv}\n"
+                )
+                continue
+            if not services_json.exists():
+                log.write(
+                    f"  [warn] Skip metrics (services.json not found): {services_json}\n"
+                )
+                continue
+
+            log.write(f"  Computing clone metrics: language={language}...\n")
+            from modules.visualization.compute_clone_metrics import (
+                compute_all_metrics,
+            )
+
+            metrics = compute_all_metrics(enriched_csv, services_json, language)
+
+            import json as _json
+
+            metrics_path = metrics_dir / f"{name}_{language}.json"
+            metrics_path.write_text(
+                _json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            metrics_count += 1
+            log.write(f"  Done: {metrics_path.name}\n")
+        except Exception as exc:
+            log.write(f"  [warn] Failed clone metrics for {language}: {exc}\n")
+
+    log.write(f"  Generated {metrics_count}/{len(languages)} clone metrics JSONs.\n")
 
 
 def run_job(
@@ -319,6 +431,10 @@ def run_job(
                 log.write(f"[warn] Visualization CSV generation failed: {exc}\n")
 
             log.write("[job] All steps completed successfully.\n")
+
+            # 分析パラメータを保存 (プロジェクト発見時に参照)
+            _save_analysis_params(name, params, project_root, log)
+
             job["status"] = "completed"
 
         except Exception as exc:

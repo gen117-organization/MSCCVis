@@ -3,6 +3,7 @@
 CSV/JSON 形式のクローン検出結果を読み込み,
 サービスマッピングを適用して可視化用 DataFrame を生成する.
 """
+
 import glob
 import json
 import logging
@@ -21,6 +22,7 @@ SCATTER_FILE_COMMIT_PREFIX = "scatter_file:"
 
 # データキャッシュ用のグローバル変数
 _data_cache = {}
+
 
 def load_service_file_ranges_cached(services_json_path: str, language: str):
     """services.json から言語別の file_ranges を取得する（キャッシュ版）"""
@@ -51,7 +53,6 @@ def load_service_file_ranges_cached(services_json_path: str, language: str):
     return result
 
 
-
 def load_full_services_json(services_json_path: str):
     """services.json の全データを読み込む"""
     if not os.path.exists(services_json_path):
@@ -61,6 +62,53 @@ def load_full_services_json(services_json_path: str):
             return json.load(f)
     except Exception as e:
         logger.error(f"Error loading services.json: {e}")
+        return None
+
+
+def resolve_services_json_path(project_name: str) -> str | None:
+    """プロジェクトの services.json パスを解決する.
+
+    優先順位:
+    1. ``dest/services_json/{project_name}.json``
+    2. ``dest/scatter/{project_name}/services.json``
+
+    Args:
+        project_name: プロジェクト名 (owner.repo).
+
+    Returns:
+        見つかったパス文字列. いずれも存在しなければ ``None``.
+    """
+    primary = f"dest/services_json/{project_name}.json"
+    if os.path.exists(primary):
+        return primary
+    fallback = f"dest/scatter/{project_name}/services.json"
+    if os.path.exists(fallback):
+        return fallback
+    return None
+
+
+def load_clone_metrics(
+    project: str,
+    language: str,
+) -> dict | None:
+    """dest/clone_metrics から事前計算済みメトリクス JSON を読み込む.
+
+    Args:
+        project: プロジェクト名 (owner.repo).
+        language: 言語名.
+
+    Returns:
+        ``{"service": [...], "clone_set": [...], "file": [...]}``
+        またはファイルが見つからない場合は ``None``.
+    """
+    metrics_path = Path(f"dest/clone_metrics/{project}_{language}.json")
+    if not metrics_path.exists():
+        logger.debug("Clone metrics file not found: %s", metrics_path)
+        return None
+    try:
+        return json.loads(metrics_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        logger.error("Error loading clone metrics: %s", e)
         return None
 
 
@@ -93,9 +141,9 @@ def _unified_sources_exist(project_name: str, language: str) -> bool:
     ) or os.path.exists(f"{project_csv_dir}/tks_{language.lower()}.csv")
 
 
-
-
 def _scatter_sources(project_name: str, language: str, commit_hash: str | None = None):
+    from .project_discovery import _parse_scatter_csv_filename
+
     base_dir = Path("dest/scatter") / project_name / "csv"
     if not base_dir.exists():
         return []
@@ -324,7 +372,10 @@ def load_and_process_data(project_name: str, commit_hash: str, language: str):
 
     # 0) dest/scatter 出力
     scatter_sources = _scatter_sources(project_name, language, commit_hash)
-    services_json_path = f"dest/scatter/{project_name}/services.json"
+    services_json_path = (
+        resolve_services_json_path(project_name)
+        or f"dest/scatter/{project_name}/services.json"
+    )
     if scatter_sources:
         result = load_from_scatter_csv(
             scatter_sources, services_json_path, cache_key, language
@@ -987,5 +1038,3 @@ def clear_data_cache():
     _data_cache.clear()
     # load_service_file_ranges_cached.cache_clear()  # lru_cache無効化のため一時的にコメントアウト
     logger.info("Data cache cleared.")
-
-

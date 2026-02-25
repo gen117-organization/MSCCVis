@@ -29,6 +29,8 @@ const I18N = {
     descImportFilter: "When enabled, import/include lines are commented out before clone detection.",
     labelForceRecompute: "Recompute after clearing previous results",
     descForceRecompute: "If filters or parameters changed, ignore previous outputs and rerun.",
+    labelGenerateScatterCsv: "Generate scatter plot CSV",
+    descGenerateScatterCsv: "When disabled, scatter CSV generation is skipped to reduce detection time. Enriched fragments CSV is always generated.",
     sectionParameters: "Parameters",
     labelComodMethod: "Co-modification Analysis Method",
     optComodSet: "Clone set",
@@ -93,6 +95,8 @@ const I18N = {
     descImportFilter: "有効にすると, クローン検出前に import/include 行をコメントアウトします。",
     labelForceRecompute: "既存結果を削除して再計算",
     descForceRecompute: "フィルタやパラメータを変更した場合に, 以前の結果を無視して再実行します。",
+    labelGenerateScatterCsv: "散布図用CSVを生成",
+    descGenerateScatterCsv: "無効にすると散布図用CSVの生成をスキップし, 検出時間を短縮します。enriched fragments CSV は常に生成されます。",
     sectionParameters: "同時修正",
     labelComodMethod: "判定手法",
     optComodSet: "クローンセット",
@@ -170,6 +174,8 @@ function applyLanguage(lang) {
   setText("desc-import-filter", "descImportFilter");
   setText("label-force-recompute", "labelForceRecompute");
   setText("desc-force-recompute", "descForceRecompute");
+  setText("label-generate-scatter-csv", "labelGenerateScatterCsv");
+  setText("desc-generate-scatter-csv", "descGenerateScatterCsv");
   setText("section-parameters", "sectionParameters");
   setText("label-comod-method", "labelComodMethod");
   setText("opt-comod-set", "optComodSet");
@@ -323,6 +329,7 @@ async function startAnalysis() {
     min_tokens: parseInt(document.getElementById("min_tokens").value, 10),
     import_filter: document.getElementById("import_filter").checked,
     force_recompute: document.getElementById("force_recompute").checked,
+    generate_scatter_csv: document.getElementById("generate_scatter_csv").checked,
     comod_method: document.getElementById("comod_method").value,
     analysis_method: document.getElementById("analysis_method").value,
     analysis_frequency: parseInt(document.getElementById("analysis_frequency").value, 10),

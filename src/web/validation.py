@@ -100,6 +100,9 @@ def validate_run_params(params: dict) -> dict:
     force_recompute = _parse_bool(
         params.get("force_recompute", True), "force_recompute"
     )
+    generate_scatter_csv = _parse_bool(
+        params.get("generate_scatter_csv", True), "generate_scatter_csv"
+    )
     comod_method = params.get("comod_method", "clone_set")
     analysis_method = params.get("analysis_method", "merge_commit")
     analysis_frequency = _parse_int(
@@ -118,6 +121,7 @@ def validate_run_params(params: dict) -> dict:
         "min_tokens": min_tokens,
         "import_filter": import_filter,
         "force_recompute": force_recompute,
+        "generate_scatter_csv": generate_scatter_csv,
         "comod_method": comod_method,
         "analysis_method": analysis_method,
         "analysis_frequency": analysis_frequency,

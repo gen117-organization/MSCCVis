@@ -3,6 +3,7 @@
 利用可能なプロジェクトや CSV ファイルを探索し,
 ドロップダウン等 UI 用のオプションリストを生成する.
 """
+
 import glob
 import json
 import logging
@@ -94,7 +95,6 @@ def _build_descriptive_label(info: dict, *, include_project: bool = False) -> st
     return ", ".join(parts)
 
 
-
 def load_project_summary(summary_path="src/visualize/project_summary.json"):
     """プロジェクトサマリーを読み込む"""
     if not os.path.exists(summary_path):
@@ -123,8 +123,10 @@ def load_dashboard_data(scatter_dir="dest/scatter"):
 
 def get_actual_service_count(project_name: str, language: str):
     """実際のservices.jsonからサービス数を取得する"""
-    services_json_path = f"dest/scatter/{project_name}/services.json"
-    if not os.path.exists(services_json_path):
+    from .csv_loader import resolve_services_json_path
+
+    services_json_path = resolve_services_json_path(project_name)
+    if not services_json_path:
         return 0
 
     try:
@@ -137,14 +139,33 @@ def get_actual_service_count(project_name: str, language: str):
 
 def get_available_projects_enhanced(language_filter=None):
     """
-    プロジェクトサマリーを利用して改善されたプロジェクト一覧を取得
+    プロジェクトサマリーを利用して改善されたプロジェクト一覧を取得.
+
+    Scatter CSV ベースのオプションに加え, services.json のみ存在する
+    プロジェクトも含める.
 
     Args:
         language_filter: 特定の言語でフィルター（None=全言語）
     """
     scatter_options = _gather_scatter_projects()
-    if scatter_options:
-        return scatter_options
+    services_options = _gather_services_json_projects(language_filter)
+
+    if scatter_options or services_options:
+        # scatter で見つかったプロジェクト名を収集
+        scatter_project_langs: set[tuple[str, str]] = set()
+        for opt in scatter_options:
+            if isinstance(opt, dict) and "project" in opt and "language" in opt:
+                scatter_project_langs.add((opt["project"], opt["language"]))
+
+        # services_json から scatter にないプロジェクトだけ追加
+        merged = list(scatter_options)
+        for opt in services_options:
+            key = (opt.get("project", ""), opt.get("language", ""))
+            if key not in scatter_project_langs:
+                merged.append(opt)
+
+        if merged:
+            return sorted(merged, key=lambda o: o.get("label", ""))
 
     summary = load_project_summary()
     if not summary:
@@ -250,15 +271,25 @@ def get_available_projects_enhanced(language_filter=None):
 
 def get_available_languages():
     """利用可能な言語の一覧を取得"""
+    langs: set[str] = set()
+
     scatter_options = _gather_scatter_projects()
-    if scatter_options:
-        langs = {
-            opt["value"].split("|||")[2]
-            for opt in scatter_options
-            if isinstance(opt, dict)
+    for opt in scatter_options:
+        if (
+            isinstance(opt, dict)
             and "value" in opt
             and not str(opt["value"]).startswith("HEADER_")
-        }
+        ):
+            parts = opt["value"].split("|||")
+            if len(parts) >= 3:
+                langs.add(parts[2])
+
+    services_options = _gather_services_json_projects()
+    for opt in services_options:
+        if isinstance(opt, dict) and "language" in opt:
+            langs.add(opt["language"])
+
+    if langs:
         return sorted(langs)
 
     summary = load_project_summary()
@@ -296,45 +327,68 @@ def get_available_projects():
 def get_project_names() -> list[dict]:
     """プロジェクト名の一覧を取得する (2段階選択の Step 1 用).
 
+    ``dest/scatter`` (Scatter CSV) と ``dest/services_json`` (services.json)
+    の両方を走査し, いずれかにデータがあるプロジェクトを列挙する.
+
     Returns:
         プロジェクト名のドロップダウンオプション (label/value).
     """
-    base_dir = Path("dest/scatter")
-    if not base_dir.exists():
-        return []
+    names: set[str] = set()
 
-    names: list[str] = []
-    for project_dir in sorted(base_dir.iterdir()):
-        csv_dir = project_dir / "csv"
-        if not csv_dir.is_dir():
-            continue
-        # CSV ファイルが1つでもあるプロジェクトのみ
-        has_csv = any(
-            p.is_file()
-            and p.name.endswith(".csv")
-            and not p.name.endswith("_unknown.csv")
-            for p in csv_dir.iterdir()
-        )
-        if has_csv:
-            names.append(project_dir.name)
+    # 1. dest/scatter からプロジェクト名を取得 (scatter CSV あり)
+    scatter_dir = Path("dest/scatter")
+    if scatter_dir.exists():
+        for project_dir in scatter_dir.iterdir():
+            csv_dir = project_dir / "csv"
+            if not csv_dir.is_dir():
+                continue
+            has_csv = any(
+                p.is_file()
+                and p.name.endswith(".csv")
+                and not p.name.endswith("_unknown.csv")
+                for p in csv_dir.iterdir()
+            )
+            if has_csv:
+                names.add(project_dir.name)
 
-    return [{"label": name, "value": name} for name in names]
+    # 2. dest/services_json からプロジェクト名を取得
+    services_dir = Path("dest/services_json")
+    if services_dir.exists():
+        for json_file in services_dir.iterdir():
+            if json_file.is_file() and json_file.suffix == ".json":
+                names.add(json_file.stem)
+
+    return [{"label": name, "value": name} for name in sorted(names)]
 
 
 def get_csv_options_for_project(project_name: str) -> list[dict]:
-    """指定プロジェクトの散布図CSVファイル一覧を取得する (2段階選択の Step 2 用).
+    """指定プロジェクトの可視化データ一覧を取得する (2段階選択の Step 2 用).
+
+    Scatter CSV が存在するプロジェクトはファイル単位で列挙し,
+    存在しないプロジェクトは enriched_fragments + services.json +
+    analysis_params.json から言語単位のオプションを生成する.
 
     Args:
         project_name: プロジェクト名 (owner.repo 形式).
 
     Returns:
-        CSVファイルのドロップダウンオプション (label/value).
-            value は ``project|||scatter_file:<filename>|||language`` 形式.
+        ドロップダウンオプション (label/value).
+            value は ``project|||scatter_file:<filename>|||language`` 形式
+            または ``project|||latest|||language`` 形式.
     """
+    # 1. Scatter CSV がある場合は従来通り
     csv_dir = Path("dest/scatter") / project_name / "csv"
-    if not csv_dir.is_dir():
-        return []
+    if csv_dir.is_dir():
+        options = _gather_csv_options_from_scatter(project_name, csv_dir)
+        if options:
+            return options
 
+    # 2. enriched_fragments + services.json + analysis_params からオプション生成
+    return _gather_options_from_enriched(project_name)
+
+
+def _gather_csv_options_from_scatter(project_name: str, csv_dir: Path) -> list[dict]:
+    """dest/scatter のCSVファイルからオプションリストを生成する."""
     options: list[dict] = []
     for csv_path in csv_dir.iterdir():
         if not csv_path.is_file() or not csv_path.name.endswith(".csv"):
@@ -371,6 +425,223 @@ def get_csv_options_for_project(project_name: str) -> list[dict]:
         ),
         reverse=True,
     )
+    return options
+
+
+def _load_analysis_params(project_name: str) -> dict:
+    """分析パラメータを読み込む.
+
+    ``dest/analysis_params/{project_name}.json`` が存在しない場合は
+    ``config.py`` のデフォルト値をフォールバックとして使用する.
+
+    Returns:
+        分析パラメータの辞書.
+    """
+    params_path = Path("dest/analysis_params") / f"{project_name}.json"
+    if params_path.is_file():
+        try:
+            data = json.loads(params_path.read_text(encoding="utf-8"))
+            logger.debug("Loaded analysis_params from %s", params_path)
+            return data
+        except Exception as exc:
+            logger.warning("Failed to read analysis_params %s: %s", params_path, exc)
+
+    # config.py からのフォールバック
+    try:
+        import config as _cfg
+
+        return {
+            "detection_method": "normal",
+            "min_tokens": 50,
+            "import_filter": getattr(_cfg, "APPLY_IMPORT_FILTER", True),
+            "comod_method": "clone_set",
+            "analysis_method": getattr(_cfg, "ANALYSIS_METHOD", "merge_commit"),
+            "analysis_frequency": getattr(_cfg, "ANALYSIS_FREQUENCY", 1),
+            "search_depth": getattr(_cfg, "SEARCH_DEPTH", -1),
+            "max_analyzed_commits": getattr(_cfg, "MAX_ANALYZED_COMMITS", -1),
+        }
+    except ImportError:
+        logger.warning("config module not importable; using hard-coded defaults")
+        return {
+            "detection_method": "normal",
+            "min_tokens": 50,
+            "import_filter": True,
+            "comod_method": "clone_set",
+            "analysis_method": "merge_commit",
+            "analysis_frequency": 1,
+            "search_depth": -1,
+            "max_analyzed_commits": -1,
+        }
+
+
+def _build_enriched_label(language: str, params: dict) -> str:
+    """enriched_fragments 用の説明的ラベルを構築する.
+
+    Scatter CSV 用の ``_build_descriptive_label`` と同じフォーマットに
+    なるよう, 分析パラメータからラベル部品を組み立てる.
+
+    Args:
+        language: 対象プログラミング言語名.
+        params: ``_load_analysis_params`` の戻り値.
+
+    Returns:
+        説明的なラベル文字列.
+    """
+    detection_raw = params.get("detection_method", "normal")
+    if detection_raw.lower().startswith("tks"):
+        detection_label = f"TKS ({detection_raw[3:]})"
+    elif detection_raw.lower().startswith("rnr"):
+        detection_label = f"RNR ({detection_raw[3:]})"
+    else:
+        detection_label = _DETECTION_LABELS.get(detection_raw, detection_raw)
+
+    import_filter = params.get("import_filter", True)
+    filter_label = "Import Filtered" if import_filter else "No Filter"
+
+    analysis_raw = params.get("analysis_method", "merge_commit")
+    freq = params.get("analysis_frequency", 1)
+    if analysis_raw == "frequency":
+        analysis_label = f"Frequency ({freq})"
+    elif analysis_raw == "merge_commit":
+        analysis_label = "Merge Commit"
+    elif analysis_raw == "tag":
+        analysis_label = "Tag"
+    else:
+        analysis_label = analysis_raw
+
+    comod_raw = params.get("comod_method", "clone_set")
+    comod_label = {
+        "clone_set": "Clone Set",
+        "clone_pair": "Clone Pair",
+    }.get(comod_raw, comod_raw)
+
+    min_tokens = params.get("min_tokens", 50)
+
+    parts = [
+        f"Language: {language}",
+        f"Detection: {detection_label}",
+        f"Filter: {filter_label}",
+        f"Analysis: {analysis_label}",
+        f"Comod: {comod_label}",
+        f"Min Tokens: {min_tokens}",
+    ]
+
+    sd = params.get("search_depth")
+    if sd is not None and sd != -1:
+        parts.append(f"Search Depth: {sd}")
+    mac = params.get("max_analyzed_commits")
+    if mac is not None and mac != -1:
+        parts.append(f"Max Commits: {mac}")
+
+    return ", ".join(parts)
+
+
+def _gather_options_from_enriched(project_name: str) -> list[dict]:
+    """enriched_fragments と analysis_params から言語ごとのオプションを生成する.
+
+    ``dest/enriched_fragments/{project_name}/`` を走査して利用可能な言語を
+    取得し, ``_load_analysis_params`` でパラメータを読み込んで
+    Scatter CSV と同等の説明的ラベルを構築する.
+
+    enriched_fragments が存在しない場合は ``dest/csv/{project_name}/`` に
+    フォールバックする.
+
+    Args:
+        project_name: プロジェクト名.
+
+    Returns:
+        ドロップダウン用オプションリスト. CSV が見つからない場合は空リスト.
+    """
+    # 言語を探索: enriched_fragments → dest/csv → services.json の順
+    languages: list[str] = []
+    for search_dir in (
+        Path("dest/enriched_fragments") / project_name,
+        Path("dest/csv") / project_name,
+    ):
+        if search_dir.is_dir():
+            for csv_path in sorted(search_dir.iterdir()):
+                if not csv_path.is_file() or csv_path.suffix != ".csv":
+                    continue
+                # ファイル名: {filter_prefix}{language}.csv
+                # filter_prefix は "filtered_" or "" (空)
+                stem = csv_path.stem
+                lang = stem.removeprefix("filtered_")
+                if lang and lang not in languages:
+                    languages.append(lang)
+            if languages:
+                break
+
+    # CSV ディレクトリに何もなければ services.json の language_stats から言語を取得
+    if not languages:
+        sj_path = Path("dest/services_json") / f"{project_name}.json"
+        if sj_path.is_file():
+            try:
+                sj_data = json.loads(sj_path.read_text(encoding="utf-8"))
+                languages = sorted(sj_data.get("language_stats", {}).keys())
+            except Exception:
+                pass
+
+    if not languages:
+        return []
+
+    params = _load_analysis_params(project_name)
+    options: list[dict] = []
+    for language in languages:
+        label = _build_enriched_label(language, params)
+        value = f"{project_name}|||latest|||{language}"
+        options.append(
+            {
+                "label": label,
+                "value": value,
+                "language": language,
+            }
+        )
+
+    options.sort(key=lambda item: item.get("language", ""))
+    return options
+
+
+def _gather_services_json_projects(language_filter=None):
+    """dest/services_json からプロジェクト・言語のオプションを生成する.
+
+    services.json に ``language_stats`` が含まれるプロジェクトを対象とし,
+    analysis_params.json / config.py の分析パラメータで説明的ラベルを付与する.
+    """
+    services_dir = Path("dest/services_json")
+    if not services_dir.exists():
+        return []
+
+    options = []
+    for json_file in sorted(services_dir.iterdir()):
+        if not json_file.is_file() or json_file.suffix != ".json":
+            continue
+
+        project_name = json_file.stem
+        try:
+            data = json.loads(json_file.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+
+        lang_stats = data.get("language_stats", {})
+        if not lang_stats:
+            continue
+
+        params = _load_analysis_params(project_name)
+        for language in sorted(lang_stats):
+            if language_filter and language != language_filter:
+                continue
+
+            label = f"{project_name}, {_build_enriched_label(language, params)}"
+            value = f"{project_name}|||latest|||{language}"
+            options.append(
+                {
+                    "label": label,
+                    "value": value,
+                    "project": project_name,
+                    "language": language,
+                }
+            )
+
     return options
 
 
@@ -546,5 +817,3 @@ def _gather_legacy_projects():
         value = f"{project}|||{commit}|||{language.upper()}"
         options.append({"label": display, "value": value})
     return options
-
-

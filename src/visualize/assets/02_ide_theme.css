@@ -99,12 +99,6 @@ body {
     overflow: hidden;
 }
 
-.sidebar-brand-icon {
-    font-size: 1.2rem;
-    color: var(--primary);
-    flex-shrink: 0;
-}
-
 .sidebar-brand-text {
     font-weight: 700;
     font-size: 0.95rem;
@@ -204,6 +198,14 @@ body {
     gap: 10px;
     padding: 12px 14px;
     border-top: 1px solid var(--sidebar-border);
+    position: relative;
+}
+
+/* Language dropdown opens upward inside sidebar footer */
+.sidebar-footer .dash-dropdown .Select-menu-outer {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: 4px;
 }
 
 /* Collapse toggle (in brand area) */
@@ -231,6 +233,7 @@ body {
 
 /* Collapsed state */
 .app-container.sidebar-collapsed .sidebar-brand-text,
+.app-container.sidebar-collapsed .sidebar-brand-inner,
 .app-container.sidebar-collapsed .sidebar-help-btn,
 .app-container.sidebar-collapsed .nav-text,
 .app-container.sidebar-collapsed .sidebar-footer .dash-dropdown {
@@ -578,7 +581,7 @@ body {
 .filter-row {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
     flex-wrap: wrap;
     padding: 6px 0;
 }
@@ -591,11 +594,13 @@ body {
 }
 
 .filter-label {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: var(--text);
+    color: var(--text-light);
     white-space: nowrap;
     margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .filter-input {
@@ -619,13 +624,49 @@ body {
     font-size: 0.85rem;
 }
 
+/* Radio filter items → pill-style buttons */
 .filter-radio .form-check {
-    font-size: 0.82rem;
-    padding-left: 1.4em;
+    padding-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.filter-radio .form-check-input {
+    display: none;
 }
 
 .filter-radio .form-check-label {
-    font-size: 0.82rem;
+    display: inline-block;
+    padding: 3px 12px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    cursor: pointer;
+    color: var(--text-light);
+    background: var(--bg);
+    transition: all 0.15s ease;
+    line-height: 1.5;
+    user-select: none;
+}
+
+.filter-radio .form-check-label:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-radio .form-check-input:checked + .form-check-label {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(245, 166, 35, 0.3);
+}
+
+.filter-radio {
+    display: flex;
+    gap: 4px;
+    align-items: center;
 }
 
 .code-type-buttons .code-type-btn {

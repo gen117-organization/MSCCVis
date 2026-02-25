@@ -1,5 +1,211 @@
 # Progress Log
 
+## 02-25 Dataset選択ラベルの enriched_fragments + analysis_params 対応
+
+### 変更ファイル
+
+- `src/visualize/data_loader/project_discovery.py` — `get_csv_options_for_project()` の services.json フォールバックを `_gather_options_from_enriched()` に置換. `_load_analysis_params()` 新規追加 (analysis_params.json → config.py フォールバック). `_build_enriched_label()` 新規追加 (Scatter CSV と同等の説明的ラベル生成). `_gather_services_json_projects()` を enriched ラベル使用に更新. 言語探索: enriched_fragments → dest/csv → services.json language_stats の3段階フォールバック
+- `src/web/pipeline_runner.py` — `_save_analysis_params()` 新規追加 (パイプライン完了時に `dest/analysis_params/{name}.json` へ分析パラメータを保存)
+- `test/test_project_discovery_enriched.py` — **新規**: enriched ラベル生成テスト (22件). `_build_enriched_label`, `_load_analysis_params`, `_gather_options_from_enriched`, `get_csv_options_for_project` の統合テスト
+
+### テスト結果
+
+- `pytest -q` — 74 passed (1.03s)
+
+### 判断メモ
+
+- enriched_fragments ディレクトリを第一の言語ソースとし, dest/csv → services.json language_stats の順でフォールバックする設計にした. Scatter CSV がなくてもラベルに Detection/Filter/Analysis/Comod/Min Tokens を表示でき, ドロップダウンの情報量が統一される
+- analysis_params.json がまだ存在しない既存プロジェクトは config.py のデフォルト値を使う. 次回パイプライン実行時に自動保存される
+- detection_method/min_tokens は config.py に明示値がないためハードコードデフォルト (normal/50) を使用
+
+### 残課題
+
+- TODO(gen): analysis_params.json は次回パイプライン実行まで存在しない. 既存プロジェクトを手動で再実行するか, 一括生成スクリプトが必要
+- TODO(gen): Scatter CSV がないプロジェクトで可視化を開いた時の scatter plot / network view の挙動確認 (Stats view のみ対応か)
+
+## 02-25 プロジェクト発見ロジック改善 (services.json ベース)
+
+### 変更ファイル
+
+- `src/visualize/data_loader/project_discovery.py` — `get_project_names()` を `dest/scatter` + `dest/services_json` の両方から走査するよう拡張. `get_csv_options_for_project()` に scatter CSV がないプロジェクト向けの services.json `language_stats` フォールバックを追加. `get_available_projects_enhanced()` を scatter + services_json マージに変更. `_gather_services_json_projects()` 新規追加. `get_available_languages()` も services.json を考慮
+- `src/visualize/data_loader/csv_loader.py` — `resolve_services_json_path()` 新規追加 (`dest/services_json/` 優先, `dest/scatter/` フォールバック). `load_and_process_data()` の services.json パスを `resolve_services_json_path` に変更. `load_clone_metrics()` からfilter_type引数を除去 (不要). enriched CSV パスのバグ修正
+- `src/visualize/data_loader/__init__.py` — `resolve_services_json_path` をエクスポートに追加
+- `src/visualize/components/summary.py` — services.json パスを `resolve_services_json_path` に変更
+- `src/web/pipeline_runner.py` — enriched CSV パスを正しい `enriched_dir/name/language.csv` 形式に修正. メトリクス JSON ファイル名を `{name}_{language}.json` に簡略化
+- `src/commands/csv_build/generate_visualization_csv.py` — 同上のパス修正
+- `tests/test_project_discovery.py` — **新規**: プロジェクト発見テスト (4件). services.json のみのプロジェクト発見, 空 dest, フォールバック, scatter 優先
+- `tests/test_load_clone_metrics.py` — filter_type 引数除去に合わせて修正
+
+### テスト結果
+
+- `pytest tests/ -q` — 50 passed (0.66s)
+
+### 判断メモ
+
+- services.json パス統一: `dest/services_json/{project}.json` を主にし `dest/scatter/{project}/services.json` をフォールバックとした. 既存の scatter フローにも対応しつつ, パイプラインで生成される services_json を直接活用可能に
+- プロジェクト発見: scatter CSV がある場合は従来の詳細ラベル, ない場合は services.json の language_stats からサービス数・ファイル数・LOC を表示する簡易ラベル
+- scatter CSV なしのプロジェクトでは散布図は「No data source found」となるが, Stats ビューの clone metrics は表示可能
+- enriched CSV パスバグ: 前セッションで `enriched_dir/name_lang_filter.csv` と書いていたが正しくは `enriched_dir/name/lang.csv`
+
+### 残課題
+
+- TODO(gen): summary.py の return 文後の deadcode (~500 行) を削除するクリーンアップ
+- TODO(gen): 大規模データでの modified_commits パース性能最適化
+
+## 02-25 クローンメトリクス パイプライン統合 & Stats ビュー表示
+
+### 変更ファイル
+
+- `src/web/pipeline_runner.py` — enriched_fragments 生成後にクローンメトリクス JSON を `dest/clone_metrics/` へ保存するステップを追加
+- `src/commands/csv_build/generate_visualization_csv.py` — CLI バッチでも同様にクローンメトリクス JSON 生成ステップを追加
+- `src/visualize/data_loader/csv_loader.py` — `load_clone_metrics()` 関数を新規追加. `dest/clone_metrics/{project}_{language}_{filter_type}.json` を読み込む
+- `src/visualize/data_loader/__init__.py` — `load_clone_metrics` をエクスポートに追加
+- `src/visualize/components/summary.py` — `_build_clone_metrics_section()` / `_metrics_datatable()` を新規追加. Stats ビューにサービス/クローンセット/ファイル粒度のメトリクスをアコーディオン形式で表示
+- `tests/test_load_clone_metrics.py` — **新規**: `load_clone_metrics` の単体テスト (4件)
+
+### テスト結果
+
+- `pytest tests/ -q` — 46 passed (0.65s)
+
+### 判断メモ
+
+- メトリクス保存形式: JSON を選択. 3 粒度の辞書構造がそのまま保持でき, Stats ビューで直接読み込める. CSV だと 3 ファイルに分割が必要だった
+- 出力パス: `dest/clone_metrics/{project}_{language}_{filter_type}.json`. enriched_fragments と同じ命名規則に統一
+- UI: Dash Accordion + DataTable を使用. 初期状態は折り畳みで, データ量が多い場合もページネーション (10行/ページ) でパフォーマンス維持
+- summary.py の deadcode (return 後の ~500 行) は今回は触れず, 別途クリーンアップタスクとする
+
+### 残課題
+
+- TODO(gen): summary.py の return 文後の deadcode (~500 行) を削除するクリーンアップ
+- TODO(gen): 大規模データでの modified_commits パース性能最適化
+
+## 02-25 クローンメトリクス計算モジュール実装
+
+### 変更ファイル
+
+- `src/modules/visualization/compute_clone_metrics.py` — **新規**: enriched_fragments.csv から 3 粒度 (サービス/クローンセット/ファイル) のクローンメトリクスを計算するモジュール. pandas groupby ベースの純粋関数群
+- `tests/test_compute_clone_metrics.py` — **新規**: compute_clone_metrics の単体テスト (27件). 各粒度の基本計算, エッジケース (空データ, 未解決サービス), 統合テスト
+- `src/visualize/clone_analytics.py` — プレースホルダー (`return 0.0`) を compute_service_metrics の ROC 平均値に置き換え
+- `docs/compute_clone_metrics.md` — **新規**: クローンメトリクス計算モジュールの設計ドキュメント
+
+### テスト結果
+
+- `pytest -v` — 44 passed (0.85s), 既存17件 + 新規27件
+
+### 判断メモ
+
+- 同時修正の定義: 既存 calculate_comodification_rate.py を踏襲. 同一コミットで 2 つ以上のフラグメントが修正されている場合を「同時修正」とカウント
+- クロスサービス判定: service が空文字 (未解決) のフラグメントはサービス数カウントから除外. 2 サービス以上に跨る場合にクロスサービスと判定
+- ROC の分母: enriched_fragments.csv にはクローン断片のみ含まれるため, services.json の language_stats.total_loc を使用
+- modified_commits の JSON パース: iterrows + json.loads によるパースのため大規模データではボトルネックになり得るが, 現時点では十分な性能
+
+### 残課題
+
+- ~~TODO(gen): compute_all_metrics の出力を CSV/JSON に保存するパイプライン統合~~ → 完了
+- ~~TODO(gen): 可視化 UI (Stats ビュー) でのメトリクス表示~~ → 完了
+- TODO(gen): 大規模データでの modified_commits パース性能最適化
+
+## 02-25 散布図CSV生成トグル追加
+
+### 変更ファイル
+
+- `src/web/static/index.html` — 「散布図用CSVを生成」トグルスイッチを force_recompute の下に追加
+- `src/web/static/app.js` — i18n (en/ja) エントリ追加, `applyLanguage()` にラベル・説明文の反映追加, `startAnalysis()` のパラメータ収集に `generate_scatter_csv` 追加
+- `src/web/validation.py` — `generate_scatter_csv` を `_parse_bool()` でバリデーション, 戻り値辞書に追加
+- `src/web/pipeline_runner.py` — `_generate_visualization_csv()` 内で `generate_scatter_csv` フラグを参照し, false の場合は scatter CSV 生成をスキップ. enriched fragments CSV は常に生成
+
+### テスト結果
+
+- `pytest -v` — 17 passed (0.89s)
+
+### 判断メモ
+
+- enriched fragments CSV はメトリクス計算の基盤データであり常に必要なため, スキップ対象にしなかった
+- トグルのデフォルトは ON (checked) で後方互換を維持
+- scatter CSV スキップ時はログに明示的にメッセージを出力
+
+### 残課題
+
+- なし
+
+## 02-25 services.json 拡充・enriched_fragments.csv 新設
+
+### 変更ファイル
+
+- `src/modules/visualization/enrich_services.py` — **新規**: services.json に `language_stats` セクション (サービス別 file_count, total_loc, 未解決ファイル数) を追記するモジュール
+- `src/modules/visualization/build_enriched_fragments.py` — **新規**: フラグメント粒度の enriched CSV を生成するモジュール. scatter CSV の O(n²) ペア展開と異なり, O(n) で断片をそのまま出力
+- `src/web/pipeline_runner.py` — Web UI パイプラインに enriched_fragments 生成ステップを追加
+- `src/commands/csv_build/generate_visualization_csv.py` — CLI バッチにも enriched_fragments 生成ステップを追加. services.json 未実装 TODO を解消
+- `pyproject.toml` — `pythonpath = ["src"]` 追加 (tests/ ディレクトリからのインポート解決)
+- `tests/test_enrich_services.py` — **新規**: enrich_services の単体テスト (6件)
+- `tests/test_build_enriched_fragments.py` — **新規**: build_enriched_fragments の単体・結合テスト (9件)
+
+### テスト結果
+
+- `pytest -v` — 17 passed (3.65s), 既存2件 + 新規15件
+
+### 判断メモ
+
+- scatter CSV はペアベース (散布図専用) で維持. メトリクス計算にはフラグメント粒度が適切なため, 新データソースとして enriched_fragments.csv を並行生成する方針
+- services.json の `language_stats` は言語ごとに追記する形式. 既存の `services` / `URL` キーは一切変更せず後方互換を維持
+- `enrich_services_json()` は `build_enriched_fragments_for_language()` 内で呼び出される設計. 同じ clones_json / service_contexts を共有するためセットアップの重複を回避
+- token_count はユーザー指示により今回スキップ (clones_json の clone_sets がリスト形式の場合に 0 になる既知問題は別途対応)
+
+### 残課題
+
+- TODO(gen): clones_json の clone_sets がリスト形式の場合の token_count パース修正
+- TODO(gen): enriched_fragments.csv を使ったメトリクス計算モジュールの実装
+- TODO(gen): 散布図の座標順序改善 (file_id をサービス密度順ソート)
+
+## 02-24 サイドバー折りたたみ修正・設計ドキュメント生成
+
+### 変更ファイル
+
+- `src/visualize/components/layout.py` — 折りたたみ時の "M" 短縮テキストを削除. ブランドテキスト自体を非表示にし,トグルボタンのみ表示にする方式に変更
+- `src/visualize/assets/02_ide_theme.css` — `.sidebar-brand-short` スタイル削除. 折りたたみ時に `.sidebar-brand-inner` も非表示にするルール追加
+- `docs/visualize_overview.md` — **新規**: visualize パッケージ概要・data_loader 設計ドキュメント
+- `docs/visualize_callbacks.md` — **新規**: callbacks パッケージ設計ドキュメント (フィルタチェーン, i18n, ビュー切替)
+- `docs/visualize_components.md` — **新規**: components パッケージ設計ドキュメント (レイアウト, 差分比較, メトリクス)
+- `docs/visualize_utilities.md` — **新規**: ユーティリティモジュール設計ドキュメント (plotting, network, utils, clone_analytics)
+- `docs/web_package.md` — **新規**: web パッケージ設計ドキュメント (FastAPI, パイプライン, バリデーション, stdout_proxy)
+
+### テスト結果
+
+- `pytest -q` — 2 passed (4.08s)
+
+### 判断メモ
+
+- 折りたたみ時の "M" テキストはユーザーからの指摘で分かりにくいと判断. トグルボタン (chevron) だけで十分にサイドバーの存在と操作方法が伝わるため,ブランド要素は完全に非表示にする方針に変更
+- ドキュメントは visualize と web の2大パッケージについて,機能単位で5ファイルに分割して作成. 各ファイルは「設計方針・入出力・処理フロー・コード解説・課題」の5セクション構成
+
+### 残課題
+
+- TODO(gen): `summary.py` (1481行) の3機能分割検討
+- TODO(gen): `explorer_callbacks.py` のファイルパス解決改善 (同名ファイルの誤マッチ)
+- TODO(gen): TKS/RNR パイプライン実行の web UI 対応
+- TODO(gen): `clone_analytics.py` のクローン比率計算実装
+
+## 02-25 ブランドアイコン削除・言語ドロップダウン修正
+
+### 変更ファイル
+
+- `src/visualize/components/layout.py` — `bi-braces` アイコン削除, 折りたたみ時用の短縮ブランド "M" 追加
+- `src/web/static/index.html` — 設定画面側の `bi-braces` アイコン削除
+- `src/visualize/assets/02_ide_theme.css` — `.sidebar-brand-icon` → `.sidebar-brand-short` に変更 (通常時非表示, 折りたたみ時表示). `.sidebar-footer` に `position: relative` 追加. 言語ドロップダウンが上方向に開くCSS追加 (`.Select-menu-outer { bottom: 100%; top: auto; }`)
+
+### テスト結果
+
+- `pytest -q` — 2 passed
+
+### 判断メモ
+
+- アイコン削除後,折りたたみ時にブランド領域が空になるため,短縮テキスト "M" を表示する方式を採用
+- 言語ドロップダウンが画面外に出る根本原因は `.app-sidebar { overflow: hidden }` で下方向のメニューがクリップされていたこと. `overflow` を変更するとサイドバー全体に影響するため,ドロップダウン自体を上方向に開く方式で対処
+
+### 残課題
+
+- TODO(gen): 設定画面 (index.html) の言語セレクタはネイティブ `<select>` のため今回の修正対象外
+
 ## 02-24 CSS読み込み順序修正・サイドバー表示統一
 
 ### 変更ファイル
