@@ -444,9 +444,7 @@ def _load_analysis_params(project_name: str) -> dict:
             logger.debug("Loaded analysis_params from %s", params_path)
             return data
         except Exception as exc:
-            logger.warning(
-                "Failed to read analysis_params %s: %s", params_path, exc
-            )
+            logger.warning("Failed to read analysis_params %s: %s", params_path, exc)
 
     # config.py からのフォールバック
     try:

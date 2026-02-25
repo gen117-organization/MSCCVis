@@ -165,9 +165,7 @@ class TestGatherOptionsFromEnriched:
         """analysis_params JSON を配置する."""
         pd = tmp_path / "dest" / "analysis_params"
         pd.mkdir(parents=True, exist_ok=True)
-        (pd / f"{project}.json").write_text(
-            json.dumps(params), encoding="utf-8"
-        )
+        (pd / f"{project}.json").write_text(json.dumps(params), encoding="utf-8")
 
     def test_returns_options_for_enriched_csv(self, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
@@ -260,9 +258,7 @@ class TestGatherOptionsFromEnriched:
                 "Go": {"services": {}, "total_files": 5, "total_loc": 200},
             },
         }
-        (sj_dir / "org.repo.json").write_text(
-            json.dumps(sj_data), encoding="utf-8"
-        )
+        (sj_dir / "org.repo.json").write_text(json.dumps(sj_data), encoding="utf-8")
 
         options = self.gather("org.repo")
         assert len(options) == 2
