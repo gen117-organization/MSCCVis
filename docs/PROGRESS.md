@@ -1,5 +1,28 @@
 # Progress Log
 
+## 02-25 Dataset選択ラベルの enriched_fragments + analysis_params 対応
+
+### 変更ファイル
+
+- `src/visualize/data_loader/project_discovery.py` — `get_csv_options_for_project()` の services.json フォールバックを `_gather_options_from_enriched()` に置換. `_load_analysis_params()` 新規追加 (analysis_params.json → config.py フォールバック). `_build_enriched_label()` 新規追加 (Scatter CSV と同等の説明的ラベル生成). `_gather_services_json_projects()` を enriched ラベル使用に更新. 言語探索: enriched_fragments → dest/csv → services.json language_stats の3段階フォールバック
+- `src/web/pipeline_runner.py` — `_save_analysis_params()` 新規追加 (パイプライン完了時に `dest/analysis_params/{name}.json` へ分析パラメータを保存)
+- `test/test_project_discovery_enriched.py` — **新規**: enriched ラベル生成テスト (22件). `_build_enriched_label`, `_load_analysis_params`, `_gather_options_from_enriched`, `get_csv_options_for_project` の統合テスト
+
+### テスト結果
+
+- `pytest -q` — 74 passed (1.03s)
+
+### 判断メモ
+
+- enriched_fragments ディレクトリを第一の言語ソースとし, dest/csv → services.json language_stats の順でフォールバックする設計にした. Scatter CSV がなくてもラベルに Detection/Filter/Analysis/Comod/Min Tokens を表示でき, ドロップダウンの情報量が統一される
+- analysis_params.json がまだ存在しない既存プロジェクトは config.py のデフォルト値を使う. 次回パイプライン実行時に自動保存される
+- detection_method/min_tokens は config.py に明示値がないためハードコードデフォルト (normal/50) を使用
+
+### 残課題
+
+- TODO(gen): analysis_params.json は次回パイプライン実行まで存在しない. 既存プロジェクトを手動で再実行するか, 一括生成スクリプトが必要
+- TODO(gen): Scatter CSV がないプロジェクトで可視化を開いた時の scatter plot / network view の挙動確認 (Stats view のみ対応か)
+
 ## 02-25 プロジェクト発見ロジック改善 (services.json ベース)
 
 ### 変更ファイル

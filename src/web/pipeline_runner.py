@@ -65,6 +65,38 @@ def _clear_previous_results(repo_name: str, project_root: Path) -> None:
         analyzed_file.unlink()
 
 
+def _save_analysis_params(
+    name: str, params: dict, project_root: Path, log: LogCapture
+) -> None:
+    """分析パラメータを JSON として保存する.
+
+    ``dest/analysis_params/{name}.json`` に保存される.
+    プロジェクト発見時にラベル構築に使用する.
+    """
+    params_dir = project_root / "dest/analysis_params"
+    params_dir.mkdir(parents=True, exist_ok=True)
+    params_path = params_dir / f"{name}.json"
+
+    # 保存対象のパラメータ (UIから渡される分析条件)
+    save_data = {
+        "detection_method": params.get("detection_method", "normal"),
+        "min_tokens": params.get("min_tokens", 50),
+        "import_filter": params.get("import_filter", True),
+        "comod_method": params.get("comod_method", "clone_set"),
+        "analysis_method": params.get("analysis_method", "merge_commit"),
+        "analysis_frequency": params.get("analysis_frequency", 1),
+        "search_depth": params.get("search_depth", -1),
+        "max_analyzed_commits": params.get("max_analyzed_commits", -1),
+    }
+    try:
+        params_path.write_text(
+            json.dumps(save_data, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        log.write(f"  Saved analysis params: {params_path.name}\n")
+    except Exception as exc:
+        log.write(f"  [warn] Failed to save analysis params: {exc}\n")
+
+
 def _generate_visualization_csv(
     *,
     project: dict,
@@ -399,6 +431,10 @@ def run_job(
                 log.write(f"[warn] Visualization CSV generation failed: {exc}\n")
 
             log.write("[job] All steps completed successfully.\n")
+
+            # 分析パラメータを保存 (プロジェクト発見時に参照)
+            _save_analysis_params(name, params, project_root, log)
+
             job["status"] = "completed"
 
         except Exception as exc:

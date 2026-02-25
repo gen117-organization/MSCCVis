@@ -647,7 +647,9 @@ def build_project_summary(df, file_ranges, project, commit, language):
     )
 
     # services.json から詳細統計を読み込む
-    services_json_path = resolve_services_json_path(project) or f"dest/scatter/{project}/services.json"
+    services_json_path = (
+        resolve_services_json_path(project) or f"dest/scatter/{project}/services.json"
+    )
     services_data = load_full_services_json(services_json_path)
 
     detailed_stats = {}

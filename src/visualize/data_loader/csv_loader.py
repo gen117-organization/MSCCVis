@@ -88,7 +88,8 @@ def resolve_services_json_path(project_name: str) -> str | None:
 
 
 def load_clone_metrics(
-    project: str, language: str,
+    project: str,
+    language: str,
 ) -> dict | None:
     """dest/clone_metrics から事前計算済みメトリクス JSON を読み込む.
 
@@ -371,7 +372,10 @@ def load_and_process_data(project_name: str, commit_hash: str, language: str):
 
     # 0) dest/scatter 出力
     scatter_sources = _scatter_sources(project_name, language, commit_hash)
-    services_json_path = resolve_services_json_path(project_name) or f"dest/scatter/{project_name}/services.json"
+    services_json_path = (
+        resolve_services_json_path(project_name)
+        or f"dest/scatter/{project_name}/services.json"
+    )
     if scatter_sources:
         result = load_from_scatter_csv(
             scatter_sources, services_json_path, cache_key, language

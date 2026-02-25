@@ -369,10 +369,7 @@ def main(argv: list[str]) -> int:
                         metrics = compute_all_metrics(
                             enriched_csv, services_json, language
                         )
-                        metrics_path = (
-                            metrics_dir
-                            / f"{project_name}_{language}.json"
-                        )
+                        metrics_path = metrics_dir / f"{project_name}_{language}.json"
                         metrics_path.write_text(
                             json.dumps(metrics, ensure_ascii=False, indent=2),
                             encoding="utf-8",
