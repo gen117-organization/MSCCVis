@@ -1,5 +1,26 @@
 # Progress Log
 
+## 02-26 パイプライン実行後にプロジェクトが表示されない問題の修正
+
+### 変更ファイル
+
+- `src/visualize/scatter.py` — `dash_app.layout` を静的レイアウトから `serve_layout` 関数に変更. ページアクセス毎にプロジェクト一覧・言語・データセットを再取得するようになり, パイプライン完了後もリロードで反映される
+- `src/visualize/data_loader/project_discovery.py` — `get_project_names()` に `dest/enriched_fragments` と `dest/csv` ディレクトリの走査を追加 (既存 scatter + services_json に加えて計4箇所). services_json がないケースでもプロジェクトが発見される
+- `tests/test_project_discovery.py` — enriched_fragments / dest/csv からのプロジェクト発見テスト 2件追加
+
+### テスト結果
+
+- `pytest -q` — 76 passed (1.00s)
+
+### 判断メモ
+
+- 根本原因: `dash_app.layout = create_ide_layout(...)` が起動時に一度だけ評価され, パイプラインで `dest/` に新データが作られても反映されなかった. Dash の `app.layout = function` パターンで解決 (リクエスト毎に再評価)
+- `get_project_names()` は scatter + services_json しか見ておらず, enriched_fragments のみ存在するプロジェクトが漏れていた
+
+### 残課題
+
+- TODO(gen): パイプライン完了時に Web UI 側に通知して自動リロードする仕組み (現状はブラウザリロードが必要)
+
 ## 02-25 Dataset選択ラベルの enriched_fragments + analysis_params 対応
 
 ### 変更ファイル

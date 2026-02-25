@@ -327,8 +327,12 @@ def get_available_projects():
 def get_project_names() -> list[dict]:
     """プロジェクト名の一覧を取得する (2段階選択の Step 1 用).
 
-    ``dest/scatter`` (Scatter CSV) と ``dest/services_json`` (services.json)
-    の両方を走査し, いずれかにデータがあるプロジェクトを列挙する.
+    以下のディレクトリを走査し, いずれかにデータがあるプロジェクトを列挙する:
+
+    1. ``dest/scatter``
+    2. ``dest/services_json``
+    3. ``dest/enriched_fragments``
+    4. ``dest/csv``
 
     Returns:
         プロジェクト名のドロップダウンオプション (label/value).
@@ -357,6 +361,20 @@ def get_project_names() -> list[dict]:
         for json_file in services_dir.iterdir():
             if json_file.is_file() and json_file.suffix == ".json":
                 names.add(json_file.stem)
+
+    # 3. dest/enriched_fragments からプロジェクト名を取得
+    enriched_dir = Path("dest/enriched_fragments")
+    if enriched_dir.exists():
+        for project_dir in enriched_dir.iterdir():
+            if project_dir.is_dir() and any(project_dir.glob("*.csv")):
+                names.add(project_dir.name)
+
+    # 4. dest/csv からプロジェクト名を取得
+    csv_dir = Path("dest/csv")
+    if csv_dir.exists():
+        for project_dir in csv_dir.iterdir():
+            if project_dir.is_dir() and any(project_dir.glob("*.csv")):
+                names.add(project_dir.name)
 
     return [{"label": name, "value": name} for name in sorted(names)]
 

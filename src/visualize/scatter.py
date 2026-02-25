@@ -67,30 +67,32 @@ def create_dash_app(url_base_pathname: str = "/") -> Dash:
     dash_app.title = "MSCCVis – コードクローン可視化"
     dash_app.config.suppress_callback_exceptions = True  # 動的コンポーネント用の設定
 
-    # 利用可能なプロジェクトと言語を取得（改善版）
-    available_projects = get_available_projects_enhanced()
-    available_languages = get_available_languages()
-    project_names = get_project_names()
+    def serve_layout():
+        """ページアクセス毎にレイアウトを再生成する.
 
-    # 初期表示用のデータを準備（重いデータを初回ロードしない）
-    default_value = None
-    if not available_projects:
-        initial_fig = go.Figure().update_layout(title="CSVファイルが見つかりません")
-        initial_summary = build_project_summary(None, {}, "N/A", "N/A", "N/A")
-    else:
-        initial_fig = go.Figure().update_layout(title="プロジェクトを選択してください")
+        パイプライン完了後にプロジェクト一覧が更新されるよう,
+        毎回 ``get_project_names()`` 等を呼び直す.
+        """
+        available_projects = get_available_projects_enhanced()
+        available_languages = get_available_languages()
+        project_names = get_project_names()
+
+        initial_fig = go.Figure().update_layout(
+            title="プロジェクトを選択してください"
+        )
         initial_summary = build_project_summary(None, {}, "N/A", "N/A", "N/A")
 
-    # レイアウトとコールバックを設定
-    # Use create_ide_layout instead of create_layout
-    dash_app.layout = create_ide_layout(
-        available_projects,
-        available_languages,
-        default_value,
-        initial_fig,
-        initial_summary,
-        project_names=project_names,
-    )
+        return create_ide_layout(
+            available_projects,
+            available_languages,
+            None,
+            initial_fig,
+            initial_summary,
+            project_names=project_names,
+        )
+
+    # 関数を代入 → Dash がリクエスト毎に呼び出す
+    dash_app.layout = serve_layout
     register_callbacks(dash_app)
     return dash_app
 
