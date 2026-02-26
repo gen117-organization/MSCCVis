@@ -49,6 +49,7 @@ from .metrics_loader import (
     get_service_table_df,
     get_file_table_df,
     get_cs_table_df,
+    read_code_fragment,
 )
 
 __all__ = [
@@ -87,4 +88,5 @@ __all__ = [
     "get_service_table_df",
     "get_file_table_df",
     "get_cs_table_df",
+    "read_code_fragment",
 ]

@@ -12,13 +12,17 @@ import dash
 import pandas as pd
 from dash import Input, Output, State, ALL, no_update
 
-from ..components.list_view import build_breadcrumb, build_detail_panel
+from pathlib import Path
+
+from ..components.list_view import (_FRAG_COLUMNS_DEF, build_breadcrumb,
+                                    build_detail_panel)
 from ..data_loader.metrics_loader import (
     clear_metrics_cache,
     get_cs_table_df,
     get_file_table_df,
     get_service_table_df,
     load_metrics_dataframes,
+    read_code_fragment,
 )
 
 logger = logging.getLogger(__name__)
@@ -132,6 +136,24 @@ def _df_to_records(df: pd.DataFrame, cols: list[dict]) -> list[dict]:
     return records
 
 
+def _df_to_frag_records(df: pd.DataFrame) -> list[dict]:
+    """フラグメント DataFrame を records に変換する.
+
+    表示列 (_FRAG_COLUMNS_DEF) に加えて, コード読み取りに必要な
+    ``file_path``, ``start_line``, ``end_line`` を隠しフィールドとして含める.
+    """
+    if df is None or df.empty:
+        return []
+    visible_ids = [c["id"] for c in _FRAG_COLUMNS_DEF]
+    hidden_ids = ["file_path", "start_line", "end_line"]
+    all_ids = visible_ids + [h for h in hidden_ids if h not in visible_ids]
+    result = []
+    for _, row in df.iterrows():
+        rec = {col: (None if pd.isna(row[col]) else row[col]) for col in all_ids if col in row}
+        result.append(rec)
+    return result
+
+
 def _apply_sort(df: pd.DataFrame, sort_by: list[dict]) -> pd.DataFrame:
     """sort_by リストに従って DataFrame をソートする."""
     if df.empty or not sort_by:
@@ -161,14 +183,17 @@ def _drill_down(nav: dict, row: dict, l2_tab: str) -> dict:
     if origin == "ms":
         if level == 1:
             ms_name = row.get("service", "")
-            return {**nav, "ms_name": ms_name, "l2_tab": l2_tab, "level": 2}
+            return {**nav, "ms_name": ms_name, "l2_tab": l2_tab, "level": 2, "_last_cell": None}
         elif level == 2:
             detail_id = row.get("file_path") or row.get("clone_id") or ""
-            return {**nav, "detail_id": str(detail_id), "level": 3}
+            return {**nav, "detail_id": str(detail_id), "level": 3, "_last_cell": None}
+        else:  # level == 3: 別の行を選択 → detail_id だけ更新
+            detail_id = row.get("file_path") or row.get("clone_id") or ""
+            return {**nav, "detail_id": str(detail_id), "_last_cell": None}
     else:
-        # file / cs origin: level 1 → detail (level 2)
+        # file / cs origin: level 1 → detail (level 2)、または level 2 で再選択
         detail_id = row.get("file_path") or row.get("clone_id") or ""
-        return {**nav, "detail_id": str(detail_id), "level": 2}
+        return {**nav, "detail_id": str(detail_id), "level": 2, "_last_cell": None}
 
     return nav
 
@@ -331,6 +356,16 @@ def register_list_view_callbacks(app: dash.Dash, app_data: dict) -> None:
         if level == 3 and detail_id:
             # Level 2 テーブルを継続表示しつつ詳細パネルも出す
             cols, data, sort_by = _build_level2_ms_table(metrics, ms_name, l2_tab, ft)
+            # CS コンテキストは list-frag-panel が詳細を担当 → ファイル詳細パネルは非表示
+            if l2_tab == "cs":
+                return (
+                    cols, data, sort_by, 0,
+                    bc_children,
+                    l2_visible,
+                    [],
+                    detail_hidden,
+                    data_hidden,
+                )
             detail_content = build_detail_panel(origin, l2_tab, detail_id, metrics)
             return (
                 cols, data, sort_by, 0,
@@ -361,8 +396,8 @@ def register_list_view_callbacks(app: dash.Dash, app_data: dict) -> None:
             cols, data, sort_by = _build_cs_table(metrics, ms_name=None, file_type=ft)
 
         detail_content: list = []
-        # file/cs origin Level 2 → detail
-        if origin in ("file", "cs") and level == 2 and detail_id:
+        # file 起点 Level 2 → ファイル詳細表示（CS 起点は frag panel が担当）
+        if origin == "file" and level == 2 and detail_id:
             detail_content = build_detail_panel(origin, l2_tab, detail_id, metrics)
 
         return (
@@ -386,6 +421,140 @@ def register_list_view_callbacks(app: dash.Dash, app_data: dict) -> None:
         """プロジェクトが変わったらキャッシュをクリアして Level 1 に戻す."""
         clear_metrics_cache()
         return {**_initial_nav(), "origin": nav.get("origin", "ms")}
+
+    # ── F: クローンセット フラグメントパネル ────────────────────────────────
+
+    @app.callback(
+        [
+            Output("list-frag-panel", "style"),
+            Output("list-frag-table", "data"),
+            Output("list-frag-table", "columns"),
+            Output("list-frag-header", "children"),
+        ],
+        [
+            Input("list-nav-store", "data"),
+            Input("project-selector", "value"),
+        ],
+        prevent_initial_call=False,
+    )
+    def update_frag_panel(
+        nav: dict,
+        project_value: str | None,
+    ) -> tuple:
+        hidden = {"display": "none"}
+        visible = {
+            "display": "block",
+            "borderTop": "2px solid #dee2e6",
+            "flexShrink": "0",
+            "backgroundColor": "#fff",
+        }
+        default_header = "Clone Set Fragments"
+
+        if not project_value or not nav:
+            return hidden, [], _FRAG_COLUMNS_DEF, default_header
+
+        detail_id = nav.get("detail_id")
+        origin = nav.get("origin", "ms")
+        l2_tab = nav.get("l2_tab", "file")
+        level = nav.get("level", 1)
+
+        # CS コンテキスト判定
+        is_cs_context = (
+            (origin == "cs" and level >= 2) or
+            (origin == "ms" and l2_tab == "cs" and level >= 3)
+        )
+        if not is_cs_context or not detail_id:
+            return hidden, [], _FRAG_COLUMNS_DEF, default_header
+
+        project, _commit, language = _parse_project(project_value)
+        if not project or not language:
+            return hidden, [], _FRAG_COLUMNS_DEF, default_header
+
+        try:
+            metrics = load_metrics_dataframes(project, language)
+        except Exception as exc:
+            logger.error("Error loading metrics for frag panel: %s", exc)
+            return hidden, [], _FRAG_COLUMNS_DEF, default_header
+
+        frags = metrics.get("fragments", pd.DataFrame())
+        if frags.empty or "clone_id" not in frags.columns:
+            return visible, [], _FRAG_COLUMNS_DEF, f"Clone ID {detail_id} — fragments not available"
+
+        cs_frags = frags[frags["clone_id"].astype(str) == str(detail_id)].copy()
+        if cs_frags.empty:
+            return visible, [], _FRAG_COLUMNS_DEF, f"Clone ID {detail_id} — no fragments found"
+
+        # 表示用列を構築
+        cs_frags["file_short"] = cs_frags["file_path"].apply(lambda p: Path(p).name)
+        cs_frags["lines"] = (
+            cs_frags["start_line"].astype(str) + "–" + cs_frags["end_line"].astype(str)
+        )
+        cs_frags["service"] = cs_frags["service"].fillna("")
+
+        frag_data = _df_to_frag_records(cs_frags)
+        n_svcs = cs_frags["service"].nunique()
+        n_frags = len(cs_frags)
+        header = f"Clone ID {detail_id} — {n_frags} fragments / {n_svcs} services"
+
+        return visible, frag_data, _FRAG_COLUMNS_DEF, header
+
+    # ── G: フラグメント選択時のコード表示 ─────────────────────────────────────
+
+    @app.callback(
+        [
+            Output("list-code-view", "style"),
+            Output("list-code-header", "children"),
+            Output("list-code-content", "children"),
+        ],
+        Input("list-frag-table", "active_cell"),
+        [
+            State("list-frag-table", "data"),
+            State("project-selector", "value"),
+        ],
+        prevent_initial_call=True,
+    )
+    def show_code_for_fragment(
+        active_cell: dict | None,
+        frag_data: list[dict],
+        project_value: str | None,
+    ) -> tuple:
+        hidden = {"flex": "1", "display": "none"}
+        visible = {
+            "flex": "1",
+            "display": "block",
+            "borderLeft": "2px solid #dee2e6",
+            "overflowY": "auto",
+            "minWidth": "0",
+        }
+
+        if not active_cell or not frag_data or not project_value:
+            return hidden, "", ""
+
+        row_idx = active_cell.get("row", 0)
+        if row_idx >= len(frag_data):
+            return hidden, "", ""
+
+        row = frag_data[row_idx]
+        file_path = row.get("file_path")
+        start_line = row.get("start_line")
+        end_line = row.get("end_line")
+        service = row.get("service", "")
+
+        if not file_path or start_line is None or end_line is None:
+            return visible, "— Path information unavailable —", "# file_path not available in data"
+
+        project, _commit, _lang = _parse_project(project_value)
+        if not project:
+            return hidden, "", ""
+
+        code = read_code_fragment(project, file_path, int(start_line), int(end_line))
+        short_name = Path(file_path).name
+        header = f"{service} / {short_name}: lines {start_line}–{end_line}"
+
+        if code is None:
+            return visible, header, f"# File not found in repository:\n# {file_path}"
+
+        return visible, header, code
 
 
 # ---------------------------------------------------------------------------

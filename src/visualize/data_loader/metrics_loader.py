@@ -71,9 +71,26 @@ def _empty_result() -> dict[str, pd.DataFrame]:
     }
 
 
+def _is_schema_valid(raw: dict) -> bool:
+    """precomputed JSON のスキーマが現在のコードと互換性があるか確認する.
+
+    ``inter_clone_set_count`` 追加など, 過去の生成ファイルとの互換チェック用.
+    """
+    service_list = raw.get("service", [])
+    if not service_list:
+        return True  # 空データは許容
+    return "inter_clone_set_count" in service_list[0]
+
+
 def _load_and_enrich(project: str, language: str) -> dict[str, pd.DataFrame]:
-    # 1. precomputed JSON
+    # 1. precomputed JSON (スキーマが古い場合はスキップ)
     raw = _load_precomputed(project, language)
+    if raw is not None and not _is_schema_valid(raw):
+        logger.info(
+            "Precomputed metrics schema outdated for %s/%s — recomputing from CSV",
+            project, language,
+        )
+        raw = None
 
     # 2. fallback: compute from enriched_fragments
     if raw is None:
@@ -237,6 +254,42 @@ def _enrich_cs_df(cs_df: pd.DataFrame, frags: pd.DataFrame) -> pd.DataFrame:
         cs_df["involved_services"] = cs_df["clone_id"].map(svc_map).fillna("")
 
     return cs_df
+
+
+# ---------------------------------------------------------------------------
+# コード読み取り
+# ---------------------------------------------------------------------------
+
+
+def read_code_fragment(
+    project: str,
+    file_path: str,
+    start_line: int,
+    end_line: int,
+) -> str | None:
+    """クローンフラグメントのソースコード行を返す.
+
+    Args:
+        project: プロジェクト名 (e.g. ``"FudanSELab.train-ticket"``).
+        file_path: ``enriched_fragments.csv`` の ``file_path`` 列の値 (プロジェクト相対パス).
+        start_line: 開始行 (1-indexed, 閉区間).
+        end_line: 終了行 (1-indexed, 閉区間).
+
+    Returns:
+        コード文字列. ファイルが存在しない場合は ``None``.
+    """
+    full_path = _dest() / "projects" / project / file_path
+    if not full_path.exists():
+        logger.debug("Code file not found: %s", full_path)
+        return None
+    try:
+        lines = full_path.read_text(encoding="utf-8", errors="replace").splitlines()
+        s = max(0, start_line - 1)
+        e = min(len(lines), end_line)
+        return "\n".join(lines[s:e])
+    except Exception as exc:
+        logger.warning("Failed to read code from %s: %s", full_path, exc)
+        return None
 
 
 # ---------------------------------------------------------------------------

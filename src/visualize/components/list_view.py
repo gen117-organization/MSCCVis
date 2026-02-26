@@ -23,24 +23,24 @@ FILE_TYPE_OPTIONS = [
 
 # DataTable 共通スタイル
 _TABLE_STYLE_HEADER = {
-    "backgroundColor": "#f0f3f7",
-    "fontWeight": "600",
+    "backgroundColor": "#2c3e50",
+    "color": "#ffffff",
+    "fontWeight": "700",
     "fontSize": "12px",
-    "border": "1px solid #dee2e6",
+    "border": "1px solid #34495e",
     "textAlign": "center",
-    "whiteSpace": "normal",
-    "height": "auto",
+    "whiteSpace": "nowrap",
+    "padding": "8px 10px",
 }
 _TABLE_STYLE_CELL = {
-    "fontSize": "12px",
-    "padding": "6px 10px",
+    "fontSize": "13px",
+    "padding": "7px 12px",
     "border": "1px solid #e9ecef",
     "textAlign": "left",
-    "whiteSpace": "normal",
-    "height": "auto",
+    "whiteSpace": "nowrap",
     "overflow": "hidden",
     "textOverflow": "ellipsis",
-    "maxWidth": "280px",
+    "minWidth": "60px",
 }
 _TABLE_STYLE_DATA_CONDITIONAL = [
     {
@@ -58,6 +58,26 @@ _TABLE_STYLE_DATA_CONDITIONAL = [
         "border": "1px solid #4a90d9",
     },
 ]
+
+# フラグメント一覧テーブル用（コンパクト）
+_FRAG_COLUMNS_DEF = [
+    {"id": "fragment_index", "name": "#",       "type": "numeric"},
+    {"id": "service",        "name": "Service", "type": "text"},
+    {"id": "file_short",     "name": "File",    "type": "text"},
+    {"id": "lines",          "name": "Lines",   "type": "text"},
+    {"id": "line_count",     "name": "LOC",     "type": "numeric"},
+    {"id": "file_type",      "name": "Type",    "type": "text"},
+]
+_FRAG_STYLE_CELL = {
+    "fontSize": "12px",
+    "padding": "4px 8px",
+    "border": "1px solid #e9ecef",
+    "textAlign": "left",
+    "whiteSpace": "nowrap",
+    "overflow": "hidden",
+    "textOverflow": "ellipsis",
+    "minWidth": "50px",
+}
 
 # ---------------------------------------------------------------------------
 # 初期ナビゲーション状態
@@ -85,18 +105,18 @@ def _make_stub_table() -> dash_table.DataTable:
         id="list-main-table",
         columns=[],
         data=[],
-        page_size=25,
+        page_size=40,
         page_action="native",
         sort_action="native",
         sort_mode="single",
         row_selectable=False,
-        style_table={"overflowX": "auto", "minWidth": "100%"},
+        style_table={"overflowX": "auto", "width": "100%"},
         style_header=_TABLE_STYLE_HEADER,
         style_cell=_TABLE_STYLE_CELL,
         style_data_conditional=_TABLE_STYLE_DATA_CONDITIONAL,
-        active_cell=None,
-        tooltip_delay=0,
-        tooltip_duration=None,
+        style_cell_conditional=[
+            {"if": {"column_type": "numeric"}, "textAlign": "right"},
+        ],
     )
 
 
@@ -220,10 +240,94 @@ def create_list_view_layout() -> html.Div:
                 style={"flex": "1", "overflow": "hidden", "display": "flex", "flexDirection": "column"},
             ),
 
-            # ── Level 3: 詳細カード ────────────────────────────────────────
+            # ── Level 3: 詳細カード（ファイル用）────────────────────────────
             html.Div(
                 id="list-detail-panel",
-                style={"display": "none", "borderTop": "2px solid #dee2e6", "padding": "12px", "maxHeight": "40%", "overflowY": "auto", "flexShrink": "0"},
+                style={"display": "none", "borderTop": "2px solid #dee2e6", "padding": "12px", "maxHeight": "280px", "overflowY": "auto", "flexShrink": "0"},
+            ),
+
+            # ── クローンセット詳細パネル（フラグメント一覧 + コード）── 常に DOM 存在
+            html.Div(
+                id="list-frag-panel",
+                style={"display": "none", "borderTop": "2px solid #dee2e6", "flexShrink": "0", "backgroundColor": "#fff"},
+                children=[
+                    # ヘッダー
+                    html.Div(
+                        id="list-frag-header",
+                        style={
+                            "padding": "6px 14px",
+                            "fontSize": "12px",
+                            "fontWeight": "700",
+                            "color": "#2c3e50",
+                            "backgroundColor": "#f0f3f7",
+                            "borderBottom": "1px solid #dee2e6",
+                        },
+                        children="Clone Set Fragments",
+                    ),
+                    # 本体（左: フラグメント一覧, 右: コード表示）
+                    html.Div(
+                        style={"display": "flex", "height": "260px", "overflow": "hidden"},
+                        children=[
+                            # 左: フラグメントリスト
+                            html.Div(
+                                style={"flex": "1", "overflowY": "auto", "minWidth": "0"},
+                                children=[
+                                    dash_table.DataTable(
+                                        id="list-frag-table",
+                                        columns=_FRAG_COLUMNS_DEF,
+                                        data=[],
+                                        page_action="none",
+                                        sort_action="native",
+                                        style_table={"overflowX": "auto", "width": "100%"},
+                                        style_header=_TABLE_STYLE_HEADER,
+                                        style_cell=_FRAG_STYLE_CELL,
+                                        style_data_conditional=_TABLE_STYLE_DATA_CONDITIONAL,
+                                        style_cell_conditional=[
+                                            {"if": {"column_id": "fragment_index"}, "textAlign": "right", "maxWidth": "40px"},
+                                            {"if": {"column_id": "line_count"}, "textAlign": "right"},
+                                        ],
+                                    ),
+                                ],
+                            ),
+                            # 右: コード表示（クリック後に表示）
+                            html.Div(
+                                id="list-code-view",
+                                style={"flex": "1", "display": "none", "borderLeft": "2px solid #dee2e6", "overflowY": "auto", "minWidth": "0"},
+                                children=[
+                                    html.Div(
+                                        id="list-code-header",
+                                        style={
+                                            "padding": "4px 10px",
+                                            "fontSize": "11px",
+                                            "fontFamily": "monospace",
+                                            "backgroundColor": "#f5f5f5",
+                                            "borderBottom": "1px solid #dee2e6",
+                                            "color": "#555",
+                                            "whiteSpace": "nowrap",
+                                            "overflow": "hidden",
+                                            "textOverflow": "ellipsis",
+                                        },
+                                        children="",
+                                    ),
+                                    html.Pre(
+                                        id="list-code-content",
+                                        style={
+                                            "margin": "0",
+                                            "padding": "8px 14px",
+                                            "fontSize": "12px",
+                                            "fontFamily": "'Consolas', 'Monaco', 'Courier New', monospace",
+                                            "lineHeight": "1.6",
+                                            "backgroundColor": "#fefefe",
+                                            "color": "#24292e",
+                                            "whiteSpace": "pre",
+                                            "overflowX": "auto",
+                                        },
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
             ),
 
             # ── ストア ────────────────────────────────────────────────────
