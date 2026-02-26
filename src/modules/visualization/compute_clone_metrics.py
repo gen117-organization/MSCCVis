@@ -35,10 +35,20 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class ServiceMetrics:
-    """マイクロサービス粒度のメトリクス."""
+    """マイクロサービス粒度のメトリクス.
+
+    clone_set_count         : このサービスにフラグメントが 1 件以上存在するクローンセット数
+                              (intra / inter 問わず)．
+    inter_clone_set_count   : そのうちサービス間（inter）クローンセット数
+                              (跨り MS 数 >= 2).
+    total_clone_line_count  : ファイルごとに区間マージした後の重複なしクローン行数合計．
+    comod_count             : サービスに関与する同時修正コミット数
+                              (複数クローンセットにまたがるコミットも 1 回とカウント).
+    """
 
     service: str
     clone_set_count: int
+    inter_clone_set_count: int
     total_clone_line_count: int
     clone_avg_line_count: float
     clone_file_count: int
@@ -190,6 +200,44 @@ def _get_comod_fragment_indices(
     return indices
 
 
+def _merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    """ソート済みの閉区間リストをマージして非重複区間リストを返す.
+
+    Args:
+        intervals: ``(start, end)`` の閉区間リスト（昇順ソート済みを前提）．
+
+    Returns:
+        マージ後の ``(start, end)`` リスト.
+    """
+    if not intervals:
+        return []
+    merged: list[tuple[int, int]] = [intervals[0]]
+    for start, end in intervals[1:]:
+        prev_start, prev_end = merged[-1]
+        if start <= prev_end + 1:  # 隣接 or 重複
+            merged[-1] = (prev_start, max(prev_end, end))
+        else:
+            merged.append((start, end))
+    return merged
+
+
+def _unique_clone_lines(svc_df: pd.DataFrame) -> int:
+    """重複区間をマージしたサービスのユニーククローン行数を返す.
+
+    ファイルごとに ``(start_line, end_line)`` の閉区間を集め,
+    ``_merge_intervals`` で重複を除去してから合計する.
+    """
+    total = 0
+    for _, file_frags in svc_df.groupby("file_path"):
+        intervals = sorted(
+            (int(r["start_line"]), int(r["end_line"]))
+            for _, r in file_frags.iterrows()
+        )
+        merged = _merge_intervals(intervals)
+        total += sum(end - start + 1 for start, end in merged)
+    return total
+
+
 def _build_clone_set_service_map(
     df: pd.DataFrame,
 ) -> dict[str, set[str]]:
@@ -264,29 +312,35 @@ def _compute_single_service(
     clone_set_svc_map: dict[str, set[str]],
 ) -> ServiceMetrics:
     """1 サービスの ServiceMetrics を計算する."""
-    # 含まれるクローンセット数
+    # このサービスに属するクローンセット一覧
     clone_ids = set(svc_df["clone_id"].unique())
+
+    # clone_set_count : intra / inter 問わずフラグメントが存在する全クローンセット数
     clone_set_count = len(clone_ids)
 
-    # 合計クローン行数 & 平均行数
-    total_clone_line = int(svc_df["line_count"].sum())
+    # inter_clone_set_count : 跨り MS 数 >= 2 のクローンセットのみカウント
+    inter_clone_set_count = sum(
+        1 for cid in clone_ids if len(clone_set_svc_map.get(cid, set())) >= 2
+    )
+
+    # 平均クローン行数 = フラグメント単位の平均（重複あり・生データ）
     frag_count = len(svc_df)
-    avg_line = total_clone_line / frag_count if frag_count > 0 else 0.0
+    raw_total_line = int(svc_df["line_count"].sum())
+    avg_line = raw_total_line / frag_count if frag_count > 0 else 0.0
 
-    # クローンセットに含まれるユニークファイル数
+    # total_clone_line_count / ROC : ファイルごとに区間マージして重複を除去した行数を使う
+    unique_clone_line = _unique_clone_lines(svc_df)
     clone_file_count = int(svc_df["file_path"].nunique())
-
-    # ROC = クローン行数 / サービス総 LOC
     svc_total_loc = services_loc.get(service, 0)
-    roc = total_clone_line / svc_total_loc if svc_total_loc > 0 else 0.0
+    roc = unique_clone_line / svc_total_loc if svc_total_loc > 0 else 0.0
 
-    # 同時修正数 (全クローンセットの comod 合計)
-    comod_count = 0
+    # 同時修正コミット数 : 全クローンセットにまたがって union をとる（重複排除）
+    all_comod_commits: set[str] = set()
     comod_other_services: set[str] = set()
     for cid in clone_ids:
         cs_df = full_df[full_df["clone_id"] == cid]
         comod_commits = _compute_comod_commits_for_clone_set(cs_df)
-        comod_count += len(comod_commits)
+        all_comod_commits |= comod_commits
         if comod_commits:
             other_svcs = clone_set_svc_map.get(cid, set()) - {service}
             comod_other_services |= other_svcs
@@ -294,11 +348,12 @@ def _compute_single_service(
     return ServiceMetrics(
         service=service,
         clone_set_count=clone_set_count,
-        total_clone_line_count=total_clone_line,
+        inter_clone_set_count=inter_clone_set_count,
+        total_clone_line_count=unique_clone_line,
         clone_avg_line_count=round(avg_line, 2),
         clone_file_count=clone_file_count,
         roc=round(roc, 6),
-        comod_count=comod_count,
+        comod_count=len(all_comod_commits),
         comod_other_service_count=len(comod_other_services),
     )
 
