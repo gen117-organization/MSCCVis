@@ -16,7 +16,7 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[4]  # src/visualize/data_loader → repo root
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]  # src/visualize/data_loader → repo root
 
 
 def _dest() -> Path:
@@ -108,8 +108,21 @@ def _load_and_enrich(project: str, language: str) -> dict[str, pd.DataFrame]:
 
 
 def _load_precomputed(project: str, language: str) -> dict[str, list] | None:
-    path = _dest() / "clone_metrics" / f"{project}_{language}.json"
-    if not path.exists():
+    # 大文字小文字を無視してファイルを検索（言語名は Java / JAVA / java など揺れる）
+    metrics_dir = _dest() / "clone_metrics"
+    if not metrics_dir.exists():
+        logger.debug("clone_metrics dir not found: %s", metrics_dir)
+        return None
+    lang_lower = language.lower()
+    path: Path | None = None
+    for candidate in metrics_dir.glob(f"{project}_*.json"):
+        # ファイル名から言語部分を取り出して比較
+        suffix = candidate.stem[len(project) + 1:]
+        if suffix.lower() == lang_lower:
+            path = candidate
+            break
+    if path is None:
+        logger.debug("Precomputed metrics not found for %s/%s in %s", project, language, metrics_dir)
         return None
     try:
         return json.loads(path.read_text(encoding="utf-8"))
