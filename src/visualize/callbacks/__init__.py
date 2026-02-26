@@ -11,6 +11,7 @@ from .scatter_callbacks import register_scatter_callbacks
 from .explorer_callbacks import register_explorer_callbacks
 from .nav_callbacks import register_nav_callbacks
 from .filter_callbacks import register_filter_callbacks
+from .list_view_callbacks import register_list_view_callbacks
 
 logger = logging.getLogger(__name__)
 
@@ -31,4 +32,5 @@ def register_callbacks(app):
     register_scatter_callbacks(app, app_data)
     register_explorer_callbacks(app, app_data)
     register_filter_callbacks(app, app_data)
+    register_list_view_callbacks(app, app_data)
     logger.info("All callbacks registered successfully")

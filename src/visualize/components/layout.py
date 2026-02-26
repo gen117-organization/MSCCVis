@@ -10,6 +10,7 @@ from .summary import (
     build_dashboard_view,
     build_project_summary,
 )
+from .list_view import create_list_view_layout
 
 logger = logging.getLogger(__name__)
 
@@ -842,6 +843,11 @@ def create_ide_layout(
             dcc.Store(id="clone-data-store"),
             dcc.Store(id="lang-store", data="en"),
             html.Div(id="i18n-dummy", style={"display": "none"}),
+            # Ghost elements for legacy explorer_callbacks (hidden, not rendered in UI)
+            html.Div(id="file-tree-container", style={"display": "none"}),
+            html.Div(id="clone-list-container", style={"display": "none"}),
+            html.Div(id="editor-content", style={"display": "none"}),
+            html.Div(id="editor-header", style={"display": "none"}),
         ]
     )
 
@@ -856,11 +862,12 @@ def create_ide_layout(
                     html.Div(
                         className="content-body",
                         children=[
-                            # Explorer view (natural flow, hidden by default)
+                            # List View (drill-down, hidden by default)
                             html.Div(
-                                [explorer_sidebar, editor_content],
+                                create_list_view_layout(),
                                 id="ide-main-container",
                                 className="ide-main",
+                                style={"display": "none"},
                             ),
                             # Scatter overlay
                             scatter_view,

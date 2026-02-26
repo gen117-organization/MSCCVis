@@ -42,6 +42,15 @@ from .file_tree import (
     get_clone_related_files,
 )
 
+# --- Clone metrics (list view) ---
+from .metrics_loader import (
+    load_metrics_dataframes,
+    clear_metrics_cache,
+    get_service_table_df,
+    get_file_table_df,
+    get_cs_table_df,
+)
+
 __all__ = [
     # project_discovery
     "load_project_summary",
@@ -72,4 +81,10 @@ __all__ = [
     # file_tree
     "build_file_tree_data",
     "get_clone_related_files",
+    # metrics_loader
+    "load_metrics_dataframes",
+    "clear_metrics_cache",
+    "get_service_table_df",
+    "get_file_table_df",
+    "get_cs_table_df",
 ]
